@@ -88,6 +88,7 @@ namespace PE多功能信息处理插件
 
         public void Run(IPERunArgs args)
         {
+            var ags = args;
             ARGS = args;
             Formtemp = args.Host.Connector.Form as Form;
             ViewForm = args.Host.Connector.View.PmxView as Form;
