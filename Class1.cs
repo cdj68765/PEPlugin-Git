@@ -70,13 +70,11 @@ namespace PE多功能信息处理插件
         private Form ViewForm = null;
         private string oldformtext = "";
         private IPXPmx PmxTemp;
-        private List<FormInfo> TranslateFile = new List<FormInfo>();
-        private List<FormInfo> OriFormInfo = new List<FormInfo>();
+        private List<FormText> OriFormInfo = new List<FormText>();
         private List<string> FormList = new List<string>();
         private TextBox CustomBoneSearch = null;
         private TextBox CustomBodySearch = null;
         private TextBox CustomJointSearch = null;
-        private List<FormInfo> SwapFormInfo = new List<FormInfo>();
         public static TabPage jointpage = null;
         public static TabPage Bonepage = null;
         public static TabPage Bodypage = null;
@@ -90,106 +88,107 @@ namespace PE多功能信息处理插件
 
         public void Run(IPERunArgs args)
         {
-            var ags = args;
             ARGS = args;
             Formtemp = args.Host.Connector.Form as Form;
             ViewForm = args.Host.Connector.View.PmxView as Form;
-            new TranslateMod(Formtemp, false);
+            OriFormInfo = new List<FormText>(new TranslateMod().Readinfo);
+            Control.CheckForIllegalCrossThreadCalls = false;
+            OriFormInfo = new List<FormText>(new TranslateMod().Readinfo);
             var StartMission = new Task(() =>
-            {
+           {
                 #region 读取配置
 
                 try
-                {
-                    using (Stream stream = new FileStream(new FileInfo(args.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot.xml", FileMode.OpenOrCreate))
-                    {
-                        IFormatter Formatter = new BinaryFormatter();
-                        Formatter.Binder = new UBinder();
-                        bootstate = (BootState)Formatter.Deserialize(stream);
-                    }
-                }
-                catch (Exception)
-                {
-                    bootstate = new BootState(0, 0, 0);
-                    bootstate.FormTopmost = 1;
-                }
-                finally
-                {
-                    if (bootstate.BezierFirstColor == 0 && bootstate.BezierSecondColor == 0 && bootstate.BezierLinkSize == 0)
-                    {
-                        bootstate.BezierFirstColor = 7;
-                        bootstate.BezierSecondColor = 27;
-                        bootstate.BezierLinkSize = 3f;
-                    }
-                    if (bootstate.WeightAddKey == 0 || bootstate.WeightAppleKey == 0 || bootstate.WeightGetKey == 0 || bootstate.WeightMinusKey == 0)
-                    {
-                        bootstate.WeightAddKey = '+';
-                        bootstate.WeightMinusKey = '-';
-                        bootstate.WeightAppleKey = '*';
-                        bootstate.WeightGetKey = '/';
-                    }
-                }
+               {
+                   using (Stream stream = new FileStream(new FileInfo(args.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot.xml", FileMode.OpenOrCreate))
+                   {
+                       IFormatter Formatter = new BinaryFormatter();
+                       Formatter.Binder = new UBinder();
+                       bootstate = (BootState)Formatter.Deserialize(stream);
+                   }
+               }
+               catch (Exception)
+               {
+                   bootstate = new BootState(0, 0, 0);
+                   bootstate.FormTopmost = 1;
+               }
+               finally
+               {
+                   if (bootstate.BezierFirstColor == 0 && bootstate.BezierSecondColor == 0 && bootstate.BezierLinkSize == 0)
+                   {
+                       bootstate.BezierFirstColor = 7;
+                       bootstate.BezierSecondColor = 27;
+                       bootstate.BezierLinkSize = 3f;
+                   }
+                   if (bootstate.WeightAddKey == 0 || bootstate.WeightAppleKey == 0 || bootstate.WeightGetKey == 0 || bootstate.WeightMinusKey == 0)
+                   {
+                       bootstate.WeightAddKey = '+';
+                       bootstate.WeightMinusKey = '-';
+                       bootstate.WeightAppleKey = '*';
+                       bootstate.WeightGetKey = '/';
+                   }
+               }
 
                 #endregion 读取配置
 
                 #region 菜单栏获取
 
                 ShortCutInfo = new List<ToolItemInfo>();
-                foreach (ToolStripMenuItem temp1 in Formtemp.MainMenuStrip.Items)
-                {
-                    foreach (var temp2 in temp1.DropDownItems)
-                    {
-                        if (temp2.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
-                        {
-                            foreach (var temp3 in ((ToolStripMenuItem)temp2).DropDownItems)
-                            {
-                                if (temp3.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
-                                {
-                                    foreach (var temp4 in ((ToolStripMenuItem)temp3).DropDownItems)
-                                    {
-                                        if (temp4.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
-                                        {
-                                            ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp4));
-                                            getmuch(temp4);
-                                        }
-                                    }
-                                    ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp3));
-                                }
-                            }
-                            ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp2));
-                        }
-                    }
-                    ShortCutInfo.Add(new ToolItemInfo(temp1));
-                }
-                foreach (var temp1 in ViewForm.MainMenuStrip.Items)
-                {
-                    if (temp1 is ToolStripMenuItem)
-                    {
-                        var T1 = temp1 as ToolStripMenuItem;
-                        foreach (var temp2 in T1.DropDownItems)
-                        {
-                            if (temp2.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
-                            {
-                                foreach (var temp3 in ((ToolStripMenuItem)temp2).DropDownItems)
-                                {
-                                    if (temp3.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
-                                    {
-                                        foreach (var temp4 in ((ToolStripMenuItem)temp3).DropDownItems)
-                                        {
-                                            if (temp4.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
-                                            {
-                                                ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp4));
-                                            }
-                                        }
-                                        ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp3));
-                                    }
-                                }
-                                ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp2));
-                            }
-                        }
-                        ShortCutInfo.Add(new ToolItemInfo(T1));
-                    }
-                }
+               foreach (ToolStripMenuItem temp1 in Formtemp.MainMenuStrip.Items)
+               {
+                   foreach (var temp2 in temp1.DropDownItems)
+                   {
+                       if (temp2.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
+                       {
+                           foreach (var temp3 in ((ToolStripMenuItem)temp2).DropDownItems)
+                           {
+                               if (temp3.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
+                               {
+                                   foreach (var temp4 in ((ToolStripMenuItem)temp3).DropDownItems)
+                                   {
+                                       if (temp4.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
+                                       {
+                                           ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp4));
+                                           getmuch(temp4);
+                                       }
+                                   }
+                                   ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp3));
+                               }
+                           }
+                           ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp2));
+                       }
+                   }
+                   ShortCutInfo.Add(new ToolItemInfo(temp1));
+               }
+               foreach (var temp1 in ViewForm.MainMenuStrip.Items)
+               {
+                   if (temp1 is ToolStripMenuItem)
+                   {
+                       var T1 = temp1 as ToolStripMenuItem;
+                       foreach (var temp2 in T1.DropDownItems)
+                       {
+                           if (temp2.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
+                           {
+                               foreach (var temp3 in ((ToolStripMenuItem)temp2).DropDownItems)
+                               {
+                                   if (temp3.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
+                                   {
+                                       foreach (var temp4 in ((ToolStripMenuItem)temp3).DropDownItems)
+                                       {
+                                           if (temp4.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
+                                           {
+                                               ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp4));
+                                           }
+                                       }
+                                       ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp3));
+                                   }
+                               }
+                               ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp2));
+                           }
+                       }
+                       ShortCutInfo.Add(new ToolItemInfo(T1));
+                   }
+               }
 
                 #endregion 菜单栏获取
             });
@@ -197,265 +196,255 @@ namespace PE多功能信息处理插件
             {
                 #region 搜索模块
 
-                new Task(() =>
+
+                var point = new System.Drawing.Point(65, 8);
+                var size = new System.Drawing.Size(75, 10);
+                if (int.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(args.Host.Connector.System.HostApplicationPath).ProductVersion.Replace(".", "")) > 0250)
                 {
-                    var point = new System.Drawing.Point(65, 8);
-                    var size = new System.Drawing.Size(75, 10);
-                    if (int.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(args.Host.Connector.System.HostApplicationPath).ProductVersion.Replace(".", "")) > 0250)
+                    point = new System.Drawing.Point(55, 8);
+                    size = new System.Drawing.Size(95, 10);
+                }
+                KeyPressEventHandler ControlSearch = (s, e) =>
+                {
+                    bool FinSearch = true;
+                    if (e.KeyChar == 13 && FinSearch)
                     {
-                        point = new System.Drawing.Point(55, 8);
-                        size = new System.Drawing.Size(95, 10);
-                    }
-                    KeyPressEventHandler ControlSearch = (s, e) =>
-                    {
-                        bool FinSearch = true;
-                        if (e.KeyChar == 13 && FinSearch)
+                        ThreadPool.QueueUserWorkItem((obj) =>
                         {
-                            ThreadPool.QueueUserWorkItem((obj) =>
+                            try
                             {
-                                try
+                                FinSearch = false;
+                                TextBox Page = s as TextBox;
+                                var Pmx = ARGS.Host.Connector.Pmx.GetCurrentState();
+                                string[] searchchar = new Func<string[]>(() =>
                                 {
-                                    FinSearch = false;
-                                    TextBox Page = s as TextBox;
-                                    var Pmx = ARGS.Host.Connector.Pmx.GetCurrentState();
-                                    string[] searchchar = new Func<string[]>(() =>
+                                    List<string> temp = new List<string>();
+                                    if (Page.Text != null)
                                     {
-                                        List<string> temp = new List<string>();
-                                        if (Page.Text != null)
+                                        string[] eachchar = Page.Text.Select(x => x.ToString()).ToArray();
+                                        string tempchar = "";
+                                        for (int i = 0; i < eachchar.Length; i++)
                                         {
-                                            string[] eachchar = Page.Text.Select(x => x.ToString()).ToArray();
-                                            string tempchar = "";
-                                            for (int i = 0; i < eachchar.Length; i++)
+                                            if (eachchar[i] == @"," || eachchar[i] == @"，" || eachchar[i] == @"." || eachchar[i] == @"。" || eachchar[i] == @" " || eachchar[i] == @"　" || eachchar[i] == @";" || eachchar[i] == @"；")
                                             {
-                                                if (eachchar[i] == @"," || eachchar[i] == @"，" || eachchar[i] == @"." || eachchar[i] == @"。" || eachchar[i] == @" " || eachchar[i] == @"　" || eachchar[i] == @";" || eachchar[i] == @"；")
+                                                if (tempchar != "")
                                                 {
-                                                    if (tempchar != "")
-                                                    {
-                                                        temp.Add(tempchar);
-                                                    }
-                                                    tempchar = "";
+                                                    temp.Add(tempchar);
                                                 }
-                                                else
-                                                {
-                                                    tempchar = tempchar + eachchar[i];
-                                                }
+                                                tempchar = "";
                                             }
-                                            if (tempchar != "")
+                                            else
                                             {
-                                                temp.Add(tempchar);
+                                                tempchar = tempchar + eachchar[i];
                                             }
                                         }
-                                        return temp.ToArray();
-                                    })();
-                                    List<int> search = new List<int>();
-                                    List<int> Tsearch = new List<int>();
-                                    switch (Page.Name)
-                                    {
-                                        case "BoneSearch":
-                                            foreach (var item in searchchar)
-                                            {
-                                                if (Tsearch.Count == 0)
-                                                {
-                                                    foreach (var item2 in Pmx.Bone)
-                                                    {
-                                                        if (item2.Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
-                                                        {
-                                                            Tsearch.Add(Pmx.Bone.IndexOf(item2));
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    foreach (var item2 in Pmx.Bone)
-                                                    {
-                                                        search = new List<int>();
-                                                        foreach (var item3 in Tsearch)
-                                                        {
-                                                            if (Pmx.Bone[item3].Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
-                                                            {
-                                                                search.Add(item3);
-                                                            }
-                                                        }
-                                                    }
-                                                    Tsearch = new List<int>(search);
-                                                }
-                                                if (searchchar.Length == 1)
-                                                {
-                                                    search = new List<int>(Tsearch);
-                                                }
-                                            }
-                                            ARGS.Host.Connector.View.PmxView.SetSelectedBoneIndices(search.ToArray());
-                                            break;
-
-                                        case "BodySearch":
-                                            foreach (var item in searchchar)
-                                            {
-                                                if (Tsearch.Count == 0)
-                                                {
-                                                    foreach (var item2 in Pmx.Body)
-                                                    {
-                                                        if (item2.Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
-                                                        {
-                                                            Tsearch.Add(Pmx.Body.IndexOf(item2));
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    foreach (var item2 in Pmx.Body)
-                                                    {
-                                                        search = new List<int>();
-                                                        foreach (var item3 in Tsearch)
-                                                        {
-                                                            if (Pmx.Body[item3].Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
-                                                            {
-                                                                search.Add(item3);
-                                                            }
-                                                        }
-                                                    }
-                                                    Tsearch = new List<int>(search);
-                                                }
-                                                if (searchchar.Length == 1)
-                                                {
-                                                    search = new List<int>(Tsearch);
-                                                }
-                                            }
-                                            ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(search.ToArray());
-                                            break;
-
-                                        case "JointSearch":
-                                            foreach (var item in searchchar)
-                                            {
-                                                if (Tsearch.Count == 0)
-                                                {
-                                                    foreach (var item2 in Pmx.Joint)
-                                                    {
-                                                        if (item2.Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
-                                                        {
-                                                            Tsearch.Add(Pmx.Joint.IndexOf(item2));
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    foreach (var item2 in Pmx.Joint)
-                                                    {
-                                                        search = new List<int>();
-                                                        foreach (var item3 in Tsearch)
-                                                        {
-                                                            if (Pmx.Joint[item3].Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
-                                                            {
-                                                                search.Add(item3);
-                                                            }
-                                                        }
-                                                    }
-                                                    Tsearch = new List<int>(search);
-                                                    if (searchchar.Length == 1)
-                                                    {
-                                                        search = new List<int>(Tsearch);
-                                                    }
-                                                }
-                                            }
-                                            ARGS.Host.Connector.View.PmxView.SetSelectedJointIndices(search.ToArray());
-                                            break;
+                                        if (tempchar != "")
+                                        {
+                                            temp.Add(tempchar);
+                                        }
                                     }
-                                    InvokeFormToStart("btnGetObject", null);
-                                }
-                                catch (Exception)
+                                    return temp.ToArray();
+                                })();
+                                List<int> search = new List<int>();
+                                List<int> Tsearch = new List<int>();
+                                switch (Page.Name)
                                 {
+                                    case "BoneSearch":
+                                        foreach (var item in searchchar)
+                                        {
+                                            if (Tsearch.Count == 0)
+                                            {
+                                                foreach (var item2 in Pmx.Bone)
+                                                {
+                                                    if (item2.Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
+                                                    {
+                                                        Tsearch.Add(Pmx.Bone.IndexOf(item2));
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                foreach (var item2 in Pmx.Bone)
+                                                {
+                                                    search = new List<int>();
+                                                    foreach (var item3 in Tsearch)
+                                                    {
+                                                        if (Pmx.Bone[item3].Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
+                                                        {
+                                                            search.Add(item3);
+                                                        }
+                                                    }
+                                                }
+                                                Tsearch = new List<int>(search);
+                                            }
+                                            if (searchchar.Length == 1)
+                                            {
+                                                search = new List<int>(Tsearch);
+                                            }
+                                        }
+                                        ARGS.Host.Connector.View.PmxView.SetSelectedBoneIndices(search.ToArray());
+                                        break;
+
+                                    case "BodySearch":
+                                        foreach (var item in searchchar)
+                                        {
+                                            if (Tsearch.Count == 0)
+                                            {
+                                                foreach (var item2 in Pmx.Body)
+                                                {
+                                                    if (item2.Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
+                                                    {
+                                                        Tsearch.Add(Pmx.Body.IndexOf(item2));
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                foreach (var item2 in Pmx.Body)
+                                                {
+                                                    search = new List<int>();
+                                                    foreach (var item3 in Tsearch)
+                                                    {
+                                                        if (Pmx.Body[item3].Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
+                                                        {
+                                                            search.Add(item3);
+                                                        }
+                                                    }
+                                                }
+                                                Tsearch = new List<int>(search);
+                                            }
+                                            if (searchchar.Length == 1)
+                                            {
+                                                search = new List<int>(Tsearch);
+                                            }
+                                        }
+                                        ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(search.ToArray());
+                                        break;
+
+                                    case "JointSearch":
+                                        foreach (var item in searchchar)
+                                        {
+                                            if (Tsearch.Count == 0)
+                                            {
+                                                foreach (var item2 in Pmx.Joint)
+                                                {
+                                                    if (item2.Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
+                                                    {
+                                                        Tsearch.Add(Pmx.Joint.IndexOf(item2));
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                foreach (var item2 in Pmx.Joint)
+                                                {
+                                                    search = new List<int>();
+                                                    foreach (var item3 in Tsearch)
+                                                    {
+                                                        if (Pmx.Joint[item3].Name.ToLower().IndexOf(item.ToLower(), StringComparison.CurrentCulture) != -1)
+                                                        {
+                                                            search.Add(item3);
+                                                        }
+                                                    }
+                                                }
+                                                Tsearch = new List<int>(search);
+                                                if (searchchar.Length == 1)
+                                                {
+                                                    search = new List<int>(Tsearch);
+                                                }
+                                            }
+                                        }
+                                        ARGS.Host.Connector.View.PmxView.SetSelectedJointIndices(search.ToArray());
+                                        break;
                                 }
-                                finally
-                                {
-                                    FinSearch = true;
-                                    GC.Collect();
-                                }
-                            });
-                        }
-                    };
-                    EventHandler PageGotFoucus = (s, e) =>
-                    {
-                        TextBox Page = s as TextBox;
-                        {
-                            if (Page.Text == "搜索")
-                            {
-                                Page.Text = "";
+                                InvokeFormToStart("btnGetObject", null);
                             }
-                        }
-                    };
-                    EventHandler PageLostFoucus = (s, e) =>
-                    {
-                        TextBox Page = s as TextBox;
-                        {
-                            if (Page.Text == "")
+                            catch (Exception)
                             {
-                                Page.Text = "搜索";
                             }
-                        }
-                    };
-                    Formtemp.BeginInvoke(new MethodInvoker(() =>
+                            finally
+                            {
+                                FinSearch = true;
+                                GC.Collect();
+                            }
+                        });
+                    }
+                };
+                EventHandler PageGotFoucus = (s, e) =>
+                {
+                    TextBox Page = s as TextBox;
                     {
-                        var Font = new System.Drawing.Font("微软雅黑", 7.5f);
+                        if (Page.Text == "搜索")
                         {
-                            CustomBoneSearch = new TextBox();
-                            CustomBoneSearch.Name = "BoneSearch";
-                            CustomBoneSearch.KeyPress += ControlSearch;
-                            CustomBoneSearch.GotFocus += PageGotFoucus;
-                            CustomBoneSearch.LostFocus += PageLostFoucus;
-                            CustomBoneSearch.Text = "搜索";
-                            CustomBoneSearch.Location = point;
-                            CustomBoneSearch.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-                            CustomBoneSearch.Size = size;
-                            CustomBoneSearch.Visible = false;
-                            CustomBoneSearch.Font = Font;
-                            Bonepage.Controls.Add(CustomBoneSearch);
-                            CustomBoneSearch.BringToFront();
+                            Page.Text = "";
                         }
+                    }
+                };
+                EventHandler PageLostFoucus = (s, e) =>
+                {
+                    TextBox Page = s as TextBox;
+                    {
+                        if (Page.Text == "")
                         {
-                            CustomBodySearch = new TextBox();
-                            CustomBodySearch.Name = "BodySearch";
-                            CustomBodySearch.KeyPress += ControlSearch;
-                            CustomBodySearch.GotFocus += PageGotFoucus;
-                            CustomBodySearch.LostFocus += PageLostFoucus;
-                            CustomBodySearch.Text = "搜索";
-                            CustomBodySearch.Location = point;
-                            CustomBodySearch.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-                            CustomBodySearch.Size = size;
-                            CustomBodySearch.Visible = false;
-                            CustomBodySearch.Font = Font;
-                            Bodypage.Controls.Add(CustomBodySearch);
-                            CustomBodySearch.BringToFront();
+                            Page.Text = "搜索";
                         }
-                        {
-                            CustomJointSearch = new TextBox();
-                            CustomJointSearch.Name = "JointSearch";
-                            CustomJointSearch.KeyPress += ControlSearch;
-                            CustomJointSearch.GotFocus += PageGotFoucus;
-                            CustomJointSearch.LostFocus += PageLostFoucus;
-                            CustomJointSearch.Text = "搜索";
-                            CustomJointSearch.Location = point;
-                            CustomJointSearch.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-                            CustomJointSearch.Size = size;
-                            CustomJointSearch.Visible = false;
-                            CustomJointSearch.Font = Font;
-                            jointpage.Controls.Add(CustomJointSearch);
-                            CustomJointSearch.BringToFront();
-                        }
-                    }));
-                    //OriFormInfo = new List<Info>(OriFormInfo.GroupBy(a => a.FormName).Select(g => g.FirstOrDefault()));
-                    //Linq表达式意义，根据FormName进行分组，并选取每组的第一项;
-                }).Start();
+                    }
+                };
+                Formtemp.BeginInvoke(new MethodInvoker(() =>
+                {
+                    var Font = new System.Drawing.Font("微软雅黑", 7.5f);
+                    {
+                        CustomBoneSearch = new TextBox();
+                        CustomBoneSearch.Name = "BoneSearch";
+                        CustomBoneSearch.KeyPress += ControlSearch;
+                        CustomBoneSearch.GotFocus += PageGotFoucus;
+                        CustomBoneSearch.LostFocus += PageLostFoucus;
+                        CustomBoneSearch.Text = "搜索";
+                        CustomBoneSearch.Location = point;
+                        CustomBoneSearch.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+                        CustomBoneSearch.Size = size;
+                        CustomBoneSearch.Visible = false;
+                        CustomBoneSearch.Font = Font;
+                        Bonepage.Controls.Add(CustomBoneSearch);
+                        CustomBoneSearch.BringToFront();
+                    }
+                    {
+                        CustomBodySearch = new TextBox();
+                        CustomBodySearch.Name = "BodySearch";
+                        CustomBodySearch.KeyPress += ControlSearch;
+                        CustomBodySearch.GotFocus += PageGotFoucus;
+                        CustomBodySearch.LostFocus += PageLostFoucus;
+                        CustomBodySearch.Text = "搜索";
+                        CustomBodySearch.Location = point;
+                        CustomBodySearch.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+                        CustomBodySearch.Size = size;
+                        CustomBodySearch.Visible = false;
+                        CustomBodySearch.Font = Font;
+                        Bodypage.Controls.Add(CustomBodySearch);
+                        CustomBodySearch.BringToFront();
+                    }
+                    {
+                        CustomJointSearch = new TextBox();
+                        CustomJointSearch.Name = "JointSearch";
+                        CustomJointSearch.KeyPress += ControlSearch;
+                        CustomJointSearch.GotFocus += PageGotFoucus;
+                        CustomJointSearch.LostFocus += PageLostFoucus;
+                        CustomJointSearch.Text = "搜索";
+                        CustomJointSearch.Location = point;
+                        CustomJointSearch.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+                        CustomJointSearch.Size = size;
+                        CustomJointSearch.Visible = false;
+                        CustomJointSearch.Font = Font;
+                        jointpage.Controls.Add(CustomJointSearch);
+                        CustomJointSearch.BringToFront();
+                    }
+                }));
+                //OriFormInfo = new List<Info>(OriFormInfo.GroupBy(a => a.FormName).Select(g => g.FirstOrDefault()));
+                //Linq表达式意义，根据FormName进行分组，并选取每组的第一项;
 
                 #endregion 搜索模块
 
                 #region 一键汉化
-
-                /*  {
-                      IFormatter formatter = new BinaryFormatter();
-                      formatter.Binder = new UBinder();
-                      TranslateFile = new List<KeyValuePair<string, List<FormInfo>>>(formatter.Deserialize(new MemoryStream(Resource1.zn_CN)) as List<KeyValuePair<string, List<FormInfo>>>);
-                  }*/
-                XmlSerializer Ser = new XmlSerializer(typeof(FormInfo[]));
-                TranslateFile = new List<FormInfo>(Ser.Deserialize(new MemoryStream(Resource1.zn_CN)) as FormInfo[]);
                 Action<bool> ControlCheck = (Check) =>
                 {
                     if (Check)
@@ -498,6 +487,7 @@ namespace PE多功能信息处理插件
                         ChineseTooltemp.Font = Formtemp.MainMenuStrip.Font;
                         Formtemp.MainMenuStrip.Items.Add(ChineseTooltemp);
                         ControlCheck(false);
+                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
                     }
                     else
                     {
@@ -506,15 +496,14 @@ namespace PE多功能信息处理插件
                         ChineseTooltemp.Text = "点击汉化";
                         ControlCheck(true);
                     }
-                    SwapFormInfo.Clear();
+
                 }));
                 ChineseTooltemp.Click += (object sender, EventArgs e) =>
                 {
                     FormList = new List<string>();
                     if (ChineseTooltemp.Text == "已汉化")
                     {
-                        TranslateFile = new List<FormInfo>(OriFormInfo);
-                        GetFormInfo(Formtemp, true);
+                        new TranslateMod(OriFormInfo);
                         bootstate.openstate = 0;
                         ChineseTooltemp.Text = "点击汉化";
                         ControlCheck(true);
@@ -522,16 +511,13 @@ namespace PE多功能信息处理插件
                     }
                     else
                     {
-                        TranslateFile = new List<FormInfo>(Ser.Deserialize(new MemoryStream(Resource1.zn_CN)) as FormInfo[]);
-                        GetFormInfo(Formtemp, true);
+                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
                         bootstate.openstate = 1;
                         ChineseTooltemp.Text = "已汉化";
                         ControlCheck(false);
                         ThreadPool.QueueUserWorkItem(new WaitCallback(Save));
                     }
-                    SwapFormInfo.Clear();
                 };
-
                 #endregion 一键汉化
 
                 #region 获取每次打开模型的路径
@@ -774,344 +760,6 @@ namespace PE多功能信息处理插件
         }
 
         private List<string> FormCount = new List<string>();
-
-        public void AnyGetString(Form form)
-        {
-            foreach (var fi in form.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
-            {
-                var o = fi.GetValue(form); //获取字段对象
-                if (o != null)
-                {
-                    if (o is Control) //判断类型
-                    {
-                        if (((Control)o).Text != "0" && ((Control)o).Text != "")
-                        {
-                            if (!regex.IsMatch(((Control)o).Text))
-                            {
-                                if (((Control)o).Name == "")
-                                {
-                                }
-                                else
-                                {
-                                    ((Control)o).Text = "0";
-                                }
-                            }
-                        }
-                        if (((Control)o).Name == "vtCtrl")
-                        {
-                            var FI = o.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-                            foreach (var TEmp in FI)
-                            {
-                                var op = TEmp.GetValue(o);
-                                if (op is ToolStripItem)
-                                {
-                                    ((ToolStripItem)op).Text = "0.0";
-                                }
-                            }
-                        }
-                    }
-                    if (o is Form)
-                    {
-                        var count = FormCount.Count((x) => x == o.ToString());
-                        FormCount.Add(o.ToString());
-                        if (count < 10)
-                        {
-                            AnyGetString((Form)o);
-                        }
-                    }
-                    if (o is ToolStripItem)
-                    {
-                        if (((ToolStripItem)o).Text != "0" && ((ToolStripItem)o).Text != "")
-                        {
-                            if (!regex.IsMatch(((ToolStripItem)o).Text))
-                            {
-                                ((ToolStripItem)o).Text = "0.1";
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        public void GetFormInfo(dynamic form, bool Write)
-        {
-            var Readinfo = new List<FormText>();
-            var Writeinfo = new List<FormText>();
-            var ForList = new List<object>();
-            if (form is Control || form is ToolStripItem || form is Form)
-            {
-                if (form is Form)
-                {
-                    var Addform = form as Form;
-                    if (Addform.Name == "PmxViewEdit")
-                    {
-                        Addform.Font = new System.Drawing.Font("MS UI Gothic", 9f);
-                    }
-                }
-                if (Write)
-                {
-                    Writeinfo = new List<FormText>(TranslateFile.FirstOrDefault(x => x.FormName == form.Name).formtext);
-                }
-
-                if (form is Form)
-                {
-                    foreach (FieldInfo fi in form.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
-                    {
-                        var Obj = fi.GetValue(form);
-                        ReadControl(Obj, ref ForList, ref Readinfo, ref Writeinfo, Write);
-                    }
-                }
-                if (form is ToolStripItem)
-                {
-                    ReadControl(form, ref ForList, ref Readinfo, ref Writeinfo, Write);
-                    foreach (FieldInfo fi in form.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
-                    {
-                        var Obj = fi.GetValue(form);
-                        ReadControl(Obj, ref ForList, ref Readinfo, ref Writeinfo, Write);
-                    }
-                }
-                if (form is Control)
-                {
-                    foreach (FieldInfo info2 in form.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
-                    {
-                        var Obj = info2.GetValue(form);
-                        if (Obj is Control)
-                        {
-                            if (((Control)Obj).Name.EndsWith("vtCtrl"))
-                            {
-                                foreach (FieldInfo Obj2 in Obj.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
-                                {
-                                    var Obj3 = Obj2.GetValue(Obj);
-                                    if (Obj3 is Control || Obj3 is ToolStripItem || Obj3 is Form)
-                                    {
-                                        ReadControl(Obj3, ref ForList, ref Readinfo, ref Writeinfo, Write);
-                                    }
-                                }
-                            }
-                        }
-                        if (Obj is Control || Obj is ToolStripItem || Obj is Form)
-                        {
-                            ReadControl(Obj, ref ForList, ref Readinfo, ref Writeinfo, Write);
-                        }
-                    }
-                }
-
-                if (Readinfo.Count != 0)
-                {
-                    var TempRead = new FormInfo();
-                    TempRead.FormName = form.Name;
-                    TempRead.formtext = Readinfo.ToArray();
-                    SwapFormInfo.Add(TempRead);
-                }
-
-                foreach (var item in ForList)
-                {
-                    GetFormInfo(item, Write);
-                }
-            }
-        }
-
-        private void ReadControl(dynamic o, ref List<object> ForList, ref List<FormText> Readinfo, ref List<FormText> Writeinfo, bool Write)
-        {
-            var Read = true;
-            if (o != null)
-            {
-                if (o is ToolStripComboBox)
-                {
-                    var ComboBox = o as ToolStripComboBox;
-                    if (ComboBox.Items.Count != 0)
-                    {
-                        if (Read)
-                        {
-                            var StringBuild = new StringBuilder();
-                            foreach (var item in ComboBox.Items)
-                            {
-                                StringBuild.Append(item.ToString());
-                                StringBuild.Append("|");
-                            }
-                            Readinfo.Add(new FormText(ComboBox.Name, StringBuild.ToString()));
-                        }
-                        if (Write)
-                        {
-                            if (Writeinfo != null)
-                            {
-                                var tempinfo = Writeinfo.Find(x => x.ID == ComboBox.Name);
-                                if (tempinfo != null)
-                                {
-                                    var StringSplit = tempinfo.text.Split('|');
-                                    for (int i = 0; i < ComboBox.Items.Count; i++)
-                                    {
-                                        ComboBox.Items[i] = StringSplit[i];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (o is ToolStripItem)
-                {
-                    var ToolStripItem = o as ToolStripItem;
-                    if (ToolStripItem.Text != "0" && ToolStripItem.Text != "")
-                    {
-                        if (!regex.IsMatch(ToolStripItem.Text))
-                        {
-                            if (Read)
-                            {
-                                Readinfo.Add(new FormText(ToolStripItem.Name, ToolStripItem.Text, ToolStripItem.ToolTipText));
-                            }
-                            if (Write)
-                            {
-                                if (Writeinfo != null)
-                                {
-                                    var tempinfo = Writeinfo.Find(x => x.ID == ToolStripItem.Name);
-                                    if (tempinfo != null)
-                                    {
-                                        if (((ToolStripItem)o).Text != tempinfo.text)
-                                        {
-                                            // ((ToolStripItem)o).Text = tempinfo.text;
-                                            ((ToolStripItem)o).Text = "0.0";
-                                            ToolStripItem.ToolTipText = tempinfo.ToolTipText;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (o is Control) //判断类型
-                {
-                    var Control = o as Control;
-                    if (Control is ComboBox)
-                    {
-                        var ComboBox = Control as ComboBox;
-                        if (ComboBox.Items.Count != 0)
-                        {
-                            if (Read)
-                            {
-                                var StringBuild = new StringBuilder();
-                                foreach (var item in ComboBox.Items)
-                                {
-                                    StringBuild.Append(item.ToString());
-                                    StringBuild.Append("|");
-                                }
-                                Readinfo.Add(new FormText(ComboBox.Name, StringBuild.ToString()));
-                            }
-                            if (Write)
-                            {
-                                if (Writeinfo != null)
-                                {
-                                    var tempinfo = Writeinfo.Find(x => x.ID == ComboBox.Name);
-                                    if (tempinfo != null)
-                                    {
-                                        var StringSplit = tempinfo.text.Split('|');
-                                        for (int i = 0; i < ComboBox.Items.Count; i++)
-                                        {
-                                            ComboBox.Items[i] = StringSplit[i];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (Control is TabPage)
-                    {
-                        var TabPage = Control as TabPage;
-                        if (Read)
-                        {
-                            if (TabPage.Name == "tabPage5")
-                            {
-                                if (Bonepage == null)
-                                {
-                                    Bonepage = TabPage;
-                                    foreach (Control item in TabPage.Controls)
-                                    {
-                                        if (item.Name.EndsWith("Find"))
-                                        {
-                                            BoneSearch = item as TextBox;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            else if (TabPage.Name == "tabPage9")
-                            {
-                                if (Bodypage == null)
-                                {
-                                    Bodypage = TabPage;
-                                    foreach (Control item in TabPage.Controls)
-                                    {
-                                        if (item.Name.EndsWith("Find"))
-                                        {
-                                            BodySearch = item as TextBox;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            else if (TabPage.Name == "tabPage10")
-                            {
-                                if (jointpage == null)
-                                {
-                                    jointpage = TabPage;
-                                    foreach (Control item in TabPage.Controls)
-                                    {
-                                        if (item.Name.EndsWith("Find"))
-                                        {
-                                            JointSearch = item as TextBox;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            Readinfo.Add(new FormText(TabPage.Name, TabPage.Text));
-                        }
-                        if (Write)
-                        {
-                            if (Writeinfo != null)
-                            {
-                                var tempinfo = Writeinfo.Find(x => x.ID == TabPage.Name);
-                                if (tempinfo != null)
-                                {
-                                    TabPage.Text = tempinfo.text;
-                                }
-                            }
-                        }
-                    }
-                    else if (Control.Text != "0" && Control.Text != "")
-                    {
-                        if (!regex.IsMatch(Control.Text))
-                        {
-                            if (Control.Name.ToString() == "")
-                            {
-                                Readinfo.Add(new FormText("TextBox", Control.Text));
-                            }
-                            else
-                            {
-                                if (Read)
-                                {
-                                    Readinfo.Add(new FormText(Control.Name, Control.Text));
-                                }
-                                if (Write)
-                                {
-                                    if (Writeinfo != null)
-                                    {
-                                        var tempinfo = Writeinfo.Find(x => x.ID == Control.Name);
-                                        if (tempinfo != null)
-                                        {
-                                            Control.Text = tempinfo.text;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (o is Form)
-                {
-                    ForList.Add(o);
-                }
-            }
-        }
 
         private delegate void InvokeFormTostart(string mode, object Data);
 

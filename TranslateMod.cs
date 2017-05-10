@@ -15,22 +15,26 @@ namespace PE多功能信息处理插件
     {
         private bool Read = true;
         private bool Write = false;
-        private List<FormText> TranslateFile = new List<FormText>();
-        private List<FormText> Readinfo = new List<FormText>();
+        public List<FormText> Readinfo = new List<FormText>();
         private List<FormText> Writeinfo = new List<FormText>();
         private readonly Regex regex = new Regex(@"^[A-Za-z0-9]+$", RegexOptions.Compiled);
 
-        public TranslateMod(Form formtemp, bool write)
+        public TranslateMod()
         {
-            Write = write;
-            if (write)
-            {
-                XmlSerializer Ser = new XmlSerializer(typeof(FormText[]));
-                TranslateFile = new List<FormText>(Ser.Deserialize(new MemoryStream(Resource1.zn_CN)) as FormText[]);
-            }
-            SwichControl(formtemp, 0);
+            Write = false;
+            SwichControl(ARGS.Host.Connector.Form as Form, 0);
         }
-
+        public TranslateMod(List<FormText> Writeinfo)
+        {
+            Write = true;
+            this.Writeinfo = new List<FormText>(Writeinfo);
+            SwichControl(ARGS.Host.Connector.Form as Form, 0);
+            /*  using (Stream Filestream = new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot3.xml", FileMode.OpenOrCreate))
+              {
+                  XmlSerializer Ser = new XmlSerializer(typeof(FormText[]));
+                  Ser.Serialize(Filestream, Readinfo.ToArray());
+              }*/
+        }
         public void SwichControl(dynamic Obj, int count)
         {
             if (Obj is Form)
@@ -53,8 +57,54 @@ namespace PE多功能信息处理插件
 
         private void GetOrChangeToolStripItem(ToolStripItem toolStripItem, int count)
         {
-            if (!regex.IsMatch(toolStripItem.Text))
+            if (toolStripItem is ToolStripComboBox)
             {
+                var ComboBox = toolStripItem as ToolStripComboBox;
+                if (Read)
+                {
+                    var StringBuild = new StringBuilder();
+                    foreach (var item in ComboBox.Items)
+                    {
+                        StringBuild.Append(item.ToString());
+                        StringBuild.Append("|");
+                    }
+                    Readinfo.Add(new FormText(ComboBox.Name, StringBuild.ToString()));
+                }
+                if (Write)
+                {
+                    var tempinfo = Writeinfo.Find(x => x.ID == ComboBox.Name);
+                    if (tempinfo != null)
+                    {
+                        var StringSplit = tempinfo.text.Split('|');
+                        for (int i = 0; i < ComboBox.Items.Count; i++)
+                        {
+                            ComboBox.Items[i] = StringSplit[i];
+                        }
+                    }
+                }
+            }
+            else if (toolStripItem.Text != "0" && toolStripItem.Text != "")
+            {
+                if (!regex.IsMatch(toolStripItem.Text))
+                {
+                    if (Read)
+                    {
+                        Readinfo.Add(new FormText(toolStripItem.Name, toolStripItem.Text, toolStripItem.ToolTipText));
+                    }
+                    if (Write)
+                    {
+                        if (Writeinfo != null)
+                        {
+                            var tempinfo = Writeinfo.Find(x => x.ID == toolStripItem.Name);
+                            if (tempinfo != null)
+                            {
+                                toolStripItem.Text = tempinfo.text;
+                                toolStripItem.ToolTipText = tempinfo.ToolTipText;
+                            }
+                        }
+
+                    }
+                }
             }
             foreach (var fi in toolStripItem.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
             {
@@ -65,6 +115,7 @@ namespace PE多功能信息处理插件
 
         private void GetOrChangeControl(Control Control, int count)
         {
+          
             if (Control is ComboBox)
             {
                 var ComboBox = Control as ComboBox;

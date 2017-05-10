@@ -198,6 +198,7 @@
     <EmbeddedResource Include="Resource1.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CheckUpdate.resx">
       <DependentUpon>CheckUpdate.cs</DependentUpon>
@@ -222,7 +223,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0251g\_plugin\"</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0251g\_plugin\"
+copy /y "$(TargetPath)" "C:\Users\cdj68\Desktop\PmxEditor_0251e2\_plugin\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
