@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 using static PE多功能信息处理插件.Class2.FormInfo;
 using static PE多功能信息处理插件.Program;
 
@@ -24,9 +23,10 @@ namespace PE多功能信息处理插件
             Write = false;
             SwichControl(ARGS.Host.Connector.Form as Form, 0);
         }
-        public TranslateMod(List<FormText> Writeinfo)
+        public TranslateMod(List<FormText> Writeinfo,bool Read=true)
         {
             Write = true;
+            this.Read = Read;
             this.Writeinfo = new List<FormText>(Writeinfo);
             SwichControl(ARGS.Host.Connector.Form as Form, 0);
             /*  using (Stream Filestream = new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot3.xml", FileMode.OpenOrCreate))
@@ -115,7 +115,6 @@ namespace PE多功能信息处理插件
 
         private void GetOrChangeControl(Control Control, int count)
         {
-          
             if (Control is ComboBox)
             {
                 var ComboBox = Control as ComboBox;
@@ -219,6 +218,10 @@ namespace PE多功能信息处理插件
                     }
                     else
                     {
+                        if (Control.Name == "lblInfo_PmxVer" || Control.Name == "label80")
+                        {
+                            return;
+                        }
                         if (Read)
                         {
                             Readinfo.Add(new FormText(Control.Name, Control.Text));
@@ -241,8 +244,7 @@ namespace PE多功能信息处理插件
             {
                 foreach (var fi in Control.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
                 {
-                    var obj = fi.GetValue(Control);
-                    SwichControl(obj, count);
+                    SwichControl(fi.GetValue(Control), count);
                 }
             }
         }

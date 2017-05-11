@@ -88,53 +88,61 @@ namespace PE多功能信息处理插件
 
         public void Run(IPERunArgs args)
         {
-            var ags = args;
             ARGS = args;
             Formtemp = args.Host.Connector.Form as Form;
             ViewForm = args.Host.Connector.View.PmxView as Form;
-            OriFormInfo = new List<FormText>(new TranslateMod().Readinfo);
-            Control.CheckForIllegalCrossThreadCalls = false;
-            OriFormInfo = new List<FormText>(new TranslateMod().Readinfo);
+            #region 读取配置
+            try
+            {
+                using (Stream stream = new FileStream(new FileInfo(args.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot.xml", FileMode.OpenOrCreate))
+                {
+                    IFormatter Formatter = new BinaryFormatter();
+                    Formatter.Binder = new UBinder();
+                    bootstate = (BootState)Formatter.Deserialize(stream);
+                }
+            }
+            catch (Exception)
+            {
+                bootstate = new BootState(0, 0, 0);
+                bootstate.FormTopmost = 1;
+            }
+            finally
+            {
+                if (bootstate.BezierFirstColor == 0 && bootstate.BezierSecondColor == 0 && bootstate.BezierLinkSize == 0)
+                {
+                    bootstate.BezierFirstColor = 7;
+                    bootstate.BezierSecondColor = 27;
+                    bootstate.BezierLinkSize = 3f;
+                }
+                if (bootstate.WeightAddKey == 0 || bootstate.WeightAppleKey == 0 || bootstate.WeightGetKey == 0 || bootstate.WeightMinusKey == 0)
+                {
+                    bootstate.WeightAddKey = '+';
+                    bootstate.WeightMinusKey = '-';
+                    bootstate.WeightAppleKey = '*';
+                    bootstate.WeightGetKey = '/';
+                }
+            }
+            #endregion 读取配置
+            #region 汉化初始化模块
+            TranslateMod TranslateMod = null;
+            if (bootstate.openstate == 1)
+            {
+                TranslateMod = new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
+                OriFormInfo = new List<FormText>(TranslateMod.Readinfo);
+            }
+            else
+            {
+                TranslateMod = new TranslateMod();
+                OriFormInfo = new List<FormText>(TranslateMod.Readinfo);
+            }
+            #endregion
             var StartMission = new Task(() =>
            {
-                #region 读取配置
+              
 
-                try
-               {
-                   using (Stream stream = new FileStream(new FileInfo(args.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot.xml", FileMode.OpenOrCreate))
-                   {
-                       IFormatter Formatter = new BinaryFormatter();
-                       Formatter.Binder = new UBinder();
-                       bootstate = (BootState)Formatter.Deserialize(stream);
-                   }
-               }
-               catch (Exception)
-               {
-                   bootstate = new BootState(0, 0, 0);
-                   bootstate.FormTopmost = 1;
-               }
-               finally
-               {
-                   if (bootstate.BezierFirstColor == 0 && bootstate.BezierSecondColor == 0 && bootstate.BezierLinkSize == 0)
-                   {
-                       bootstate.BezierFirstColor = 7;
-                       bootstate.BezierSecondColor = 27;
-                       bootstate.BezierLinkSize = 3f;
-                   }
-                   if (bootstate.WeightAddKey == 0 || bootstate.WeightAppleKey == 0 || bootstate.WeightGetKey == 0 || bootstate.WeightMinusKey == 0)
-                   {
-                       bootstate.WeightAddKey = '+';
-                       bootstate.WeightMinusKey = '-';
-                       bootstate.WeightAppleKey = '*';
-                       bootstate.WeightGetKey = '/';
-                   }
-               }
+               #region 菜单栏获取
 
-                #endregion 读取配置
-
-                #region 菜单栏获取
-
-                ShortCutInfo = new List<ToolItemInfo>();
+               ShortCutInfo = new List<ToolItemInfo>();
                foreach (ToolStripMenuItem temp1 in Formtemp.MainMenuStrip.Items)
                {
                    foreach (var temp2 in temp1.DropDownItems)
@@ -191,13 +199,11 @@ namespace PE多功能信息处理插件
                    }
                }
 
-                #endregion 菜单栏获取
-            });
+               #endregion 菜单栏获取
+           });
             StartMission.ContinueWith((_obj) =>
             {
                 #region 搜索模块
-
-
                 var point = new System.Drawing.Point(65, 8);
                 var size = new System.Drawing.Size(75, 10);
                 if (int.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(args.Host.Connector.System.HostApplicationPath).ProductVersion.Replace(".", "")) > 0250)
@@ -444,7 +450,6 @@ namespace PE多功能信息处理插件
                 //Linq表达式意义，根据FormName进行分组，并选取每组的第一项;
 
                 #endregion 搜索模块
-
                 #region 一键汉化
                 Action<bool> ControlCheck = (Check) =>
                 {
@@ -488,7 +493,6 @@ namespace PE多功能信息处理插件
                         ChineseTooltemp.Font = Formtemp.MainMenuStrip.Font;
                         Formtemp.MainMenuStrip.Items.Add(ChineseTooltemp);
                         ControlCheck(false);
-                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
                     }
                     else
                     {
@@ -504,7 +508,7 @@ namespace PE多功能信息处理插件
                     FormList = new List<string>();
                     if (ChineseTooltemp.Text == "已汉化")
                     {
-                        new TranslateMod(OriFormInfo);
+                        new TranslateMod(OriFormInfo,false);
                         bootstate.openstate = 0;
                         ChineseTooltemp.Text = "点击汉化";
                         ControlCheck(true);
@@ -512,7 +516,7 @@ namespace PE多功能信息处理插件
                     }
                     else
                     {
-                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
+                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]),false);
                         bootstate.openstate = 1;
                         ChineseTooltemp.Text = "已汉化";
                         ControlCheck(false);
@@ -739,7 +743,6 @@ namespace PE多功能信息处理插件
                 }).Start();
             });
             StartMission.Start();
-
             #region 未来功能
 
             /* int codePage = Encoding.Default.CodePage;
@@ -759,6 +762,7 @@ namespace PE多功能信息处理插件
 
             #endregion 未来功能
         }
+
 
         private List<string> FormCount = new List<string>();
 
