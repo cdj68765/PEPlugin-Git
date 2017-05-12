@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using static PE多功能信息处理插件.Class2.FormInfo;
 using static PE多功能信息处理插件.Program;
+using static PE多功能信息处理插件.Class2;
 
 namespace PE多功能信息处理插件
 {
@@ -118,7 +119,7 @@ namespace PE多功能信息处理插件
             if (Control is ComboBox)
             {
                 var ComboBox = Control as ComboBox;
-                if (ComboBox.Items.Count != 0)
+                if (ComboBox.Items.Count > 1)
                 {
                     if (Read)
                     {
@@ -135,8 +136,8 @@ namespace PE多功能信息处理插件
                         var tempinfo = Writeinfo.Find(x => x.ID == ComboBox.Name);
                         if (tempinfo != null)
                         {
-                            var StringSplit = tempinfo.text.Split('|');
-                            for (int i = 0; i < ComboBox.Items.Count; i++)
+                            var StringSplit = tempinfo.text.Split(new char[] { '|' },System.StringSplitOptions.RemoveEmptyEntries);
+                            for (int i = 0; i < StringSplit.Length; i++)
                             {
                                 ComboBox.Items[i] = StringSplit[i];
                             }
@@ -215,6 +216,10 @@ namespace PE多功能信息处理插件
                     if (Control.Name.ToString() == "")
                     {
                         Readinfo.Add(new FormText("TextBox", Control.Text));
+                    }else if (Control.Name.ToString()=="btnGetObject")
+                    {
+                        if(btnGetObject==null)
+                        btnGetObject = Control as Button;
                     }
                     else
                     {
@@ -247,6 +252,7 @@ namespace PE多功能信息处理插件
                     SwichControl(fi.GetValue(Control), count);
                 }
             }
+
         }
 
         private void GetOrChangeForm(Form form, int count)

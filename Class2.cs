@@ -16,7 +16,7 @@ namespace PE多功能信息处理插件
         public static Metroform newopen;
         public static Dictionary<string, BezierPoint> HisForm = new Dictionary<string, BezierPoint>();
         public static ResourceManager Language;
-        public static Control btnGetObject = null;
+        public static Button btnGetObject = null;
         public static ToolStripItem FormTopMost = null;
 
         public static Color[] color = new Color[]

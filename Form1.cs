@@ -10464,6 +10464,17 @@ namespace PE多功能信息处理插件
                 table.Rows.Add();
                 table.Rows.Clear();
             }
+            else if (VertexTab.SelectedTab.Text == "UV操作")
+            {
+                DataTable table = VertexList.DataSource as DataTable;
+                table.Rows.Clear();
+                table.Columns.Clear();
+                table.Columns.Add("ID");
+                table.Columns.Add("材质");
+                table.Rows.Add();
+                table.Rows.Clear();
+            }
+                
         }
 
         private void MorphBack_Click(object sender, EventArgs e)

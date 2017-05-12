@@ -344,6 +344,7 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
+            this.UV操作 = new MetroFramework.Controls.MetroTabPage();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -381,7 +382,7 @@ namespace PE多功能信息处理插件
             this.ALLTAB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ALLTAB.Location = new System.Drawing.Point(20, 60);
             this.ALLTAB.Name = "ALLTAB";
-            this.ALLTAB.SelectedIndex = 1;
+            this.ALLTAB.SelectedIndex = 0;
             this.ALLTAB.Size = new System.Drawing.Size(600, 340);
             this.ALLTAB.TabIndex = 0;
             this.ALLTAB.UseSelectable = true;
@@ -463,9 +464,10 @@ namespace PE多功能信息处理插件
             | System.Windows.Forms.AnchorStyles.Right)));
             this.VertexTab.Controls.Add(this.T窗口权重调整);
             this.VertexTab.Controls.Add(this.表情操作);
+            this.VertexTab.Controls.Add(this.UV操作);
             this.VertexTab.Location = new System.Drawing.Point(190, 3);
             this.VertexTab.Name = "VertexTab";
-            this.VertexTab.SelectedIndex = 0;
+            this.VertexTab.SelectedIndex = 2;
             this.VertexTab.Size = new System.Drawing.Size(406, 299);
             this.VertexTab.TabIndex = 103;
             this.VertexTab.UseSelectable = true;
@@ -1074,7 +1076,7 @@ namespace PE多功能信息处理插件
             this.Weight4Label.Enabled = false;
             this.Weight4Label.Location = new System.Drawing.Point(204, 214);
             this.Weight4Label.Name = "Weight4Label";
-            this.Weight4Label.Size = new System.Drawing.Size(58, 19);
+            this.Weight4Label.Size = new System.Drawing.Size(57, 19);
             this.Weight4Label.TabIndex = 19;
             this.Weight4Label.Text = "Weight4";
             this.Weight4Label.UseStyleColors = true;
@@ -1085,7 +1087,7 @@ namespace PE多功能信息处理插件
             this.Weight3Label.Enabled = false;
             this.Weight3Label.Location = new System.Drawing.Point(204, 182);
             this.Weight3Label.Name = "Weight3Label";
-            this.Weight3Label.Size = new System.Drawing.Size(58, 19);
+            this.Weight3Label.Size = new System.Drawing.Size(57, 19);
             this.Weight3Label.TabIndex = 18;
             this.Weight3Label.Text = "Weight3";
             this.Weight3Label.UseStyleColors = true;
@@ -1096,7 +1098,7 @@ namespace PE多功能信息处理插件
             this.Weight2Label.Enabled = false;
             this.Weight2Label.Location = new System.Drawing.Point(204, 150);
             this.Weight2Label.Name = "Weight2Label";
-            this.Weight2Label.Size = new System.Drawing.Size(58, 19);
+            this.Weight2Label.Size = new System.Drawing.Size(57, 19);
             this.Weight2Label.TabIndex = 17;
             this.Weight2Label.Text = "Weight2";
             this.Weight2Label.UseStyleColors = true;
@@ -1106,7 +1108,7 @@ namespace PE多功能信息处理插件
             this.Weight1Label.AutoSize = true;
             this.Weight1Label.Location = new System.Drawing.Point(204, 118);
             this.Weight1Label.Name = "Weight1Label";
-            this.Weight1Label.Size = new System.Drawing.Size(58, 19);
+            this.Weight1Label.Size = new System.Drawing.Size(55, 19);
             this.Weight1Label.TabIndex = 16;
             this.Weight1Label.Text = "Weight1";
             this.Weight1Label.UseStyleColors = true;
@@ -1284,7 +1286,7 @@ namespace PE多功能信息处理插件
             this.MorphBarLabel.AutoSize = true;
             this.MorphBarLabel.Location = new System.Drawing.Point(129, 146);
             this.MorphBarLabel.Name = "MorphBarLabel";
-            this.MorphBarLabel.Size = new System.Drawing.Size(52, 19);
+            this.MorphBarLabel.Size = new System.Drawing.Size(50, 19);
             this.MorphBarLabel.TabIndex = 35;
             this.MorphBarLabel.Text = "0->100";
             this.MorphBarLabel.UseStyleColors = true;
@@ -1527,7 +1529,7 @@ namespace PE多功能信息处理插件
             this.MirrorBoneCheck.AutoSize = true;
             this.MirrorBoneCheck.Location = new System.Drawing.Point(126, 373);
             this.MirrorBoneCheck.Name = "MirrorBoneCheck";
-            this.MirrorBoneCheck.Size = new System.Drawing.Size(71, 15);
+            this.MirrorBoneCheck.Size = new System.Drawing.Size(75, 15);
             this.MirrorBoneCheck.TabIndex = 119;
             this.MirrorBoneCheck.Text = "骨骼镜像";
             this.MirrorBoneCheck.UseSelectable = true;
@@ -1628,7 +1630,7 @@ namespace PE多功能信息处理插件
             this.MirrorWeightCheck.AutoSize = true;
             this.MirrorWeightCheck.Location = new System.Drawing.Point(126, 317);
             this.MirrorWeightCheck.Name = "MirrorWeightCheck";
-            this.MirrorWeightCheck.Size = new System.Drawing.Size(71, 15);
+            this.MirrorWeightCheck.Size = new System.Drawing.Size(75, 15);
             this.MirrorWeightCheck.TabIndex = 111;
             this.MirrorWeightCheck.Text = "权重镜像";
             this.MirrorWeightCheck.UseSelectable = true;
@@ -1640,7 +1642,7 @@ namespace PE多功能信息处理插件
             this.MirrorJointCheck.AutoSize = true;
             this.MirrorJointCheck.Location = new System.Drawing.Point(126, 354);
             this.MirrorJointCheck.Name = "MirrorJointCheck";
-            this.MirrorJointCheck.Size = new System.Drawing.Size(63, 15);
+            this.MirrorJointCheck.Size = new System.Drawing.Size(66, 15);
             this.MirrorJointCheck.TabIndex = 110;
             this.MirrorJointCheck.Text = "J点镜像";
             this.MirrorJointCheck.UseSelectable = true;
@@ -1651,7 +1653,7 @@ namespace PE多功能信息处理插件
             this.MirrorBodyCheck.AutoSize = true;
             this.MirrorBodyCheck.Location = new System.Drawing.Point(126, 336);
             this.MirrorBodyCheck.Name = "MirrorBodyCheck";
-            this.MirrorBodyCheck.Size = new System.Drawing.Size(71, 15);
+            this.MirrorBodyCheck.Size = new System.Drawing.Size(75, 15);
             this.MirrorBodyCheck.TabIndex = 109;
             this.MirrorBodyCheck.Text = "刚体镜像";
             this.MirrorBodyCheck.UseSelectable = true;
@@ -1736,7 +1738,7 @@ namespace PE多功能信息处理插件
             this.metroRadioButton3.AutoSize = true;
             this.metroRadioButton3.Location = new System.Drawing.Point(127, 219);
             this.metroRadioButton3.Name = "metroRadioButton3";
-            this.metroRadioButton3.Size = new System.Drawing.Size(119, 15);
+            this.metroRadioButton3.Size = new System.Drawing.Size(127, 15);
             this.metroRadioButton3.TabIndex = 102;
             this.metroRadioButton3.Text = "从选中骨骼中删除";
             this.metroRadioButton3.UseSelectable = true;
@@ -1748,7 +1750,7 @@ namespace PE多功能信息处理插件
             this.GetFormAnyDate.Checked = true;
             this.GetFormAnyDate.Location = new System.Drawing.Point(127, 201);
             this.GetFormAnyDate.Name = "GetFormAnyDate";
-            this.GetFormAnyDate.Size = new System.Drawing.Size(119, 15);
+            this.GetFormAnyDate.Size = new System.Drawing.Size(127, 15);
             this.GetFormAnyDate.TabIndex = 101;
             this.GetFormAnyDate.TabStop = true;
             this.GetFormAnyDate.Text = "从分析数据中删除";
@@ -1773,7 +1775,7 @@ namespace PE多功能信息处理插件
             this.AnalyseBoneDeleteBodyAndJoointCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.AnalyseBoneDeleteBodyAndJoointCheck.Location = new System.Drawing.Point(126, 237);
             this.AnalyseBoneDeleteBodyAndJoointCheck.Name = "AnalyseBoneDeleteBodyAndJoointCheck";
-            this.AnalyseBoneDeleteBodyAndJoointCheck.Size = new System.Drawing.Size(147, 15);
+            this.AnalyseBoneDeleteBodyAndJoointCheck.Size = new System.Drawing.Size(157, 15);
             this.AnalyseBoneDeleteBodyAndJoointCheck.TabIndex = 13;
             this.AnalyseBoneDeleteBodyAndJoointCheck.Text = "同时删除连接刚体和J点";
             this.AnalyseBoneDeleteBodyAndJoointCheck.UseSelectable = true;
@@ -1786,7 +1788,7 @@ namespace PE多功能信息处理插件
             this.DeleteBoneNummer.CheckState = System.Windows.Forms.CheckState.Checked;
             this.DeleteBoneNummer.Location = new System.Drawing.Point(86, 3);
             this.DeleteBoneNummer.Name = "DeleteBoneNummer";
-            this.DeleteBoneNummer.Size = new System.Drawing.Size(131, 15);
+            this.DeleteBoneNummer.Size = new System.Drawing.Size(140, 15);
             this.DeleteBoneNummer.TabIndex = 6;
             this.DeleteBoneNummer.Text = "去除骨骼名中的数字";
             this.DeleteBoneNummer.UseSelectable = true;
@@ -1809,7 +1811,7 @@ namespace PE多功能信息处理插件
             this.BoneNameCheck.AutoSize = true;
             this.BoneNameCheck.Location = new System.Drawing.Point(86, 19);
             this.BoneNameCheck.Name = "BoneNameCheck";
-            this.BoneNameCheck.Size = new System.Drawing.Size(83, 15);
+            this.BoneNameCheck.Size = new System.Drawing.Size(88, 15);
             this.BoneNameCheck.TabIndex = 5;
             this.BoneNameCheck.Text = "指定骨骼名";
             this.BoneNameCheck.UseSelectable = true;
@@ -1937,7 +1939,7 @@ namespace PE多功能信息处理插件
             this.MirrorPosionPlusPara.Checked = true;
             this.MirrorPosionPlusPara.Location = new System.Drawing.Point(3, 4);
             this.MirrorPosionPlusPara.Name = "MirrorPosionPlusPara";
-            this.MirrorPosionPlusPara.Size = new System.Drawing.Size(103, 15);
+            this.MirrorPosionPlusPara.Size = new System.Drawing.Size(109, 15);
             this.MirrorPosionPlusPara.TabIndex = 102;
             this.MirrorPosionPlusPara.TabStop = true;
             this.MirrorPosionPlusPara.Text = "镜像位置+参数";
@@ -1949,7 +1951,7 @@ namespace PE多功能信息处理插件
             this.MirrorOnlyPara.AutoSize = true;
             this.MirrorOnlyPara.Location = new System.Drawing.Point(112, 4);
             this.MirrorOnlyPara.Name = "MirrorOnlyPara";
-            this.MirrorOnlyPara.Size = new System.Drawing.Size(83, 15);
+            this.MirrorOnlyPara.Size = new System.Drawing.Size(88, 15);
             this.MirrorOnlyPara.TabIndex = 103;
             this.MirrorOnlyPara.Text = "仅镜像参数";
             this.MirrorOnlyPara.UseSelectable = true;
@@ -2231,7 +2233,7 @@ namespace PE多功能信息处理插件
             this.CheckBoneConnectFunc.AutoSize = true;
             this.CheckBoneConnectFunc.Location = new System.Drawing.Point(293, 128);
             this.CheckBoneConnectFunc.Name = "CheckBoneConnectFunc";
-            this.CheckBoneConnectFunc.Size = new System.Drawing.Size(95, 15);
+            this.CheckBoneConnectFunc.Size = new System.Drawing.Size(101, 15);
             this.CheckBoneConnectFunc.TabIndex = 8;
             this.CheckBoneConnectFunc.Text = "骨骼是否封闭";
             this.CheckBoneConnectFunc.UseSelectable = true;
@@ -2479,9 +2481,9 @@ namespace PE多功能信息处理插件
             // 
             this.BodyOperaMode3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BodyOperaMode3.AutoSize = true;
-            this.BodyOperaMode3.Location = new System.Drawing.Point(300, 107);
+            this.BodyOperaMode3.Location = new System.Drawing.Point(297, 107);
             this.BodyOperaMode3.Name = "BodyOperaMode3";
-            this.BodyOperaMode3.Size = new System.Drawing.Size(59, 15);
+            this.BodyOperaMode3.Size = new System.Drawing.Size(62, 15);
             this.BodyOperaMode3.TabIndex = 48;
             this.BodyOperaMode3.Text = "块模式";
             this.BodyOperaMode3.UseSelectable = true;
@@ -2878,9 +2880,9 @@ namespace PE多功能信息处理插件
             // 
             this.BodyOperaMode2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BodyOperaMode2.AutoSize = true;
-            this.BodyOperaMode2.Location = new System.Drawing.Point(301, 87);
+            this.BodyOperaMode2.Location = new System.Drawing.Point(297, 87);
             this.BodyOperaMode2.Name = "BodyOperaMode2";
-            this.BodyOperaMode2.Size = new System.Drawing.Size(71, 15);
+            this.BodyOperaMode2.Size = new System.Drawing.Size(75, 15);
             this.BodyOperaMode2.TabIndex = 30;
             this.BodyOperaMode2.Text = "批量模式";
             this.BodyOperaMode2.UseSelectable = true;
@@ -2892,9 +2894,9 @@ namespace PE多功能信息处理插件
             this.BodyOperaMode1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BodyOperaMode1.AutoSize = true;
             this.BodyOperaMode1.Checked = true;
-            this.BodyOperaMode1.Location = new System.Drawing.Point(244, 94);
+            this.BodyOperaMode1.Location = new System.Drawing.Point(242, 94);
             this.BodyOperaMode1.Name = "BodyOperaMode1";
-            this.BodyOperaMode1.Size = new System.Drawing.Size(47, 15);
+            this.BodyOperaMode1.Size = new System.Drawing.Size(49, 15);
             this.BodyOperaMode1.TabIndex = 29;
             this.BodyOperaMode1.TabStop = true;
             this.BodyOperaMode1.Text = "普通";
@@ -3181,9 +3183,9 @@ namespace PE多功能信息处理插件
             // 
             this.BodyNameCheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BodyNameCheck.AutoSize = true;
-            this.BodyNameCheck.Location = new System.Drawing.Point(324, 20);
+            this.BodyNameCheck.Location = new System.Drawing.Point(319, 20);
             this.BodyNameCheck.Name = "BodyNameCheck";
-            this.BodyNameCheck.Size = new System.Drawing.Size(83, 15);
+            this.BodyNameCheck.Size = new System.Drawing.Size(88, 15);
             this.BodyNameCheck.TabIndex = 15;
             this.BodyNameCheck.Text = "指定刚体名";
             this.BodyNameCheck.UseSelectable = true;
@@ -3196,9 +3198,9 @@ namespace PE多功能信息处理插件
             this.DeleteBodyNummer.AutoSize = true;
             this.DeleteBodyNummer.Checked = true;
             this.DeleteBodyNummer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.DeleteBodyNummer.Location = new System.Drawing.Point(323, 4);
+            this.DeleteBodyNummer.Location = new System.Drawing.Point(319, 4);
             this.DeleteBodyNummer.Name = "DeleteBodyNummer";
-            this.DeleteBodyNummer.Size = new System.Drawing.Size(71, 15);
+            this.DeleteBodyNummer.Size = new System.Drawing.Size(75, 15);
             this.DeleteBodyNummer.TabIndex = 14;
             this.DeleteBodyNummer.Text = "去除数字";
             this.DeleteBodyNummer.UseSelectable = true;
@@ -3781,7 +3783,7 @@ namespace PE多功能信息处理插件
             this.JointOperaMode3.AutoSize = true;
             this.JointOperaMode3.Location = new System.Drawing.Point(3, 140);
             this.JointOperaMode3.Name = "JointOperaMode3";
-            this.JointOperaMode3.Size = new System.Drawing.Size(59, 15);
+            this.JointOperaMode3.Size = new System.Drawing.Size(62, 15);
             this.JointOperaMode3.TabIndex = 34;
             this.JointOperaMode3.Text = "块模式";
             this.JointOperaMode3.UseSelectable = true;
@@ -3792,7 +3794,7 @@ namespace PE多功能信息处理插件
             this.JointOperaMode2.AutoSize = true;
             this.JointOperaMode2.Location = new System.Drawing.Point(3, 121);
             this.JointOperaMode2.Name = "JointOperaMode2";
-            this.JointOperaMode2.Size = new System.Drawing.Size(71, 15);
+            this.JointOperaMode2.Size = new System.Drawing.Size(75, 15);
             this.JointOperaMode2.TabIndex = 33;
             this.JointOperaMode2.Text = "批量模式";
             this.JointOperaMode2.UseSelectable = true;
@@ -3804,7 +3806,7 @@ namespace PE多功能信息处理插件
             this.JointOperaMode1.Checked = true;
             this.JointOperaMode1.Location = new System.Drawing.Point(3, 102);
             this.JointOperaMode1.Name = "JointOperaMode1";
-            this.JointOperaMode1.Size = new System.Drawing.Size(47, 15);
+            this.JointOperaMode1.Size = new System.Drawing.Size(49, 15);
             this.JointOperaMode1.TabIndex = 32;
             this.JointOperaMode1.TabStop = true;
             this.JointOperaMode1.Text = "普通";
@@ -4421,7 +4423,7 @@ namespace PE多功能信息处理插件
             this.JointNameCheck.AutoSize = true;
             this.JointNameCheck.Location = new System.Drawing.Point(83, 26);
             this.JointNameCheck.Name = "JointNameCheck";
-            this.JointNameCheck.Size = new System.Drawing.Size(83, 15);
+            this.JointNameCheck.Size = new System.Drawing.Size(88, 15);
             this.JointNameCheck.TabIndex = 4;
             this.JointNameCheck.Text = "指定骨骼名";
             this.JointNameCheck.UseSelectable = true;
@@ -4435,7 +4437,7 @@ namespace PE多功能信息处理插件
             this.DeleteJointNummer.CheckState = System.Windows.Forms.CheckState.Checked;
             this.DeleteJointNummer.Location = new System.Drawing.Point(83, 4);
             this.DeleteJointNummer.Name = "DeleteJointNummer";
-            this.DeleteJointNummer.Size = new System.Drawing.Size(71, 15);
+            this.DeleteJointNummer.Size = new System.Drawing.Size(75, 15);
             this.DeleteJointNummer.TabIndex = 3;
             this.DeleteJointNummer.Text = "去除数字";
             this.DeleteJointNummer.UseSelectable = true;
@@ -5649,9 +5651,9 @@ namespace PE多功能信息处理插件
             // 
             this.ShowShortcutKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ShowShortcutKey.AutoSize = true;
-            this.ShowShortcutKey.Location = new System.Drawing.Point(506, 45);
+            this.ShowShortcutKey.Location = new System.Drawing.Point(501, 45);
             this.ShowShortcutKey.Name = "ShowShortcutKey";
-            this.ShowShortcutKey.Size = new System.Drawing.Size(83, 15);
+            this.ShowShortcutKey.Size = new System.Drawing.Size(88, 15);
             this.ShowShortcutKey.TabIndex = 0;
             this.ShowShortcutKey.Text = "显示快捷键";
             this.ShowShortcutKey.UseSelectable = true;
@@ -5663,9 +5665,9 @@ namespace PE多功能信息处理插件
             // 
             this.AllowDrop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AllowDrop.AutoSize = true;
-            this.AllowDrop.Location = new System.Drawing.Point(518, 64);
+            this.AllowDrop.Location = new System.Drawing.Point(514, 64);
             this.AllowDrop.Name = "AllowDrop";
-            this.AllowDrop.Size = new System.Drawing.Size(71, 15);
+            this.AllowDrop.Size = new System.Drawing.Size(75, 15);
             this.AllowDrop.TabIndex = 16;
             this.AllowDrop.Text = "允许拖动";
             this.AllowDrop.UseSelectable = true;
@@ -6143,9 +6145,9 @@ namespace PE多功能信息处理插件
             this.ManualRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ManualRadioButton.AutoSize = true;
             this.ManualRadioButton.Checked = true;
-            this.ManualRadioButton.Location = new System.Drawing.Point(332, 35);
+            this.ManualRadioButton.Location = new System.Drawing.Point(330, 35);
             this.ManualRadioButton.Name = "ManualRadioButton";
-            this.ManualRadioButton.Size = new System.Drawing.Size(47, 15);
+            this.ManualRadioButton.Size = new System.Drawing.Size(49, 15);
             this.ManualRadioButton.TabIndex = 7;
             this.ManualRadioButton.TabStop = true;
             this.ManualRadioButton.Text = "手动";
@@ -6155,9 +6157,9 @@ namespace PE多功能信息处理插件
             // 
             this.AutomaticRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AutomaticRadioButton.AutoSize = true;
-            this.AutomaticRadioButton.Location = new System.Drawing.Point(383, 35);
+            this.AutomaticRadioButton.Location = new System.Drawing.Point(381, 35);
             this.AutomaticRadioButton.Name = "AutomaticRadioButton";
-            this.AutomaticRadioButton.Size = new System.Drawing.Size(47, 15);
+            this.AutomaticRadioButton.Size = new System.Drawing.Size(49, 15);
             this.AutomaticRadioButton.TabIndex = 8;
             this.AutomaticRadioButton.Text = "全部";
             this.AutomaticRadioButton.UseSelectable = true;
@@ -6169,7 +6171,7 @@ namespace PE多功能信息处理插件
             this.Meminfo.AutoSize = true;
             this.Meminfo.Location = new System.Drawing.Point(24, 7);
             this.Meminfo.Name = "Meminfo";
-            this.Meminfo.Size = new System.Drawing.Size(62, 19);
+            this.Meminfo.Size = new System.Drawing.Size(63, 19);
             this.Meminfo.TabIndex = 9;
             this.Meminfo.Text = "Memory:";
             // 
@@ -6177,9 +6179,9 @@ namespace PE多功能信息处理插件
             // 
             this.CheckSyncSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CheckSyncSelect.AutoSize = true;
-            this.CheckSyncSelect.Location = new System.Drawing.Point(334, 56);
+            this.CheckSyncSelect.Location = new System.Drawing.Point(328, 56);
             this.CheckSyncSelect.Name = "CheckSyncSelect";
-            this.CheckSyncSelect.Size = new System.Drawing.Size(95, 15);
+            this.CheckSyncSelect.Size = new System.Drawing.Size(101, 15);
             this.CheckSyncSelect.TabIndex = 10;
             this.CheckSyncSelect.Text = "是否同步选择";
             this.CheckSyncSelect.UseSelectable = true;
@@ -6190,13 +6192,27 @@ namespace PE多功能信息处理插件
             // 
             this.LockSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.LockSelect.AutoSize = true;
-            this.LockSelect.Location = new System.Drawing.Point(334, 56);
+            this.LockSelect.Location = new System.Drawing.Point(328, 56);
             this.LockSelect.Name = "LockSelect";
-            this.LockSelect.Size = new System.Drawing.Size(95, 15);
+            this.LockSelect.Size = new System.Drawing.Size(101, 15);
             this.LockSelect.TabIndex = 11;
             this.LockSelect.Text = "是否锁定选择";
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
+            // 
+            // UV操作
+            // 
+            this.UV操作.HorizontalScrollbarBarColor = true;
+            this.UV操作.HorizontalScrollbarHighlightOnWheel = false;
+            this.UV操作.HorizontalScrollbarSize = 10;
+            this.UV操作.Location = new System.Drawing.Point(4, 38);
+            this.UV操作.Name = "UV操作";
+            this.UV操作.Size = new System.Drawing.Size(398, 257);
+            this.UV操作.TabIndex = 2;
+            this.UV操作.Text = "UV操作";
+            this.UV操作.VerticalScrollbarBarColor = true;
+            this.UV操作.VerticalScrollbarHighlightOnWheel = false;
+            this.UV操作.VerticalScrollbarSize = 10;
             // 
             // Metroform
             // 
@@ -6565,5 +6581,6 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroLabel MirrorModeLabel;
         private MetroFramework.Controls.MetroToggle MirrorMode;
         private MetroFramework.Controls.MetroLabel metroLabel6;
+        private MetroFramework.Controls.MetroTabPage UV操作;
     }
 }

@@ -71,23 +71,23 @@ fc  : softness, biasFactor, relaxationFactor  | Jointパラメータ(標準:0.9/
   </FormText>
   <FormText>
     <ID>tabPage1</ID>
-    <text>信息</text>
-  </FormText>
-  <FormText>
-    <ID>tabPage2</ID>
     <text>顶点</text>
   </FormText>
   <FormText>
-    <ID>tabPage3</ID>
+    <ID>tabPage2</ID>
     <text>面</text>
   </FormText>
   <FormText>
+    <ID>tabPage3</ID>
+    <text>骨骼</text>
+  </FormText>
+  <FormText>
     <ID>tabPage4</ID>
-    <text>材质</text>
+    <text>刚体</text>
   </FormText>
   <FormText>
     <ID>tabPage5</ID>
-    <text>骨骼</text>
+    <text>Joint</text>
   </FormText>
   <FormText>
     <ID>tabPage7</ID>
