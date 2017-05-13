@@ -10474,7 +10474,6 @@ namespace PE多功能信息处理插件
                 table.Rows.Add();
                 table.Rows.Clear();
             }
-                
         }
 
         private void MorphBack_Click(object sender, EventArgs e)

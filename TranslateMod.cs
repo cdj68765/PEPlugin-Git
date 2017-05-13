@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using static PE多功能信息处理插件.Class2;
 using static PE多功能信息处理插件.Class2.FormInfo;
 using static PE多功能信息处理插件.Program;
-using static PE多功能信息处理插件.Class2;
 
 namespace PE多功能信息处理插件
 {
@@ -15,27 +17,63 @@ namespace PE多功能信息处理插件
     {
         private bool Read = true;
         private bool Write = false;
-        public List<FormText> Readinfo = new List<FormText>();
+        public List<FormInfo> AllFormInfoGet = new List<FormInfo>();
+        public List<FormInfo> AllFormInfoSet = new List<FormInfo>();
+        private List<FormText> Readinfo = new List<FormText>();
         private List<FormText> Writeinfo = new List<FormText>();
-        private readonly Regex regex = new Regex(@"^[A-Za-z0-9]+$", RegexOptions.Compiled);
+        private readonly Regex regex = new Regex(@"^[A-Za-z0-9.: ]+$", RegexOptions.Compiled);
 
         public TranslateMod()
         {
+            var form = ARGS.Host.Connector.Form as Form;
+            TempForm = new FormInfo();
+            TempForm.FormName = form.Name;
+            TempForm.Text = form.Text;
+            AllFormInfoGet = new List<FormInfo>();
             Write = false;
-            SwichControl(ARGS.Host.Connector.Form as Form, 0);
+            SwichControl(form, 0);
+            AllFormInfoGet = new List<FormInfo>(AllFormInfoGet.Distinct(new FormInfoComparer()));
+            using (Stream Filestream = new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot3.xml", FileMode.OpenOrCreate))
+            {
+                XmlSerializer Ser = new XmlSerializer(typeof(FormInfo[]));
+                Ser.Serialize(Filestream, AllFormInfoGet.ToArray());
+            }
+            //AllFormInfoGet.Sort(new FormInfoComparer());
         }
-        public TranslateMod(List<FormText> Writeinfo,bool Read=true)
+
+        public class FormInfoComparer : IEqualityComparer<FormInfo>
         {
+            public bool Equals(FormInfo x, FormInfo y)
+            {
+                if (x.FormName == y.FormName)
+                {
+                    if (x.formtext.Length == y.formtext.Length)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            public int GetHashCode(FormInfo obj)
+            {
+                return (obj.FormName.Length ^ obj.formtext.Length).GetHashCode();
+            }
+        }
+
+        public TranslateMod(List<FormInfo> Writeinfo, bool Read = true)
+        {
+            var form = ARGS.Host.Connector.Form as Form;
             Write = true;
             this.Read = Read;
-            this.Writeinfo = new List<FormText>(Writeinfo);
-            SwichControl(ARGS.Host.Connector.Form as Form, 0);
-            /*  using (Stream Filestream = new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot3.xml", FileMode.OpenOrCreate))
-              {
-                  XmlSerializer Ser = new XmlSerializer(typeof(FormText[]));
-                  Ser.Serialize(Filestream, Readinfo.ToArray());
-              }*/
+            this.AllFormInfoSet = new List<FormInfo>(Writeinfo);
+            AllFormInfoGet = new List<FormInfo>();
+            TempForm = new FormInfo();
+            TempForm.FormName = form.Name;
+            TempForm.Text = form.Text;
+            SwichControl(form, 0);
         }
+
         public void SwichControl(dynamic Obj, int count)
         {
             if (Obj is Form)
@@ -84,7 +122,7 @@ namespace PE多功能信息处理插件
                     }
                 }
             }
-            else if (toolStripItem.Text != "0" && toolStripItem.Text != "")
+            else if (toolStripItem.Text != "0" && !string.IsNullOrWhiteSpace(toolStripItem.Text))
             {
                 if (!regex.IsMatch(toolStripItem.Text))
                 {
@@ -103,7 +141,6 @@ namespace PE多功能信息处理插件
                                 toolStripItem.ToolTipText = tempinfo.ToolTipText;
                             }
                         }
-
                     }
                 }
             }
@@ -136,7 +173,7 @@ namespace PE多功能信息处理插件
                         var tempinfo = Writeinfo.Find(x => x.ID == ComboBox.Name);
                         if (tempinfo != null)
                         {
-                            var StringSplit = tempinfo.text.Split(new char[] { '|' },System.StringSplitOptions.RemoveEmptyEntries);
+                            var StringSplit = tempinfo.text.Split(new char[] { '|' }, System.StringSplitOptions.RemoveEmptyEntries);
                             for (int i = 0; i < StringSplit.Length; i++)
                             {
                                 ComboBox.Items[i] = StringSplit[i];
@@ -209,17 +246,18 @@ namespace PE多功能信息处理插件
                     }
                 }
             }
-            else if (Control.Text != "0" && Control.Text != "")
+            else if (Control.Text != "0" && !string.IsNullOrWhiteSpace(Control.Text))
             {
                 if (!regex.IsMatch(Control.Text))
                 {
                     if (Control.Name.ToString() == "")
                     {
                         Readinfo.Add(new FormText("TextBox", Control.Text));
-                    }else if (Control.Name.ToString()=="btnGetObject")
+                    }
+                    else if (Control.Name.ToString() == "btnGetObject")
                     {
-                        if(btnGetObject==null)
-                        btnGetObject = Control as Button;
+                        if (btnGetObject == null)
+                            btnGetObject = Control as Button;
                     }
                     else
                     {
@@ -252,14 +290,31 @@ namespace PE多功能信息处理插件
                     SwichControl(fi.GetValue(Control), count);
                 }
             }
-
         }
+
+        private FormInfo TempForm = new FormInfo();
 
         private void GetOrChangeForm(Form form, int count)
         {
             if (form.Name == "PmxViewEdit")
             {
                 form.Font = new System.Drawing.Font("MS UI Gothic", 9f);
+            }
+            if (Read)
+            {
+                if (Readinfo.Count != 0)
+                {
+                    TempForm.formtext = Readinfo.ToArray();
+                    Readinfo = new List<FormText>();
+                    AllFormInfoGet.Add(TempForm);
+                    TempForm = new FormInfo();
+                    TempForm.FormName = form.Name;
+                    TempForm.Text = form.Text;
+                }
+            }
+            if (Write)
+            {
+                var Temp = AllFormInfoSet.FirstOrDefault(x => x.FormName == form.Name);
             }
             foreach (var fi in form.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
             {

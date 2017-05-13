@@ -94,6 +94,7 @@ namespace PE多功能信息处理插件
         public class FormInfo
         {
             public string FormName;
+            public string Text;
             public FormText[] formtext;
 
             public class FormText

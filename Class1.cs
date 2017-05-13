@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using static PE多功能信息处理插件.Class2;
-using static PE多功能信息处理插件.Class2.FormInfo;
 
 namespace PE多功能信息处理插件
 {
@@ -70,8 +69,7 @@ namespace PE多功能信息处理插件
         private Form ViewForm = null;
         private string oldformtext = "";
         private IPXPmx PmxTemp;
-        private List<FormText> OriFormInfo = new List<FormText>();
-        private List<string> FormList = new List<string>();
+        private List<FormInfo> OriFormInfo = new List<FormInfo>();
         private TextBox CustomBoneSearch = null;
         private TextBox CustomBodySearch = null;
         private TextBox CustomJointSearch = null;
@@ -84,14 +82,15 @@ namespace PE多功能信息处理插件
         public static List<keySet> KeyData = new List<keySet>();
         public static BootState bootstate;
         public static List<ToolItemInfo> ShortCutInfo = new List<ToolItemInfo>();
-        private static readonly Regex regex = new Regex(@"^[A-Za-z0-9]+$", RegexOptions.Compiled);
 
         public void Run(IPERunArgs args)
         {
             ARGS = args;
             Formtemp = args.Host.Connector.Form as Form;
             ViewForm = args.Host.Connector.View.PmxView as Form;
+
             #region 读取配置
+
             try
             {
                 using (Stream stream = new FileStream(new FileInfo(args.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot.xml", FileMode.OpenOrCreate))
@@ -122,20 +121,25 @@ namespace PE多功能信息处理插件
                     bootstate.WeightGetKey = '/';
                 }
             }
+
             #endregion 读取配置
+
             #region 汉化初始化模块
+
             TranslateMod TranslateMod = null;
             if (bootstate.openstate == 1)
             {
-                TranslateMod = new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
-                OriFormInfo = new List<FormText>(TranslateMod.Readinfo);
+                TranslateMod = new TranslateMod(new List<FormInfo>((new XmlSerializer(typeof(FormInfo[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormInfo[]));
+                OriFormInfo = new List<FormInfo>(TranslateMod.AllFormInfoGet);
             }
             else
             {
                 TranslateMod = new TranslateMod();
-                OriFormInfo = new List<FormText>(TranslateMod.Readinfo);
+                OriFormInfo = new List<FormInfo>(TranslateMod.AllFormInfoGet);
             }
-            #endregion
+
+            #endregion 汉化初始化模块
+
             var StartMission = new Task(() =>
            {
                #region 菜单栏获取
@@ -202,6 +206,7 @@ namespace PE多功能信息处理插件
             StartMission.ContinueWith((_obj) =>
             {
                 #region 搜索模块
+
                 var point = new System.Drawing.Point(65, 8);
                 var size = new System.Drawing.Size(65, 10);
                 if (int.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(args.Host.Connector.System.HostApplicationPath).ProductVersion.Replace(".", "")) > 0250)
@@ -323,7 +328,7 @@ namespace PE多功能信息处理插件
                                                 search = new List<int>(Tsearch);
                                             }
                                         }
-                                        ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(search.ToArray());
+                                        ViewForm.BeginInvoke(new Action(() => { ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(search.ToArray()); }));
                                         break;
 
                                     case "JointSearch":
@@ -359,7 +364,7 @@ namespace PE多功能信息处理插件
                                                 }
                                             }
                                         }
-                                        ARGS.Host.Connector.View.PmxView.SetSelectedJointIndices(search.ToArray());
+                                        ViewForm.BeginInvoke(new Action(() => { ARGS.Host.Connector.View.PmxView.SetSelectedJointIndices(search.ToArray()); }));
                                         break;
                                 }
                                 Formtemp.BeginInvoke(new Action(() =>
@@ -458,7 +463,9 @@ namespace PE多功能信息处理插件
                 //Linq表达式意义，根据FormName进行分组，并选取每组的第一项;
 
                 #endregion 搜索模块
+
                 #region 一键汉化
+
                 Action<bool> ControlCheck = (Check) =>
                 {
                     if (Check)
@@ -509,11 +516,9 @@ namespace PE多功能信息处理插件
                         ChineseTooltemp.Text = "点击汉化";
                         ControlCheck(true);
                     }
-
                 }));
                 ChineseTooltemp.Click += (object sender, EventArgs e) =>
                 {
-                    FormList = new List<string>();
                     if (ChineseTooltemp.Text == "已汉化")
                     {
                         new TranslateMod(OriFormInfo, false);
@@ -524,13 +529,14 @@ namespace PE多功能信息处理插件
                     }
                     else
                     {
-                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]), false);
+                        new TranslateMod(new List<FormInfo>((new XmlSerializer(typeof(FormInfo[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormInfo[]), false);
                         bootstate.openstate = 1;
                         ChineseTooltemp.Text = "已汉化";
                         ControlCheck(false);
                         ThreadPool.QueueUserWorkItem(new WaitCallback(Save));
                     }
                 };
+
                 #endregion 一键汉化
 
                 #region 获取每次打开模型的路径
@@ -569,7 +575,7 @@ namespace PE多功能信息处理插件
 
                 #endregion 获取每次打开模型的路径
 
-                new Task(() =>
+                new Thread(() =>
                 {
                     #region 快捷键
 
@@ -691,20 +697,21 @@ namespace PE多功能信息处理插件
                     #endregion 快捷键
 
                     #region 主窗口显示
+
                     Toolshow.Click += delegate
                     {
                         if (newopen == null)
                         {
-                                /*Application.ThreadException += delegate
-                                 {
-                                     Console.WriteLine();
-                                 };
-                                AppDomain.CurrentDomain.UnhandledException += delegate
-                                {
-                                    Console.WriteLine();
-                                };
-                                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-                                Application.EnableVisualStyles();*/
+                            /*Application.ThreadException += delegate
+                             {
+                                 Console.WriteLine();
+                             };
+                            AppDomain.CurrentDomain.UnhandledException += delegate
+                            {
+                                Console.WriteLine();
+                            };
+                            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+                            Application.EnableVisualStyles();*/
                             newopen = new Metroform();
                             newopen.Show();
                         }
@@ -718,6 +725,7 @@ namespace PE多功能信息处理插件
                     Toolshow.Text = "显示多功能插件";
                     Toolshow.Font = Formtemp.MainMenuStrip.Font;
                     Formtemp.MainMenuStrip.Items.Add(Toolshow);
+
                     #endregion 主窗口显示
 
                     #region 自动启动模型
@@ -726,8 +734,7 @@ namespace PE多功能信息处理插件
                     {
                         if (bootstate.AutoOpen == 1 && bootstate.OldOpen != "")
                         {
-                            Formtemp.BeginInvoke(new Action(()=> { ARGS.Host.Connector.Form.OpenPMXFile(bootstate.OldOpen.ToString()); }));
-                          
+                            Formtemp.BeginInvoke(new Action(() => { ARGS.Host.Connector.Form.OpenPMXFile(bootstate.OldOpen.ToString()); }));
                         }
                     }
                     catch (Exception)
@@ -748,6 +755,7 @@ namespace PE多功能信息处理插件
                 }).Start();
             });
             StartMission.Start();
+
             #region 未来功能
 
             /* int codePage = Encoding.Default.CodePage;
