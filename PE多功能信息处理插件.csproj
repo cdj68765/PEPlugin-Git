@@ -223,7 +223,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0251g\_plugin\"
+    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0251e\_plugin\"
 copy /y "$(TargetPath)" "C:\Users\cdj68\Desktop\PmxEditor_0251e2\_plugin\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

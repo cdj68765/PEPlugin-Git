@@ -96,14 +96,16 @@ namespace PE多功能信息处理插件
             {
                 public string OriText;
                 public string TransText;
-                public int Count;
+            public string ControlName;
+            public int Count;
 
             public FormText() { }
 
-            public FormText(string v1, int v2)
+            public FormText(string v1, int v2,string v3)
             {
                 this.OriText = v1;
                 this.Count = v2;
+                this.ControlName = v3;
             }
         }
         

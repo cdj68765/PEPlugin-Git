@@ -125,7 +125,24 @@ namespace PE多功能信息处理插件
             #endregion 读取配置
 
             #region 汉化初始化模块
-
+            /*var ori= new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\Ori.xml", FileMode.Open)) as FormText[]));
+            var Trans = new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\Trans.xml", FileMode.Open)) as FormText[]));
+            List<KeyValuePair<string, string>> Sa = new List<KeyValuePair<string, string>>();
+            foreach (var item in ori)
+            {
+                var temp = Trans.FirstOrDefault(x => x.ControlName == item.ControlName);
+                if(temp==null)
+                { continue; }
+                Sa.Add(new KeyValuePair<string, string> (item.OriText, temp.OriText));
+                item.TransText = temp.OriText;
+                Trans.Remove(temp);
+            }
+            using (Stream Filestream = new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot3.xml", FileMode.OpenOrCreate))
+            {
+                XmlSerializer Ser = new XmlSerializer(typeof(FormText[]));
+                Ser.Serialize(Filestream, ori.ToArray());
+            }*/
+            
             TranslateMod TranslateMod = null;
             if (bootstate.openstate == 1)
             {
