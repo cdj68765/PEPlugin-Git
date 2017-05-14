@@ -121,6 +121,10 @@ namespace PE多功能信息处理插件
 
         private void ReadAdd(string v)
         {
+            if(v==null)
+            {
+                return;
+            }
          var Find=   Readinfo.FirstOrDefault(x => x.OriText == v);
             if(Find==null)
             {
@@ -211,19 +215,18 @@ namespace PE多功能信息处理插件
                             }
                         }
                     }
-
-                    Readinfo.Add(new FormText(TabPage.Parent != null ? TabPage.Parent.Name : "null", TabPage.Name, TabPage.Text));
+                    ReadAdd(TabPage.Text);
                 }
                 if (Write)
                 {
-                    if (Writeinfo != null)
+                   /* if (Writeinfo != null)
                     {
                         var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == TabPage.Name && x.Parent == (TabPage.Parent != null ? TabPage.Parent.Name : "null"));
                         if (tempinfo != null)
                         {
                             TabPage.Text = tempinfo.text;
                         }
-                    }
+                    }*/
                 }
             }
             else if (Control.Text != "0" && !string.IsNullOrWhiteSpace(Control.Text))
@@ -232,12 +235,11 @@ namespace PE多功能信息处理插件
                 {
                     if (Control.Name.ToString() == "")
                     {
-                        Readinfo.Add(new FormText(Control.Parent.Name, "TextBox", Control.Text));
+                        ReadAdd(Control.Text);
                     }
                     else if (Control.Name.ToString() == "btnGetObject")
                     {
-                        if (btnGetObject == null)
-                            btnGetObject = Control as Button;
+                        if (btnGetObject == null)     btnGetObject = Control as Button;
                     }
                     else
                     {
@@ -247,18 +249,19 @@ namespace PE多功能信息处理插件
                         }
                         if (Read)
                         {
-                            Readinfo.Add(new FormText(Control.Parent != null ? Control.Parent.Name : "null", Control.Name, Control.Text));
+                            ReadAdd(Control.Text);
+                            
                         }
                         if (Write)
                         {
-                            if (Writeinfo != null)
+                          /*  if (Writeinfo != null)
                             {
                                 var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == Control.Name && x.Parent == (Control.Parent != null ? Control.Parent.Name : "null"));
                                 if (tempinfo != null)
                                 {
                                     Control.Text = tempinfo.text;
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
@@ -282,12 +285,12 @@ namespace PE多功能信息处理插件
             }
             if(Read)
             {
-                Readinfo.Add(new FormText(form.Parent!=null?form.Parent.Name:"null", form.Name, form.Text));
+                ReadAdd(form.Text);
             }
             if(Write)
             {
-                var temp = Writeinfo.FirstOrDefault(x => x.ID == form.Name && x.Parent == (form.Parent!=null? form.Parent.Name:"null"));
-                if(temp!=null)    form.Name = temp.text;
+               /* var temp = Writeinfo.FirstOrDefault(x => x.ID == form.Name && x.Parent == (form.Parent!=null? form.Parent.Name:"null"));
+                if(temp!=null)    form.Name = temp.text;*/
             }
             foreach (var fi in form.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
             {
