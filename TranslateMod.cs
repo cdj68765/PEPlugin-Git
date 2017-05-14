@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +9,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using static PE多功能信息处理插件.Class2;
-using static PE多功能信息处理插件.Class2.FormInfo;
 using static PE多功能信息处理插件.Program;
 
 namespace PE多功能信息处理插件
@@ -17,61 +17,30 @@ namespace PE多功能信息处理插件
     {
         private bool Read = true;
         private bool Write = false;
-        public List<FormInfo> AllFormInfoGet = new List<FormInfo>();
-        public List<FormInfo> AllFormInfoSet = new List<FormInfo>();
+        public List<FormText> AllFormInfoGet = new List<FormText>();
+        public List<FormText> AllFormInfoSet = new List<FormText>();
         private List<FormText> Readinfo = new List<FormText>();
         private List<FormText> Writeinfo = new List<FormText>();
-        private readonly Regex regex = new Regex(@"^[A-Za-z0-9.: ]+$", RegexOptions.Compiled);
-
+        private readonly Regex regex = new Regex(@"^[A-Za-z0-9.: -]+$", RegexOptions.Compiled);
         public TranslateMod()
         {
-            var form = ARGS.Host.Connector.Form as Form;
-            TempForm = new FormInfo();
-            TempForm.FormName = form.Name;
-            TempForm.Text = form.Text;
-            AllFormInfoGet = new List<FormInfo>();
             Write = false;
-            SwichControl(form, 0);
-            AllFormInfoGet = new List<FormInfo>(AllFormInfoGet.Distinct(new FormInfoComparer()));
+            SwichControl(ARGS.Host.Connector.Form as Form, 0);
             using (Stream Filestream = new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName + @"\_data\boot3.xml", FileMode.OpenOrCreate))
             {
-                XmlSerializer Ser = new XmlSerializer(typeof(FormInfo[]));
+                XmlSerializer Ser = new XmlSerializer(typeof(FormText[]));
                 Ser.Serialize(Filestream, AllFormInfoGet.ToArray());
             }
-            //AllFormInfoGet.Sort(new FormInfoComparer());
         }
 
-        public class FormInfoComparer : IEqualityComparer<FormInfo>
-        {
-            public bool Equals(FormInfo x, FormInfo y)
-            {
-                if (x.FormName == y.FormName)
-                {
-                    if (x.formtext.Length == y.formtext.Length)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
 
-            public int GetHashCode(FormInfo obj)
-            {
-                return (obj.FormName.Length ^ obj.formtext.Length).GetHashCode();
-            }
-        }
 
-        public TranslateMod(List<FormInfo> Writeinfo, bool Read = true)
+        public TranslateMod(List<FormText> Writeinfo, bool Read = true)
         {
-            var form = ARGS.Host.Connector.Form as Form;
             Write = true;
             this.Read = Read;
-            this.AllFormInfoSet = new List<FormInfo>(Writeinfo);
-            AllFormInfoGet = new List<FormInfo>();
-            TempForm = new FormInfo();
-            TempForm.FormName = form.Name;
-            TempForm.Text = form.Text;
-            SwichControl(form, 0);
+            this.Writeinfo = new List<FormText>(Writeinfo);
+            SwichControl(ARGS.Host.Connector.Form as Form, 0);
         }
 
         public void SwichControl(dynamic Obj, int count)
@@ -104,14 +73,12 @@ namespace PE多功能信息处理插件
                     var StringBuild = new StringBuilder();
                     foreach (var item in ComboBox.Items)
                     {
-                        StringBuild.Append(item.ToString());
-                        StringBuild.Append("|");
+                        ReadAdd(item.ToString());
                     }
-                    Readinfo.Add(new FormText(ComboBox.Name, StringBuild.ToString()));
                 }
                 if (Write)
                 {
-                    var tempinfo = Writeinfo.Find(x => x.ID == ComboBox.Name);
+                   /* var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == ComboBox.Name && x.Parent == (ComboBox.Owner != null ? ComboBox.Owner.Name : "null"));
                     if (tempinfo != null)
                     {
                         var StringSplit = tempinfo.text.Split('|');
@@ -119,7 +86,7 @@ namespace PE多功能信息处理插件
                         {
                             ComboBox.Items[i] = StringSplit[i];
                         }
-                    }
+                    }*/
                 }
             }
             else if (toolStripItem.Text != "0" && !string.IsNullOrWhiteSpace(toolStripItem.Text))
@@ -128,19 +95,20 @@ namespace PE多功能信息处理插件
                 {
                     if (Read)
                     {
-                        Readinfo.Add(new FormText(toolStripItem.Name, toolStripItem.Text, toolStripItem.ToolTipText));
+                        ReadAdd(toolStripItem.Text);
+                        ReadAdd(toolStripItem.ToolTipText);
                     }
                     if (Write)
                     {
-                        if (Writeinfo != null)
+                      /*  if (Writeinfo != null)
                         {
-                            var tempinfo = Writeinfo.Find(x => x.ID == toolStripItem.Name);
+                            var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == toolStripItem.Name && x.Parent == (toolStripItem.Owner != null ? toolStripItem.Owner.Name : "null"));
                             if (tempinfo != null)
                             {
                                 toolStripItem.Text = tempinfo.text;
                                 toolStripItem.ToolTipText = tempinfo.ToolTipText;
                             }
-                        }
+                        }*/
                     }
                 }
             }
@@ -148,6 +116,19 @@ namespace PE多功能信息处理插件
             {
                 var obj = fi.GetValue(toolStripItem);
                 SwichControl(obj, count);
+            }
+        }
+
+        private void ReadAdd(string v)
+        {
+         var Find=   Readinfo.FirstOrDefault(x => x.OriText == v);
+            if(Find==null)
+            {
+                Readinfo.Add(new FormText(v,1));
+                return;
+            }else
+            {
+                Find.Count += 1;
             }
         }
 
@@ -163,14 +144,12 @@ namespace PE多功能信息处理插件
                         var StringBuild = new StringBuilder();
                         foreach (var item in ComboBox.Items)
                         {
-                            StringBuild.Append(item.ToString());
-                            StringBuild.Append("|");
+                            ReadAdd(item.ToString());
                         }
-                        Readinfo.Add(new FormText(ComboBox.Name, StringBuild.ToString()));
                     }
                     if (Write)
                     {
-                        var tempinfo = Writeinfo.Find(x => x.ID == ComboBox.Name);
+                       /* var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == ComboBox.Name && x.Parent == (ComboBox.Parent != null ? ComboBox.Parent.Name : "null"));
                         if (tempinfo != null)
                         {
                             var StringSplit = tempinfo.text.Split(new char[] { '|' }, System.StringSplitOptions.RemoveEmptyEntries);
@@ -178,7 +157,7 @@ namespace PE多功能信息处理插件
                             {
                                 ComboBox.Items[i] = StringSplit[i];
                             }
-                        }
+                        }*/
                     }
                 }
             }
@@ -232,13 +211,14 @@ namespace PE多功能信息处理插件
                             }
                         }
                     }
-                    Readinfo.Add(new FormText(TabPage.Name, TabPage.Text));
+
+                    Readinfo.Add(new FormText(TabPage.Parent != null ? TabPage.Parent.Name : "null", TabPage.Name, TabPage.Text));
                 }
                 if (Write)
                 {
                     if (Writeinfo != null)
                     {
-                        var tempinfo = Writeinfo.Find(x => x.ID == TabPage.Name);
+                        var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == TabPage.Name && x.Parent == (TabPage.Parent != null ? TabPage.Parent.Name : "null"));
                         if (tempinfo != null)
                         {
                             TabPage.Text = tempinfo.text;
@@ -252,7 +232,7 @@ namespace PE多功能信息处理插件
                 {
                     if (Control.Name.ToString() == "")
                     {
-                        Readinfo.Add(new FormText("TextBox", Control.Text));
+                        Readinfo.Add(new FormText(Control.Parent.Name, "TextBox", Control.Text));
                     }
                     else if (Control.Name.ToString() == "btnGetObject")
                     {
@@ -267,13 +247,13 @@ namespace PE多功能信息处理插件
                         }
                         if (Read)
                         {
-                            Readinfo.Add(new FormText(Control.Name, Control.Text));
+                            Readinfo.Add(new FormText(Control.Parent != null ? Control.Parent.Name : "null", Control.Name, Control.Text));
                         }
                         if (Write)
                         {
                             if (Writeinfo != null)
                             {
-                                var tempinfo = Writeinfo.Find(x => x.ID == Control.Name);
+                                var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == Control.Name && x.Parent == (Control.Parent != null ? Control.Parent.Name : "null"));
                                 if (tempinfo != null)
                                 {
                                     Control.Text = tempinfo.text;
@@ -292,7 +272,7 @@ namespace PE多功能信息处理插件
             }
         }
 
-        private FormInfo TempForm = new FormInfo();
+        private FormText TempForm = new FormText();
 
         private void GetOrChangeForm(Form form, int count)
         {
@@ -300,21 +280,14 @@ namespace PE多功能信息处理插件
             {
                 form.Font = new System.Drawing.Font("MS UI Gothic", 9f);
             }
-            if (Read)
+            if(Read)
             {
-                if (Readinfo.Count != 0)
-                {
-                    TempForm.formtext = Readinfo.ToArray();
-                    Readinfo = new List<FormText>();
-                    AllFormInfoGet.Add(TempForm);
-                    TempForm = new FormInfo();
-                    TempForm.FormName = form.Name;
-                    TempForm.Text = form.Text;
-                }
+                Readinfo.Add(new FormText(form.Parent!=null?form.Parent.Name:"null", form.Name, form.Text));
             }
-            if (Write)
+            if(Write)
             {
-                var Temp = AllFormInfoSet.FirstOrDefault(x => x.FormName == form.Name);
+                var temp = Writeinfo.FirstOrDefault(x => x.ID == form.Name && x.Parent == (form.Parent!=null? form.Parent.Name:"null"));
+                if(temp!=null)    form.Name = temp.text;
             }
             foreach (var fi in form.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
             {

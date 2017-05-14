@@ -91,36 +91,22 @@ namespace PE多功能信息处理插件
             }
         }
 
-        public class FormInfo
-        {
-            public string FormName;
-            public string Text;
-            public FormText[] formtext;
 
             public class FormText
             {
-                public string ID;
-                public string text;
-                public string ToolTipText;
+                public string OriText;
+                public string TransText;
+                public int Count;
 
-                public FormText(string name, string text, string Tip)
-                {
-                    this.ID = name;
-                    this.text = text;
-                    this.ToolTipText = Tip;
-                }
+            public FormText() { }
 
-                public FormText(string name, string text)
-                {
-                    this.ID = name;
-                    this.text = text;
-                }
-
-                public FormText()
-                {
-                }
+            public FormText(string v1, int v2)
+            {
+                this.OriText = v1;
+                this.Count = v2;
             }
         }
+        
 
         public class OperaList
         {

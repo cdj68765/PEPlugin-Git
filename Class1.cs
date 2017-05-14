@@ -69,7 +69,7 @@ namespace PE多功能信息处理插件
         private Form ViewForm = null;
         private string oldformtext = "";
         private IPXPmx PmxTemp;
-        private List<FormInfo> OriFormInfo = new List<FormInfo>();
+        private List<FormText> OriFormInfo = new List<FormText>();
         private TextBox CustomBoneSearch = null;
         private TextBox CustomBodySearch = null;
         private TextBox CustomJointSearch = null;
@@ -129,13 +129,13 @@ namespace PE多功能信息处理插件
             TranslateMod TranslateMod = null;
             if (bootstate.openstate == 1)
             {
-                TranslateMod = new TranslateMod(new List<FormInfo>((new XmlSerializer(typeof(FormInfo[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormInfo[]));
-                OriFormInfo = new List<FormInfo>(TranslateMod.AllFormInfoGet);
+                TranslateMod = new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
+                OriFormInfo = new List<FormText>(TranslateMod.AllFormInfoGet);
             }
             else
             {
                 TranslateMod = new TranslateMod();
-                OriFormInfo = new List<FormInfo>(TranslateMod.AllFormInfoGet);
+                OriFormInfo = new List<FormText>(TranslateMod.AllFormInfoGet);
             }
 
             #endregion 汉化初始化模块
@@ -529,7 +529,7 @@ namespace PE多功能信息处理插件
                     }
                     else
                     {
-                        new TranslateMod(new List<FormInfo>((new XmlSerializer(typeof(FormInfo[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormInfo[]), false);
+                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]), false);
                         bootstate.openstate = 1;
                         ChineseTooltemp.Text = "已汉化";
                         ControlCheck(false);
