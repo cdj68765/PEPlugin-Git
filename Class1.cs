@@ -1,6 +1,7 @@
 ﻿using MetroFramework;
 using Microsoft.CSharp;
 using PEPlugin;
+using PEPlugin.Pmd;
 using PEPlugin.Pmx;
 using System;
 using System.CodeDom.Compiler;
@@ -597,19 +598,80 @@ namespace PE多功能信息处理插件
                 };
 
                 #endregion 获取每次打开模型的路径
+
                 #region UV复制模块
                 var Add = new ToolStripMenuItem();
                 Add.Text = "合并选中材质的UV到";
                 EventHandler ToolClick=(o,s)=> 
                 {
                     var Material=  args.Host.Connector.Form.GetSelectedMaterialIndices();
-                    if(Material.Length==2)
+                    if (Material.Length == 2)
                     {
-
+                        var model = args.Host.Connector.Pmx.GetCurrentState();
+                        var Face1 = model.Material[Material[0]].Faces;
+                        var Face2 = model.Material[Material[1]].Faces;
+                        if (Face1.Count == Face2.Count)
+                        {
+                            switch (o.ToString())
+                            {
+                                case "UV1":
+                                    {
+                                        for (int i = 0; i < Face1.Count; i++)
+                                        {
+                                            model.Material[Material[0]].Faces[i].Vertex1.UVA1 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U, model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex2.UVA1 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U, model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex3.UVA1 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U, model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                        }
+                                    }
+                                    break;
+                                case "UV2":
+                                    {
+                                        for (int i = 0; i < Face1.Count; i++)
+                                        {
+                                            model.Material[Material[0]].Faces[i].Vertex1.UVA2 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U, model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex2.UVA2 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U, model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex3.UVA2 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U, model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                        }
+                                    }
+                                    break;
+                                case "UV3":
+                                    {
+                                        for (int i = 0; i < Face1.Count; i++)
+                                        {
+                                            model.Material[Material[0]].Faces[i].Vertex1.UVA3 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U, model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex2.UVA3 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U, model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex3.UVA3 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U, model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                        }
+                                    }
+                                    break;
+                                case "UV4":
+                                    {
+                                        for (int i = 0; i < Face1.Count; i++)
+                                        {
+                                            model.Material[Material[0]].Faces[i].Vertex1.UVA4 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U, model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex2.UVA4 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U, model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex3.UVA4 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U, model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                        }
+                                    }
+                                    break;
+                            }
+                            Formtemp.BeginInvoke(new Action(() =>
+                            {
+                                ARGS.Host.Connector.Pmx.Update(model);
+                                ARGS.Host.Connector.Form.UpdateList(UpdateObject.Vertex);
+                                ARGS.Host.Connector.View.PmxView.UpdateModel();
+                                ARGS.Host.Connector.View.PmxView.UpdateView();
+                            }));
+                            MetroMessageBox.Show(Formtemp, "复制完成", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MetroMessageBox.Show(Formtemp, "选中的两个面并不相同", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                     }
                     else
                     {
-                        MetroMessageBox.Show(Formtemp.Owner, "请等待后台数据处理完毕", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MetroMessageBox.Show(Formtemp, "请选择2个材质", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 };
                 Add.DropDownItems.Add("UV1", null, ToolClick);
@@ -870,68 +932,71 @@ namespace PE多功能信息处理插件
         public IPXPmx Import(string path, IPERunArgs args)
         {
             var pmx = PEStaticBuilder.Pmx.Pmx();
-            using (var filestream = new FileStream(path, FileMode.Open))
+            if (new FileInfo(path).Exists)
             {
-                BinaryReader readstream = new BinaryReader(filestream);
-                readstream.ReadBytes(3);
-                switch (readstream.ReadByte())
+                using (var filestream = new FileStream(path, FileMode.Open))
                 {
-                    case 32:
-                        filestream.Position = 0;
-                        pmx.FromStream(filestream);
-                        break;
+                    BinaryReader readstream = new BinaryReader(filestream);
+                    readstream.ReadBytes(3);
+                    switch (readstream.ReadByte())
+                    {
+                        case 32:
+                            filestream.Position = 0;
+                            pmx.FromStream(filestream);
+                            break;
 
-                    case 64:
-                        using (var decompressedFileStream = new MemoryStream())
-                        {
-                            using (
-                                var decompressionStream = new DeflateStream(new MemoryStream(Resource1.program),
-                                    CompressionMode.Decompress))
+                        case 64:
+                            using (var decompressedFileStream = new MemoryStream())
                             {
-                                decompressionStream.CopyTo(decompressedFileStream);
-                                CompilerResults Coderes =
-                            new CSharpCodeProvider().CreateCompiler()
-                                .CompileAssemblyFromSource(
-                                    new CompilerParameters(new string[]
-                                    {"System.dll", "System.Core.dll", "System.Windows.Forms.dll", "System.Data.dll"}),
-                                   Encoding.UTF8.GetString(decompressedFileStream.ToArray()));
-                                if (!Coderes.Errors.HasErrors)
+                                using (
+                                    var decompressionStream = new DeflateStream(new MemoryStream(Resource1.program),
+                                        CompressionMode.Decompress))
                                 {
-                                    List<object> ImpotrPara = new List<object>();
-                                    var open = new Form2();
-                                    open.ShowDialog();
-                                    ImpotrPara.Add(filestream);
-                                    ImpotrPara.Add(open.Password);
-                                    filestream.Position = 0;
-                                    try
+                                    decompressionStream.CopyTo(decompressedFileStream);
+                                    CompilerResults Coderes =
+                                new CSharpCodeProvider().CreateCompiler()
+                                    .CompileAssemblyFromSource(
+                                        new CompilerParameters(new string[]
+                                        {"System.dll", "System.Core.dll", "System.Windows.Forms.dll", "System.Data.dll"}),
+                                       Encoding.UTF8.GetString(decompressedFileStream.ToArray()));
+                                    if (!Coderes.Errors.HasErrors)
                                     {
-                                        pmx.FromStream((MemoryStream)
-                                                                   Coderes.CompiledAssembly.CreateInstance("PmxRead.Program")
-                                                                       .GetType()
-                                                                       .GetMethod("Import")
-                                                                       .Invoke(Coderes.CompiledAssembly.CreateInstance("PmxRead.Program"),
-                                                                           new object[] { ImpotrPara }));
-                                    }
-                                    catch (Exception)
-                                    {
-                                        MetroMessageBox.Show((args.Host.Connector.Form as Form), "密码错误，无法加载", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        List<object> ImpotrPara = new List<object>();
+                                        var open = new Form2();
+                                        open.ShowDialog();
+                                        ImpotrPara.Add(filestream);
+                                        ImpotrPara.Add(open.Password);
+                                        filestream.Position = 0;
+                                        try
+                                        {
+                                            pmx.FromStream((MemoryStream)
+                                                                       Coderes.CompiledAssembly.CreateInstance("PmxRead.Program")
+                                                                           .GetType()
+                                                                           .GetMethod("Import")
+                                                                           .Invoke(Coderes.CompiledAssembly.CreateInstance("PmxRead.Program"),
+                                                                               new object[] { ImpotrPara }));
+                                        }
+                                        catch (Exception)
+                                        {
+                                            MetroMessageBox.Show((args.Host.Connector.Form as Form), "密码错误，无法加载", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
                                     }
                                 }
                             }
-                        }
-                        break;
+                            break;
 
-                    default:
-                        filestream.Position = 0;
-                        BinaryWriter writerstream = new BinaryWriter(filestream);
-                        writerstream.Seek(3, 0);
-                        writerstream.Write(32);
-                        filestream.Position = 0;
-                        pmx.FromStream(filestream);
-                        break;
+                        default:
+                            filestream.Position = 0;
+                            BinaryWriter writerstream = new BinaryWriter(filestream);
+                            writerstream.Seek(3, 0);
+                            writerstream.Write(32);
+                            filestream.Position = 0;
+                            pmx.FromStream(filestream);
+                            break;
+                    }
+                    filestream.Close();
+                    filestream.Dispose();
                 }
-                filestream.Close();
-                filestream.Dispose();
             }
             return pmx;
         }

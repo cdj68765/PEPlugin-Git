@@ -87,38 +87,37 @@ namespace PE多功能信息处理插件
                     for (int i = 0; i < ComboBox.Items.Count; i++)
                     {
                         var temp = WriteAdd(ComboBox.Items[i].ToString(), ComboBox.Name);
-                        if(temp!=null)
+                        if (temp != null)
                         {
                             ComboBox.Items[i] = temp;
                         }
-                        
+
                     }
                 }
             }
             else if (toolStripItem.Text != "0" && !string.IsNullOrWhiteSpace(toolStripItem.Text))
             {
-                if (!regex.IsMatch(toolStripItem.Text))
+
+                if (Read)
                 {
-                    if (Read)
-                    {
-                        ReadAdd(toolStripItem.Text, toolStripItem.Name);
-                        ReadAdd(toolStripItem.ToolTipText, toolStripItem.Name);
-                    }
-                    if (Write)
-                    {
-                        toolStripItem.Text = WriteAdd(toolStripItem.Text, toolStripItem.Name);
-                        toolStripItem.ToolTipText = WriteAdd(toolStripItem.ToolTipText, toolStripItem.Name);
-                        /*  if (Writeinfo != null)
-                          {
-                              var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == toolStripItem.Name && x.Parent == (toolStripItem.Owner != null ? toolStripItem.Owner.Name : "null"));
-                              if (tempinfo != null)
-                              {
-                                  toolStripItem.Text = tempinfo.text;
-                                  toolStripItem.ToolTipText = tempinfo.ToolTipText;
-                              }
-                          }*/
-                    }
+                    ReadAdd(toolStripItem.Text, toolStripItem.Name);
+                    ReadAdd(toolStripItem.ToolTipText, toolStripItem.Name);
                 }
+                if (Write)
+                {
+                    toolStripItem.Text = WriteAdd(toolStripItem.Text, toolStripItem.Name);
+                    toolStripItem.ToolTipText = WriteAdd(toolStripItem.ToolTipText, toolStripItem.Name);
+                    /*  if (Writeinfo != null)
+                      {
+                          var tempinfo = Writeinfo.FirstOrDefault(x => x.ID == toolStripItem.Name && x.Parent == (toolStripItem.Owner != null ? toolStripItem.Owner.Name : "null"));
+                          if (tempinfo != null)
+                          {
+                              toolStripItem.Text = tempinfo.text;
+                              toolStripItem.ToolTipText = tempinfo.ToolTipText;
+                          }
+                      }*/
+                }
+
             }
             foreach (var fi in toolStripItem.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
             {

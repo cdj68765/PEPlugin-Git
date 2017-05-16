@@ -108,6 +108,7 @@ namespace PE多功能信息处理插件
             this.MorphImportSelect = new MetroFramework.Controls.MetroTile();
             this.MorphBack = new MetroFramework.Controls.MetroTile();
             this.LoadMorphBac = new MetroFramework.Controls.MetroTile();
+            this.UV操作 = new MetroFramework.Controls.MetroTabPage();
             this.Bone = new MetroFramework.Controls.MetroTabPage();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.骨骼基础设置 = new MetroFramework.Controls.MetroTabPage();
@@ -344,7 +345,6 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
-            this.UV操作 = new MetroFramework.Controls.MetroTabPage();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -382,7 +382,7 @@ namespace PE多功能信息处理插件
             this.ALLTAB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ALLTAB.Location = new System.Drawing.Point(20, 60);
             this.ALLTAB.Name = "ALLTAB";
-            this.ALLTAB.SelectedIndex = 0;
+            this.ALLTAB.SelectedIndex = 1;
             this.ALLTAB.Size = new System.Drawing.Size(600, 340);
             this.ALLTAB.TabIndex = 0;
             this.ALLTAB.UseSelectable = true;
@@ -467,7 +467,7 @@ namespace PE多功能信息处理插件
             this.VertexTab.Controls.Add(this.UV操作);
             this.VertexTab.Location = new System.Drawing.Point(190, 3);
             this.VertexTab.Name = "VertexTab";
-            this.VertexTab.SelectedIndex = 2;
+            this.VertexTab.SelectedIndex = 0;
             this.VertexTab.Size = new System.Drawing.Size(406, 299);
             this.VertexTab.TabIndex = 103;
             this.VertexTab.UseSelectable = true;
@@ -1407,6 +1407,20 @@ namespace PE多功能信息处理插件
             this.LoadMorphBac.UseSelectable = true;
             this.LoadMorphBac.UseStyleColors = true;
             this.LoadMorphBac.Click += new System.EventHandler(this.LoadMorphBac_Click);
+            // 
+            // UV操作
+            // 
+            this.UV操作.HorizontalScrollbarBarColor = true;
+            this.UV操作.HorizontalScrollbarHighlightOnWheel = false;
+            this.UV操作.HorizontalScrollbarSize = 10;
+            this.UV操作.Location = new System.Drawing.Point(4, 38);
+            this.UV操作.Name = "UV操作";
+            this.UV操作.Size = new System.Drawing.Size(398, 257);
+            this.UV操作.TabIndex = 2;
+            this.UV操作.Text = "UV操作";
+            this.UV操作.VerticalScrollbarBarColor = true;
+            this.UV操作.VerticalScrollbarHighlightOnWheel = false;
+            this.UV操作.VerticalScrollbarSize = 10;
             // 
             // Bone
             // 
@@ -6199,20 +6213,6 @@ namespace PE多功能信息处理插件
             this.LockSelect.Text = "是否锁定选择";
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
-            // 
-            // UV操作
-            // 
-            this.UV操作.HorizontalScrollbarBarColor = true;
-            this.UV操作.HorizontalScrollbarHighlightOnWheel = false;
-            this.UV操作.HorizontalScrollbarSize = 10;
-            this.UV操作.Location = new System.Drawing.Point(4, 38);
-            this.UV操作.Name = "UV操作";
-            this.UV操作.Size = new System.Drawing.Size(398, 257);
-            this.UV操作.TabIndex = 2;
-            this.UV操作.Text = "UV操作";
-            this.UV操作.VerticalScrollbarBarColor = true;
-            this.UV操作.VerticalScrollbarHighlightOnWheel = false;
-            this.UV操作.VerticalScrollbarSize = 10;
             // 
             // Metroform
             // 

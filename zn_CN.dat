@@ -1278,6 +1278,7 @@ fc  : softness, biasFactor, relaxationFactor  | Jointパラメータ(標準:0.9/
   </FormText>
   <FormText>
     <OriText>スフィア(&amp;P)</OriText>
+    <TransText>Spa(&amp;P)</TransText>
     <ControlName>CMenuItem_Material_Copy_Sphere</ControlName>
     <Count>1</Count>
   </FormText>
