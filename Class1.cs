@@ -64,6 +64,7 @@ namespace PE多功能信息处理插件
         private ToolStripMenuItem ChineseTooltemp = new ToolStripMenuItem();
         private ToolStripMenuItem KeyTooltemp = new ToolStripMenuItem();
         private ToolStripMenuItem Toolshow = new ToolStripMenuItem();
+       
         private Form Formtemp = null;
         private Form ViewForm = null;
         private string oldformtext = "";
@@ -80,7 +81,7 @@ namespace PE多功能信息处理插件
         public static List<keySet> KeyData = new List<keySet>();
         public static BootState bootstate;
         public static List<ToolItemInfo> ShortCutInfo = new List<ToolItemInfo>();
-
+        public static ContextMenuStrip contextMaterial = null;
         public void Run(IPERunArgs args)
         {
             ARGS = args;
@@ -596,6 +597,43 @@ namespace PE多功能信息处理插件
                 };
 
                 #endregion 获取每次打开模型的路径
+                #region UV复制模块
+                var Add = new ToolStripMenuItem();
+                Add.Text = "合并选中材质的UV到";
+                EventHandler ToolClick=(o,s)=> 
+                {
+                    var Material=  args.Host.Connector.Form.GetSelectedMaterialIndices();
+                    if(Material.Length==2)
+                    {
+
+                    }
+                    else
+                    {
+                        MetroMessageBox.Show(Formtemp.Owner, "请等待后台数据处理完毕", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                };
+                Add.DropDownItems.Add("UV1", null, ToolClick);
+                Add.DropDownItems.Add("UV2", null, ToolClick);
+                Add.DropDownItems.Add("UV3", null, ToolClick);
+                Add.DropDownItems.Add("UV4", null, ToolClick);
+                Formtemp.BeginInvoke(new Action(()=> {
+                List<ToolStripItem> SaveToolStrip = new List<ToolStripItem>();
+                foreach (ToolStripItem item in contextMaterial.Items)
+                {
+                    SaveToolStrip.Add(item);
+                }
+                contextMaterial.Items.Clear();
+                    for (int i = 0; i < SaveToolStrip.Count; i++)
+                    {
+                        contextMaterial.Items.Add(SaveToolStrip[i]);
+                        var aasd = SaveToolStrip[i].GetType();
+                        if (i == 0)
+                        {
+                            contextMaterial.Items.Add(Add);
+                        }
+                    }
+                }));
+                #endregion
 
                 new Thread(() =>
                 {

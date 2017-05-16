@@ -131,7 +131,6 @@ namespace PE多功能信息处理插件
         {
             if (CheckBox(v))
             {
-
                 if (ReadW)
                 {
                     var temp = Writeinfo.FirstOrDefault(x => x.OriText == v && x.ControlName == v2);
@@ -346,6 +345,13 @@ namespace PE多功能信息处理插件
                     SwichControl(fi.GetValue(Control), count);
                 }
             }
+            else if (Control is ContextMenuStrip)
+            {
+                if (Control.Name == "contextMaterial" && contextMaterial == null)
+                {
+                    contextMaterial = Control as ContextMenuStrip;
+                }
+            }
         }
 
         private FormText TempForm = new FormText();
@@ -368,8 +374,7 @@ namespace PE多功能信息处理插件
             }
             foreach (var fi in form.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
             {
-                var obj = fi.GetValue(form);
-                SwichControl(obj, count);
+                SwichControl(fi.GetValue(form), count);
             }
         }
     }
