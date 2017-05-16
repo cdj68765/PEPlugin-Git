@@ -92,20 +92,27 @@ namespace PE多功能信息处理插件
         }
 
 
-            public class FormText
-            {
-                public string OriText;
-                public string TransText;
+        public class FormText
+        {
+            public string OriText;
+            public string TransText;
             public string ControlName;
             public int Count;
 
             public FormText() { }
 
-            public FormText(string v1, int v2,string v3)
+            public FormText(string v1, int v2, string v3)
             {
                 this.OriText = v1;
                 this.Count = v2;
                 this.ControlName = v3;
+            }
+            public FormText(string OriText, int Count, string ControlName, string TransText)
+            {
+                this.OriText = OriText;
+                this.Count = Count;
+                this.ControlName = ControlName;
+                this.TransText = TransText;
             }
         }
         

@@ -12,7 +12,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -69,7 +68,6 @@ namespace PE多功能信息处理插件
         private Form ViewForm = null;
         private string oldformtext = "";
         private IPXPmx PmxTemp;
-        private List<FormText> OriFormInfo = new List<FormText>();
         private TextBox CustomBoneSearch = null;
         private TextBox CustomBodySearch = null;
         private TextBox CustomJointSearch = null;
@@ -142,19 +140,16 @@ namespace PE多功能信息处理插件
                 XmlSerializer Ser = new XmlSerializer(typeof(FormText[]));
                 Ser.Serialize(Filestream, ori.ToArray());
             }*/
-            
-            TranslateMod TranslateMod = null;
+
             if (bootstate.openstate == 1)
             {
-                TranslateMod = new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
-                OriFormInfo = new List<FormText>(TranslateMod.AllFormInfoGet);
+                new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
             }
             else
             {
-                TranslateMod = new TranslateMod();
-                OriFormInfo = new List<FormText>(TranslateMod.AllFormInfoGet);
+                new TranslateMod();
             }
-
+        
             #endregion 汉化初始化模块
 
             var StartMission = new Task(() =>
@@ -487,31 +482,41 @@ namespace PE多功能信息处理插件
                 {
                     if (Check)
                     {
-                        BoneSearch.Enabled = true;
-                        BoneSearch.Visible = true;
+                        if (BoneSearch != null)
+                        {
+                            BoneSearch.Enabled = true;
+                            BoneSearch.Visible = true;
+                            BodySearch.Enabled = true;
+                            BodySearch.Visible = true;
+                            JointSearch.Enabled = true;
+                            JointSearch.Visible = true;
+                        }
                         CustomBoneSearch.Enabled = false;
                         CustomBoneSearch.Visible = false;
-                        BodySearch.Enabled = true;
-                        BodySearch.Visible = true;
+
                         CustomBodySearch.Enabled = false;
                         CustomBodySearch.Visible = false;
-                        JointSearch.Enabled = true;
-                        JointSearch.Visible = true;
+                   
                         CustomJointSearch.Enabled = false;
                         CustomJointSearch.Visible = false;
                     }
                     else
                     {
-                        BoneSearch.Enabled = false;
-                        BoneSearch.Visible = false;
+                        if (BoneSearch != null)
+                        {
+                            BoneSearch.Enabled = false;
+                            BoneSearch.Visible = false;
+                            BodySearch.Enabled = false;
+                            BodySearch.Visible = false;
+                            JointSearch.Enabled = false;
+                            JointSearch.Visible = false;
+                        }
                         CustomBoneSearch.Enabled = true;
                         CustomBoneSearch.Visible = true;
-                        BodySearch.Enabled = false;
-                        BodySearch.Visible = false;
+                     
                         CustomBodySearch.Enabled = true;
                         CustomBodySearch.Visible = true;
-                        JointSearch.Enabled = false;
-                        JointSearch.Visible = false;
+            
                         CustomJointSearch.Enabled = true;
                         CustomJointSearch.Visible = true;
                     }
@@ -538,7 +543,7 @@ namespace PE多功能信息处理插件
                 {
                     if (ChineseTooltemp.Text == "已汉化")
                     {
-                        new TranslateMod(OriFormInfo, false);
+                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]), false);
                         bootstate.openstate = 0;
                         ChineseTooltemp.Text = "点击汉化";
                         ControlCheck(true);
@@ -546,7 +551,7 @@ namespace PE多功能信息处理插件
                     }
                     else
                     {
-                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]), false);
+                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]), true);
                         bootstate.openstate = 1;
                         ChineseTooltemp.Text = "已汉化";
                         ControlCheck(false);
