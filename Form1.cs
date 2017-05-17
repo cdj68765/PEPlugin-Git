@@ -7105,11 +7105,22 @@ namespace PE多功能信息处理插件
         {
             IPXPmx ThePmxOfNow = GetPmx;
             List<string> add = new List<string>();
-            foreach (var temp in ThePmxOfNow.Bone)
+            for (int i = 0; i < ThePmxOfNow.Bone.Count; i++)
             {
-                add.Add(temp.Name);
+                add.Add(i + ":" + ThePmxOfNow.Bone[i].Name);
             }
-            SelectFatherBone.DataSource = add;
+            if ((sender as ComboBox).Name == "OriBoneCombox")
+            {
+                OriBoneCombox.DataSource = add;
+            }
+            else if ((sender as ComboBox).Name == "FinBoneCombo")
+            {
+                FinBoneCombo.DataSource = add;
+            }
+            else
+            {
+                SelectFatherBone.DataSource = add;
+            }
         }
 
         private List<int> SelectVertexIndex = new List<int>();
@@ -10815,6 +10826,65 @@ namespace PE多功能信息处理插件
             }
         }
 
+        #endregion
+        #region 骨骼权重置换
+
+
+        private void ReplaceSelectVertexBone_Click(object sender, EventArgs e)
+        {
+            var SelectVertex = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices();
+            if (SelectVertex.Count() != 0)
+            {
+                IPXPmx ThePmxOfNow = GetPmx;
+                if (ThePmxOfNow == null)
+                {
+                    ThePmxOfNow = ARGS.Host.Connector.Pmx.GetCurrentState();
+                }
+                if (OriBoneCombox.Text != "" && FinBoneCombo.Text != "")
+                {
+                    new Task(() =>
+                      {
+                          var bone1 = ThePmxOfNow.Bone[OriBoneCombox.SelectedIndex];
+                          var bone2 = ThePmxOfNow.Bone[FinBoneCombo.SelectedIndex];
+                          Parallel.ForEach(SelectVertex, vertex =>
+                          {
+                              if (ThePmxOfNow.Vertex[vertex].Bone1 == bone1)
+                              {
+                                  ThePmxOfNow.Vertex[vertex].Bone1 = bone2;
+                              }
+                              else if (ThePmxOfNow.Vertex[vertex].Bone2 == bone1)
+                              {
+                                  ThePmxOfNow.Vertex[vertex].Bone2 = bone2;
+                              }
+                              else if (ThePmxOfNow.Vertex[vertex].Bone3 == bone1)
+                              {
+                                  ThePmxOfNow.Vertex[vertex].Bone3 = bone2;
+                              }
+                              else if (ThePmxOfNow.Vertex[vertex].Bone4 == bone1)
+                              {
+                                  ThePmxOfNow.Vertex[vertex].Bone4 = bone2;
+                              }
+                          });
+                          BeginInvoke(new Action(()=> 
+                          {
+                              ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
+                              ARGS.Host.Connector.Form.UpdateList(UpdateObject.Vertex);
+                              ARGS.Host.Connector.View.PmxView.UpdateModel();
+                              ARGS.Host.Connector.View.PmxView.UpdateView();
+                              MetroMessageBox.Show(this, "置换完成", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                          }));
+                      }).Start();
+                }
+                else
+                {
+                    MetroMessageBox.Show(this, "请选择置换前后骨骼后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                MetroMessageBox.Show(this, "请先选择顶点后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
         #endregion
     }
 }

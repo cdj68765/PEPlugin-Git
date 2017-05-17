@@ -345,6 +345,11 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
+            this.ReplaceSelectVertexBone = new MetroFramework.Controls.MetroTile();
+            this.metroLabel26 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel27 = new MetroFramework.Controls.MetroLabel();
+            this.OriBoneCombox = new MetroFramework.Controls.MetroComboBox();
+            this.FinBoneCombo = new MetroFramework.Controls.MetroComboBox();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -1454,6 +1459,11 @@ namespace PE多功能信息处理插件
             // 
             // 骨骼基础设置
             // 
+            this.骨骼基础设置.Controls.Add(this.FinBoneCombo);
+            this.骨骼基础设置.Controls.Add(this.OriBoneCombox);
+            this.骨骼基础设置.Controls.Add(this.metroLabel27);
+            this.骨骼基础设置.Controls.Add(this.metroLabel26);
+            this.骨骼基础设置.Controls.Add(this.ReplaceSelectVertexBone);
             this.骨骼基础设置.Controls.Add(this.metroLabel6);
             this.骨骼基础设置.Controls.Add(this.MirrorModeLabel);
             this.骨骼基础设置.Controls.Add(this.MirrorMode);
@@ -6214,6 +6224,65 @@ namespace PE多功能信息处理插件
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
             // 
+            // ReplaceSelectVertexBone
+            // 
+            this.ReplaceSelectVertexBone.ActiveControl = null;
+            this.ReplaceSelectVertexBone.Location = new System.Drawing.Point(0, 391);
+            this.ReplaceSelectVertexBone.Name = "ReplaceSelectVertexBone";
+            this.ReplaceSelectVertexBone.Size = new System.Drawing.Size(120, 60);
+            this.ReplaceSelectVertexBone.TabIndex = 128;
+            this.ReplaceSelectVertexBone.Text = "置换选中顶点的\r\n骨骼";
+            this.ReplaceSelectVertexBone.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.ReplaceSelectVertexBone.UseSelectable = true;
+            this.ReplaceSelectVertexBone.UseStyleColors = true;
+            this.ReplaceSelectVertexBone.Click += new System.EventHandler(this.ReplaceSelectVertexBone_Click);
+            // 
+            // metroLabel26
+            // 
+            this.metroLabel26.AutoSize = true;
+            this.metroLabel26.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.metroLabel26.Location = new System.Drawing.Point(144, 393);
+            this.metroLabel26.Name = "metroLabel26";
+            this.metroLabel26.Size = new System.Drawing.Size(70, 25);
+            this.metroLabel26.TabIndex = 131;
+            this.metroLabel26.Text = "原骨骼:";
+            this.metroLabel26.UseStyleColors = true;
+            // 
+            // metroLabel27
+            // 
+            this.metroLabel27.AutoSize = true;
+            this.metroLabel27.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.metroLabel27.Location = new System.Drawing.Point(126, 424);
+            this.metroLabel27.Name = "metroLabel27";
+            this.metroLabel27.Size = new System.Drawing.Size(88, 25);
+            this.metroLabel27.TabIndex = 132;
+            this.metroLabel27.Text = "目标骨骼:";
+            this.metroLabel27.UseStyleColors = true;
+            // 
+            // OriBoneCombox
+            // 
+            this.OriBoneCombox.FormattingEnabled = true;
+            this.OriBoneCombox.IntegralHeight = false;
+            this.OriBoneCombox.ItemHeight = 23;
+            this.OriBoneCombox.Location = new System.Drawing.Point(220, 391);
+            this.OriBoneCombox.Name = "OriBoneCombox";
+            this.OriBoneCombox.Size = new System.Drawing.Size(121, 29);
+            this.OriBoneCombox.TabIndex = 133;
+            this.OriBoneCombox.UseSelectable = true;
+            this.OriBoneCombox.DropDown += new System.EventHandler(this.SelectFatherBone_DropDown);
+            // 
+            // FinBoneCombo
+            // 
+            this.FinBoneCombo.FormattingEnabled = true;
+            this.FinBoneCombo.IntegralHeight = false;
+            this.FinBoneCombo.ItemHeight = 23;
+            this.FinBoneCombo.Location = new System.Drawing.Point(220, 422);
+            this.FinBoneCombo.Name = "FinBoneCombo";
+            this.FinBoneCombo.Size = new System.Drawing.Size(121, 29);
+            this.FinBoneCombo.TabIndex = 134;
+            this.FinBoneCombo.UseSelectable = true;
+            this.FinBoneCombo.DropDown += new System.EventHandler(this.SelectFatherBone_DropDown);
+            // 
             // Metroform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -6582,5 +6651,10 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroToggle MirrorMode;
         private MetroFramework.Controls.MetroLabel metroLabel6;
         private MetroFramework.Controls.MetroTabPage UV操作;
+        private MetroFramework.Controls.MetroTile ReplaceSelectVertexBone;
+        private MetroFramework.Controls.MetroLabel metroLabel27;
+        private MetroFramework.Controls.MetroLabel metroLabel26;
+        public MetroFramework.Controls.MetroComboBox FinBoneCombo;
+        public MetroFramework.Controls.MetroComboBox OriBoneCombox;
     }
 }
