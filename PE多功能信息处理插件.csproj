@@ -129,7 +129,6 @@
     </Compile>
     <None Include="app.config" />
     <None Include="Resources\program" />
-    <None Include="Resources\Program.cs" />
     <Compile Include="CheckUpdate.cs">
       <SubType>UserControl</SubType>
     </Compile>
