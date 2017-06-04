@@ -870,7 +870,10 @@ namespace PE多功能信息处理插件
 
                     if (bootstate.FormTop == 1)
                     {
-                        FormTopMost.PerformClick();
+                        Formtemp.BeginInvoke(new Action(()=>
+                        {
+                            FormTopMost.PerformClick();
+                        }));
                     }
 
                     #endregion PE主窗口是否前置

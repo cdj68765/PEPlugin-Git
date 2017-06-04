@@ -97,9 +97,13 @@ namespace PE多功能信息处理插件
             }
             else if (toolStripItem.Text != "0" && !string.IsNullOrWhiteSpace(toolStripItem.Text))
             {
-
+                if (toolStripItem.Name == "MenuItem_TopMost" && FormTopMost == null)
+                {
+                    FormTopMost = toolStripItem;
+                }
                 if (Read)
                 {
+            
                     ReadAdd(toolStripItem.Text, toolStripItem.Name);
                     ReadAdd(toolStripItem.ToolTipText, toolStripItem.Name);
                 }

@@ -56,9 +56,15 @@ namespace PE多功能信息处理插件
         {
             ThreadPool.QueueUserWorkItem((object state) =>
             {
-                PointCubicX();
-                PointCubicY();
-                PointCubicZ();
+                try
+                {
+                    PointCubicX();
+                    PointCubicY();
+                    PointCubicZ();
+                }
+                catch (Exception)
+                {
+                }
             });
             /*      Thread t1 = new Thread(PointCubicX);
                   t1.Start();
