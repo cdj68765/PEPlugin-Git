@@ -65,7 +65,7 @@ namespace PE多功能信息处理插件
             {
                 openstate = open;
                 Keystate = Key;
-                this.StyleState = Style;
+                StyleState = Style;
             }
         }
 
@@ -85,12 +85,11 @@ namespace PE多功能信息处理插件
                         modelName = new FileInfo(filePath).Name;
                     }
                 }
-                this.modelname = modelName;
-                this.modelpath = filePath;
+                modelname = modelName;
+                modelpath = filePath;
                 this.modeldata = modeldata;
             }
         }
-
 
         public class FormText
         {
@@ -99,14 +98,17 @@ namespace PE多功能信息处理插件
             public string ControlName;
             public int Count;
 
-            public FormText() { }
+            public FormText()
+            {
+            }
 
             public FormText(string v1, int v2, string v3)
             {
-                this.OriText = v1;
-                this.Count = v2;
-                this.ControlName = v3;
+                OriText = v1;
+                Count = v2;
+                ControlName = v3;
             }
+
             public FormText(string OriText, int Count, string ControlName, string TransText)
             {
                 this.OriText = OriText;
@@ -115,7 +117,6 @@ namespace PE多功能信息处理插件
                 this.TransText = TransText;
             }
         }
-        
 
         public class OperaList
         {
@@ -199,13 +200,13 @@ namespace PE多功能信息处理插件
 
             public ItemDate(int v1, double v2)
             {
-                this.Count = v1;
-                this.FirstNummer = v2;
+                Count = v1;
+                FirstNummer = v2;
             }
 
             public ItemDate(int v1, double v2, double v) : this(v1, v2)
             {
-                this.SecendNummer = v;
+                SecendNummer = v;
             }
         }
 
@@ -223,38 +224,38 @@ namespace PE多功能信息处理插件
 
             public TheDataForBezier(string v1, string text1, string text2, int[] v2)
             {
-                this.mode = v1;
-                this.FirstNummerLow = text1;
-                this.LastNummerLow = text2;
-                this.ItemCount = v2;
+                mode = v1;
+                FirstNummerLow = text1;
+                LastNummerLow = text2;
+                ItemCount = v2;
             }
 
             public TheDataForBezier(string v1, string text1, string text2, OperaList[] v2)
             {
-                this.mode = v1;
-                this.FirstNummerLow = text1;
-                this.LastNummerLow = text2;
-                this.ListItemCount = v2;
+                mode = v1;
+                FirstNummerLow = text1;
+                LastNummerLow = text2;
+                ListItemCount = v2;
             }
 
             public TheDataForBezier(string v1, string text1, string text2, string limit_MoveHigh_FirstXNummer, string limit_MoveHigh_LastXNummer, int[] v2)
             {
-                this.mode = v1;
-                this.FirstNummerLow = text1;
-                this.LastNummerLow = text2;
-                this.FirstNummerHigh = limit_MoveHigh_FirstXNummer;
-                this.LastNummerHigh = limit_MoveHigh_LastXNummer;
-                this.ItemCount = v2;
+                mode = v1;
+                FirstNummerLow = text1;
+                LastNummerLow = text2;
+                FirstNummerHigh = limit_MoveHigh_FirstXNummer;
+                LastNummerHigh = limit_MoveHigh_LastXNummer;
+                ItemCount = v2;
             }
 
             public TheDataForBezier(string v1, string text1, string text2, string limit_MoveHigh_FirstXNummer, string limit_MoveHigh_LastXNummer, OperaList[] v2)
             {
-                this.mode = v1;
-                this.FirstNummerLow = text1;
-                this.LastNummerLow = text2;
-                this.FirstNummerHigh = limit_MoveHigh_FirstXNummer;
-                this.LastNummerHigh = limit_MoveHigh_LastXNummer;
-                this.ListItemCount = v2;
+                mode = v1;
+                FirstNummerLow = text1;
+                LastNummerLow = text2;
+                FirstNummerHigh = limit_MoveHigh_FirstXNummer;
+                LastNummerHigh = limit_MoveHigh_LastXNummer;
+                ListItemCount = v2;
             }
         }
 
@@ -288,13 +289,13 @@ namespace PE多功能信息处理插件
         {
             public ToolItemInfo(ToolStripMenuItem temp4)
             {
-                this.Item = temp4;
+                Item = temp4;
             }
 
             public ToolItemInfo(ToolStripMenuItem temp4, string v)
             {
-                this.Item = temp4;
-                this.path = v;
+                Item = temp4;
+                path = v;
             }
 
             public ToolStripMenuItem Item { get; set; }

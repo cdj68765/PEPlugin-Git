@@ -8,16 +8,9 @@ namespace PE多功能信息处理插件
     {
         public TaskWindowControl2()
         {
-            this.Location = new System.Drawing.Point(100, 100);
+            Location = new System.Drawing.Point(100, 100);
             InitializeComponent();
-            if (Program.bootstate.ShowUpdata == 0)
-            {
-                metroCheckBox1.Checked = true;
-            }
-            else
-            {
-                metroCheckBox1.Checked = false;
-            }
+            metroCheckBox1.Checked = Program.bootstate.ShowUpdata == 0;
         }
 
         private void metroLink2_Click(object sender, EventArgs e)
@@ -29,14 +22,7 @@ namespace PE多功能信息处理插件
 
         private void metroCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (metroCheckBox1.Checked)
-            {
-                Program.bootstate.ShowUpdata = 0;
-            }
-            else
-            {
-                Program.bootstate.ShowUpdata = 1;
-            }
+            Program.bootstate.ShowUpdata = metroCheckBox1.Checked ? 0 : 1;
         }
     }
 }

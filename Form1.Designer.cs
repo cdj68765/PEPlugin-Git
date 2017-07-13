@@ -112,10 +112,15 @@ namespace PE多功能信息处理插件
             this.Bone = new MetroFramework.Controls.MetroTabPage();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.骨骼基础设置 = new MetroFramework.Controls.MetroTabPage();
+            this.MirrorBoneCheck = new MetroFramework.Controls.MetroCheckBox();
+            this.FinBoneCombo = new MetroFramework.Controls.MetroComboBox();
+            this.OriBoneCombox = new MetroFramework.Controls.MetroComboBox();
+            this.metroLabel27 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel26 = new MetroFramework.Controls.MetroLabel();
+            this.ReplaceSelectVertexBone = new MetroFramework.Controls.MetroTile();
             this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
             this.MirrorModeLabel = new MetroFramework.Controls.MetroLabel();
             this.MirrorMode = new MetroFramework.Controls.MetroToggle();
-            this.MirrorBoneCheck = new MetroFramework.Controls.MetroCheckBox();
             this.MirrorVertexCountLabel = new MetroFramework.Controls.MetroLabel();
             this.MirrorFinChar = new MetroFramework.Controls.MetroTextBox();
             this.MirrorOriChar = new MetroFramework.Controls.MetroTextBox();
@@ -144,8 +149,8 @@ namespace PE多功能信息处理插件
             this.AnalyseBoneLabel = new MetroFramework.Controls.MetroLabel();
             this.MirrorCharLabel = new MetroFramework.Controls.MetroLabel();
             this.metroPanel2 = new MetroFramework.Controls.MetroPanel();
-            this.MirrorPosionPlusPara = new MetroFramework.Controls.MetroRadioButton();
             this.MirrorOnlyPara = new MetroFramework.Controls.MetroRadioButton();
+            this.MirrorPosionPlusPara = new MetroFramework.Controls.MetroRadioButton();
             this.刚体自动连接 = new MetroFramework.Controls.MetroTabPage();
             this.BoneListConutLabel = new MetroFramework.Controls.MetroLabel();
             this.DeleteBoneListItem = new MetroFramework.Controls.MetroButton();
@@ -345,11 +350,7 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
-            this.ReplaceSelectVertexBone = new MetroFramework.Controls.MetroTile();
-            this.metroLabel26 = new MetroFramework.Controls.MetroLabel();
-            this.metroLabel27 = new MetroFramework.Controls.MetroLabel();
-            this.OriBoneCombox = new MetroFramework.Controls.MetroComboBox();
-            this.FinBoneCombo = new MetroFramework.Controls.MetroComboBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -1459,6 +1460,8 @@ namespace PE多功能信息处理插件
             // 
             // 骨骼基础设置
             // 
+            this.骨骼基础设置.Controls.Add(this.button1);
+            this.骨骼基础设置.Controls.Add(this.MirrorBoneCheck);
             this.骨骼基础设置.Controls.Add(this.FinBoneCombo);
             this.骨骼基础设置.Controls.Add(this.OriBoneCombox);
             this.骨骼基础设置.Controls.Add(this.metroLabel27);
@@ -1467,7 +1470,6 @@ namespace PE多功能信息处理插件
             this.骨骼基础设置.Controls.Add(this.metroLabel6);
             this.骨骼基础设置.Controls.Add(this.MirrorModeLabel);
             this.骨骼基础设置.Controls.Add(this.MirrorMode);
-            this.骨骼基础设置.Controls.Add(this.MirrorBoneCheck);
             this.骨骼基础设置.Controls.Add(this.MirrorVertexCountLabel);
             this.骨骼基础设置.Controls.Add(this.MirrorFinChar);
             this.骨骼基础设置.Controls.Add(this.MirrorOriChar);
@@ -1508,6 +1510,79 @@ namespace PE多功能信息处理插件
             this.骨骼基础设置.VerticalScrollbarHighlightOnWheel = false;
             this.骨骼基础设置.VerticalScrollbarSize = 10;
             // 
+            // MirrorBoneCheck
+            // 
+            this.MirrorBoneCheck.AutoSize = true;
+            this.MirrorBoneCheck.Location = new System.Drawing.Point(126, 373);
+            this.MirrorBoneCheck.Name = "MirrorBoneCheck";
+            this.MirrorBoneCheck.Size = new System.Drawing.Size(75, 15);
+            this.MirrorBoneCheck.TabIndex = 119;
+            this.MirrorBoneCheck.Text = "骨骼镜像";
+            this.MirrorBoneCheck.UseSelectable = true;
+            this.MirrorBoneCheck.UseStyleColors = true;
+            this.MirrorBoneCheck.Visible = false;
+            // 
+            // FinBoneCombo
+            // 
+            this.FinBoneCombo.FormattingEnabled = true;
+            this.FinBoneCombo.IntegralHeight = false;
+            this.FinBoneCombo.ItemHeight = 23;
+            this.FinBoneCombo.Location = new System.Drawing.Point(220, 422);
+            this.FinBoneCombo.MaxDropDownItems = 16;
+            this.FinBoneCombo.Name = "FinBoneCombo";
+            this.FinBoneCombo.Size = new System.Drawing.Size(121, 29);
+            this.FinBoneCombo.TabIndex = 134;
+            this.FinBoneCombo.UseSelectable = true;
+            this.FinBoneCombo.DropDown += new System.EventHandler(this.SelectFatherBone_DropDown);
+            // 
+            // OriBoneCombox
+            // 
+            this.OriBoneCombox.FormattingEnabled = true;
+            this.OriBoneCombox.IntegralHeight = false;
+            this.OriBoneCombox.ItemHeight = 23;
+            this.OriBoneCombox.Location = new System.Drawing.Point(220, 391);
+            this.OriBoneCombox.MaxDropDownItems = 16;
+            this.OriBoneCombox.Name = "OriBoneCombox";
+            this.OriBoneCombox.Size = new System.Drawing.Size(121, 29);
+            this.OriBoneCombox.TabIndex = 133;
+            this.OriBoneCombox.UseSelectable = true;
+            this.OriBoneCombox.DropDown += new System.EventHandler(this.SelectFatherBone_DropDown);
+            // 
+            // metroLabel27
+            // 
+            this.metroLabel27.AutoSize = true;
+            this.metroLabel27.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.metroLabel27.Location = new System.Drawing.Point(126, 424);
+            this.metroLabel27.Name = "metroLabel27";
+            this.metroLabel27.Size = new System.Drawing.Size(88, 25);
+            this.metroLabel27.TabIndex = 132;
+            this.metroLabel27.Text = "目标骨骼:";
+            this.metroLabel27.UseStyleColors = true;
+            // 
+            // metroLabel26
+            // 
+            this.metroLabel26.AutoSize = true;
+            this.metroLabel26.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.metroLabel26.Location = new System.Drawing.Point(144, 393);
+            this.metroLabel26.Name = "metroLabel26";
+            this.metroLabel26.Size = new System.Drawing.Size(70, 25);
+            this.metroLabel26.TabIndex = 131;
+            this.metroLabel26.Text = "原骨骼:";
+            this.metroLabel26.UseStyleColors = true;
+            // 
+            // ReplaceSelectVertexBone
+            // 
+            this.ReplaceSelectVertexBone.ActiveControl = null;
+            this.ReplaceSelectVertexBone.Location = new System.Drawing.Point(0, 391);
+            this.ReplaceSelectVertexBone.Name = "ReplaceSelectVertexBone";
+            this.ReplaceSelectVertexBone.Size = new System.Drawing.Size(120, 60);
+            this.ReplaceSelectVertexBone.TabIndex = 128;
+            this.ReplaceSelectVertexBone.Text = "置换选中顶点的\r\n骨骼";
+            this.ReplaceSelectVertexBone.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.ReplaceSelectVertexBone.UseSelectable = true;
+            this.ReplaceSelectVertexBone.UseStyleColors = true;
+            this.ReplaceSelectVertexBone.Click += new System.EventHandler(this.ReplaceSelectVertexBone_Click);
+            // 
             // metroLabel6
             // 
             this.metroLabel6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1547,18 +1622,6 @@ namespace PE多功能信息处理插件
             this.MirrorMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.MirrorMode.UseSelectable = true;
             this.MirrorMode.CheckedChanged += new System.EventHandler(this.MirrorMode_CheckedChanged);
-            // 
-            // MirrorBoneCheck
-            // 
-            this.MirrorBoneCheck.AutoSize = true;
-            this.MirrorBoneCheck.Location = new System.Drawing.Point(126, 373);
-            this.MirrorBoneCheck.Name = "MirrorBoneCheck";
-            this.MirrorBoneCheck.Size = new System.Drawing.Size(75, 15);
-            this.MirrorBoneCheck.TabIndex = 119;
-            this.MirrorBoneCheck.Text = "骨骼镜像";
-            this.MirrorBoneCheck.UseSelectable = true;
-            this.MirrorBoneCheck.UseStyleColors = true;
-            this.MirrorBoneCheck.Visible = false;
             // 
             // MirrorVertexCountLabel
             // 
@@ -1944,12 +2007,12 @@ namespace PE多功能信息处理插件
             // 
             // metroPanel2
             // 
-            this.metroPanel2.Controls.Add(this.MirrorPosionPlusPara);
             this.metroPanel2.Controls.Add(this.MirrorOnlyPara);
+            this.metroPanel2.Controls.Add(this.MirrorPosionPlusPara);
             this.metroPanel2.HorizontalScrollbarBarColor = true;
             this.metroPanel2.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel2.HorizontalScrollbarSize = 10;
-            this.metroPanel2.Location = new System.Drawing.Point(196, 369);
+            this.metroPanel2.Location = new System.Drawing.Point(200, 369);
             this.metroPanel2.Name = "metroPanel2";
             this.metroPanel2.Size = new System.Drawing.Size(199, 19);
             this.metroPanel2.TabIndex = 120;
@@ -1957,23 +2020,11 @@ namespace PE多功能信息处理插件
             this.metroPanel2.VerticalScrollbarHighlightOnWheel = false;
             this.metroPanel2.VerticalScrollbarSize = 10;
             // 
-            // MirrorPosionPlusPara
-            // 
-            this.MirrorPosionPlusPara.AutoSize = true;
-            this.MirrorPosionPlusPara.Checked = true;
-            this.MirrorPosionPlusPara.Location = new System.Drawing.Point(3, 4);
-            this.MirrorPosionPlusPara.Name = "MirrorPosionPlusPara";
-            this.MirrorPosionPlusPara.Size = new System.Drawing.Size(109, 15);
-            this.MirrorPosionPlusPara.TabIndex = 102;
-            this.MirrorPosionPlusPara.TabStop = true;
-            this.MirrorPosionPlusPara.Text = "镜像位置+参数";
-            this.MirrorPosionPlusPara.UseSelectable = true;
-            this.MirrorPosionPlusPara.Visible = false;
-            // 
             // MirrorOnlyPara
             // 
             this.MirrorOnlyPara.AutoSize = true;
-            this.MirrorOnlyPara.Location = new System.Drawing.Point(112, 4);
+            this.MirrorOnlyPara.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.MirrorOnlyPara.Location = new System.Drawing.Point(114, 4);
             this.MirrorOnlyPara.Name = "MirrorOnlyPara";
             this.MirrorOnlyPara.Size = new System.Drawing.Size(88, 15);
             this.MirrorOnlyPara.TabIndex = 103;
@@ -1981,6 +2032,20 @@ namespace PE多功能信息处理插件
             this.MirrorOnlyPara.UseSelectable = true;
             this.MirrorOnlyPara.UseStyleColors = true;
             this.MirrorOnlyPara.Visible = false;
+            // 
+            // MirrorPosionPlusPara
+            // 
+            this.MirrorPosionPlusPara.AutoSize = true;
+            this.MirrorPosionPlusPara.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.MirrorPosionPlusPara.Checked = true;
+            this.MirrorPosionPlusPara.Location = new System.Drawing.Point(6, 4);
+            this.MirrorPosionPlusPara.Name = "MirrorPosionPlusPara";
+            this.MirrorPosionPlusPara.Size = new System.Drawing.Size(109, 15);
+            this.MirrorPosionPlusPara.TabIndex = 102;
+            this.MirrorPosionPlusPara.TabStop = true;
+            this.MirrorPosionPlusPara.Text = "镜像位置+参数";
+            this.MirrorPosionPlusPara.UseSelectable = true;
+            this.MirrorPosionPlusPara.Visible = false;
             // 
             // 刚体自动连接
             // 
@@ -6224,64 +6289,15 @@ namespace PE多功能信息处理插件
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
             // 
-            // ReplaceSelectVertexBone
+            // button1
             // 
-            this.ReplaceSelectVertexBone.ActiveControl = null;
-            this.ReplaceSelectVertexBone.Location = new System.Drawing.Point(0, 391);
-            this.ReplaceSelectVertexBone.Name = "ReplaceSelectVertexBone";
-            this.ReplaceSelectVertexBone.Size = new System.Drawing.Size(120, 60);
-            this.ReplaceSelectVertexBone.TabIndex = 128;
-            this.ReplaceSelectVertexBone.Text = "置换选中顶点的\r\n骨骼";
-            this.ReplaceSelectVertexBone.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.ReplaceSelectVertexBone.UseSelectable = true;
-            this.ReplaceSelectVertexBone.UseStyleColors = true;
-            this.ReplaceSelectVertexBone.Click += new System.EventHandler(this.ReplaceSelectVertexBone_Click);
-            // 
-            // metroLabel26
-            // 
-            this.metroLabel26.AutoSize = true;
-            this.metroLabel26.FontSize = MetroFramework.MetroLabelSize.Tall;
-            this.metroLabel26.Location = new System.Drawing.Point(144, 393);
-            this.metroLabel26.Name = "metroLabel26";
-            this.metroLabel26.Size = new System.Drawing.Size(70, 25);
-            this.metroLabel26.TabIndex = 131;
-            this.metroLabel26.Text = "原骨骼:";
-            this.metroLabel26.UseStyleColors = true;
-            // 
-            // metroLabel27
-            // 
-            this.metroLabel27.AutoSize = true;
-            this.metroLabel27.FontSize = MetroFramework.MetroLabelSize.Tall;
-            this.metroLabel27.Location = new System.Drawing.Point(126, 424);
-            this.metroLabel27.Name = "metroLabel27";
-            this.metroLabel27.Size = new System.Drawing.Size(88, 25);
-            this.metroLabel27.TabIndex = 132;
-            this.metroLabel27.Text = "目标骨骼:";
-            this.metroLabel27.UseStyleColors = true;
-            // 
-            // OriBoneCombox
-            // 
-            this.OriBoneCombox.FormattingEnabled = true;
-            this.OriBoneCombox.IntegralHeight = false;
-            this.OriBoneCombox.ItemHeight = 23;
-            this.OriBoneCombox.Location = new System.Drawing.Point(220, 391);
-            this.OriBoneCombox.Name = "OriBoneCombox";
-            this.OriBoneCombox.Size = new System.Drawing.Size(121, 29);
-            this.OriBoneCombox.TabIndex = 133;
-            this.OriBoneCombox.UseSelectable = true;
-            this.OriBoneCombox.DropDown += new System.EventHandler(this.SelectFatherBone_DropDown);
-            // 
-            // FinBoneCombo
-            // 
-            this.FinBoneCombo.FormattingEnabled = true;
-            this.FinBoneCombo.IntegralHeight = false;
-            this.FinBoneCombo.ItemHeight = 23;
-            this.FinBoneCombo.Location = new System.Drawing.Point(220, 422);
-            this.FinBoneCombo.Name = "FinBoneCombo";
-            this.FinBoneCombo.Size = new System.Drawing.Size(121, 29);
-            this.FinBoneCombo.TabIndex = 134;
-            this.FinBoneCombo.UseSelectable = true;
-            this.FinBoneCombo.DropDown += new System.EventHandler(this.SelectFatherBone_DropDown);
+            this.button1.Location = new System.Drawing.Point(232, 72);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 135;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Metroform
             // 
@@ -6656,5 +6672,6 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroLabel metroLabel26;
         public MetroFramework.Controls.MetroComboBox FinBoneCombo;
         public MetroFramework.Controls.MetroComboBox OriBoneCombox;
+        private System.Windows.Forms.Button button1;
     }
 }

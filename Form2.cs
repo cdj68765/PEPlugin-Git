@@ -16,14 +16,14 @@ namespace PE多功能信息处理插件
 
         private void metroTextBox1_ButtonClick(object sender, EventArgs e)
         {
-            this.Password = metroTextBox1.Text;
+            Password = metroTextBox1.Text;
             if (Password == "")
             {
                 MetroMessageBox.Show(this, "密码不能为空", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                this.Close();
+                Close();
             }
         }
     }

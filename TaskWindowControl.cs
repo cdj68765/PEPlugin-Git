@@ -11,7 +11,7 @@ namespace PE多功能信息处理插件
     {
         public TaskWindowControl()
         {
-            this.Location = new System.Drawing.Point(100, 100);
+            Location = new System.Drawing.Point(100, 100);
             InitializeComponent();
         }
 
@@ -33,7 +33,7 @@ namespace PE多功能信息处理插件
 
         private void metroButton1_Click(object sender, EventArgs e)
         {
-            ThreadPool.QueueUserWorkItem((object state) =>
+            ThreadPool.QueueUserWorkItem(state =>
              {
                  try
                  {
