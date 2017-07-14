@@ -48,7 +48,34 @@ namespace PE多功能信息处理插件
                 var sender = ARGS.Host.Connector.Form;
                 if ((sender as Form).Text.IndexOf("*", StringComparison.Ordinal) != -1)
                 {
-                    MetroMessageBox.Show(Formtemp, "错误", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (Directory.Exists(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName +
+                                         @"\Backup") ==
+                        false) //如果不存在就创建file文件夹
+                    {
+                        Directory.CreateDirectory(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath)
+                                                      .DirectoryName + @"\Backup");
+                    }
+                    ThreadPool.QueueUserWorkItem(o =>
+                    {
+                        var SaveFileList =
+                            new DirectoryInfo(
+                                new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName +
+                                @"\Backup").GetFiles().ToList();
+                        if (SaveFileList.Count > 50)
+                        {
+                            SaveFileList.Sort((F, f) => F.CreationTime.CompareTo(f.CreationTime));
+                            for (int i = 0; i < SaveFileList.Count-40; i++)
+                            {
+                                SaveFileList[i].Delete();
+                            }
+                        }
+                    });
+                    IPXPmx pmx = ARGS.Host.Connector.Pmx.GetCurrentState();
+                    if (pmx.FilePath != "" && pmx.Vertex.Count != 0)
+                    {
+                        pmx.ToFile(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName +
+                                   @"\Backup\" + new FileInfo(pmx.FilePath).Name);
+                    }
                 }
 
                 bootstate.OldOpen = ARGS.Host.Connector.Pmx.CurrentPath;

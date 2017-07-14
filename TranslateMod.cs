@@ -118,9 +118,8 @@ namespace PE多功能信息处理插件
                       }*/
                 }
             }
-            foreach (var fi in toolStripItem.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+            foreach (var obj in toolStripItem.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic).Select(fi => fi.GetValue(toolStripItem)))
             {
-                var obj = fi.GetValue(toolStripItem);
                 SwichControl(obj, count);
             }
         }
@@ -238,13 +237,10 @@ namespace PE多功能信息处理插件
                             if (Bonepage == null)
                             {
                                 Bonepage = TabPage;
-                                foreach (Control item in TabPage.Controls)
+                                foreach (Control item in TabPage.Controls.Cast<Control>().Where(item => item.Name.EndsWith("Find")))
                                 {
-                                    if (item.Name.EndsWith("Find"))
-                                    {
-                                        BoneSearch = item as TextBox;
-                                        break;
-                                    }
+                                    BoneSearch = item as TextBox;
+                                    break;
                                 }
                             }
                             break;
@@ -253,13 +249,10 @@ namespace PE多功能信息处理插件
                             if (Bodypage == null)
                             {
                                 Bodypage = TabPage;
-                                foreach (Control item in TabPage.Controls)
+                                foreach (Control item in TabPage.Controls.Cast<Control>().Where(item => item.Name.EndsWith("Find")))
                                 {
-                                    if (item.Name.EndsWith("Find"))
-                                    {
-                                        BodySearch = item as TextBox;
-                                        break;
-                                    }
+                                    BodySearch = item as TextBox;
+                                    break;
                                 }
                             }
                             break;
@@ -268,13 +261,10 @@ namespace PE多功能信息处理插件
                             if (jointpage == null)
                             {
                                 jointpage = TabPage;
-                                foreach (Control item in TabPage.Controls)
+                                foreach (Control item in TabPage.Controls.Cast<Control>().Where(item => item.Name.EndsWith("Find")))
                                 {
-                                    if (item.Name.EndsWith("Find"))
-                                    {
-                                        JointSearch = item as TextBox;
-                                        break;
-                                    }
+                                    JointSearch = item as TextBox;
+                                    break;
                                 }
                             }
                             break;
@@ -301,7 +291,9 @@ namespace PE多功能信息处理插件
                     switch (Control.Name)
                     {
                         case "":
-                            ReadAdd(Control.Text, "TextBox");
+                            //ReadAdd(Control.Text, "TextBox");
+                            Writeinfo[0].OriText = Control.Text;
+                            Control.Text = WriteAdd(Control.Text, "TextBox").Replace("\n","\r\n");
                             break;
                         /*case "btnVertex_NormalizeWeight":
                                 break;*/
