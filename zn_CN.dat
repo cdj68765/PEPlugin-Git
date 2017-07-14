@@ -61,59 +61,59 @@ fc  : softness, biasFactor, relaxationFactor  | Jointパラメータ(標準:0.9/
 
 ※回転制限をフリー(-180~+180／1~0など)にしてモーターを使うと継続回転が可能
 </OriText>
-    <TransText>※Joint変更時はパラメータ／制限値を初期化推奨
+    <TransText>※推荐在改变Joint的时候初始化参数以及限制值
 
-■共通
-[制限] : A - B  | 範囲(移動:空間距離／回転:軸回転度数)
+■共同
+[限制] : A - B  | 范围(移动:空间距离／旋转:轴旋转度数)
 
- A &lt; B  | 範囲で制限
- A = B  | 指定値でロック(剛体との距離ズレなどにより完全なロックは不可能) 
- A &gt; B  | 制限なし(フリー)
+ A &lt; B  | 限制在范围内
+ A = B  | 锁定在指定值(由于与刚体之间存在距离差因此不可能完全锁定) 
+ A &gt; B  | 无限制(无约束)
 
 ■ﾊﾞﾈ付6DOF
-[ばね] : バネ計算で使われる係数値
+[弹力] : 弹力计算中使用的系数值
 
 ■ConeTwist
-[制限／パラメータ]
-dp_x  : damping(0) - fixThresh(1)  | 0-0 だと物理計算が壊れる可能性があります
-dp_z  : (固定)モーター有効(0:OFF/1:ON) - モーターインパルス値
+[限制／参数]
+dp_x  : damping(0) - fixThresh(1)   | 0-0 之类的参数可能会破坏物理计算
+dp_z  : (固定)马达有效(0:OFF/1:ON) - 马达脉冲値
 
-回転  : X/Y/Z 軸周りの回転範囲(+-共用)  | x:60 -&gt; -60~+60
+旋转  : X/Y/Z 轴周围的旋转范围(+-共用)  | x:60 -&gt; -60~+60
 
-※正確には 軸向き方向(初期姿勢でX軸基準)に対して、
- X : 捻り方向
- Y : 回転範囲の拡がり-横(縦)
- Z : 回転範囲の拡がり-縦(横)
-という仕様になります(基準の軸向きは[軸向]から固定方向へ簡易設定可能(+-XYZ))
+※正确来说 对于朝向轴的方向(以初始姿势的X轴为基准)、
+ X : 扭动方向
+ Y : 旋转范围的扩大-横(纵)
+ Z : 旋转范围的扩大-纵(横)
+就以这种方式(朝向基准轴可以让从[軸向]到固定方向的设定变简单(+-XYZ))
 
-[パラメータ／モーター角]
-fc  : softness, biasFactor, relaxationFactor  | Jointパラメータ(標準:1/0.3/1)
-MtA : モーター有効時の固定?角度(X/Y/Z)
+[参数／旋转角]
+fc  : softness, biasFactor, relaxationFactor  | Joint参数(标准:1/0.3/1)
+MtA : 马达有效时的固定?角度(X/Y/Z)
 
-※(固定)モーターの挙動(問題点)
-・回転範囲のZが60(度)以上必要(ない場合は回転範囲が壊れる)
-・指定角度で固定してしまう(仕様？)
+※(固定)马达的特性(问题点)
+・旋转范围的Z必须60(度)以上(不到60度的情况下可能会破坏旋转范围)
+・以指定角度来固定吧(一种办法？)
 
-連続回転目的は下記 Hinge でのモーター使用を推奨
+以连续旋转为目标的推荐使用下述 Hinge 之中的马达设定
 
 ■Slider
-移動／回転軸は "X軸" 方向基準 (軸方向はJoint向きの変更で対応)
-※[軸向]から固定方向へ簡易設定可能(+-XYZ)
+移动／旋转轴是 "X轴" 方向为基准 (轴方向是以Joint的朝向变更来关联)
+※从[轴向]往固定方向可以简单设定(+-XYZ)
 
 [モーター]
-移動／回転(共通)  : モーター有効(0:OFF/1:ON), モーター速度, モーター最大力
+移动／转动(共同)  : 马达有效(0:OFF/1:ON), 马达速度, 马达最大力
 
-※Sliderによる回転制御は範囲によっては正しく動作しません
+※由于Slider会让旋转限制因为范围设定而无法正常工作。
 
 ■Hinge
-回転軸は "Z軸" 方向基準 (軸方向はJoint向きの変更で対応)
-※[軸向]から固定方向へ簡易設定可能(+-XYZ)
+旋转轴是以 "Z軸" 方向为基准 (轴方向对应Joint朝向的变更)
+※从[轴向]往固定方向可以简单设定(+-XYZ)
 
-[パラメータ／モーター]
-fc  : softness, biasFactor, relaxationFactor  | Jointパラメータ(標準:0.9/0.3/1)
-回転  : 回転モーター有効(0:OFF/1:ON), モーター速度, モーター最大力
+[参数／马达]
+fc  : softness, biasFactor, relaxationFactor  | Joint参数(標準:0.9/0.3/1)
+旋转  : 旋转马达有効(0:OFF/1:ON), 马达速度, 马达最大力
 
-※回転制限をフリー(-180~+180／1~0など)にしてモーターを使うと継続回転が可能
+※解除旋转限制的约束(-180~+180／1~0之类)来使用马达时可以连续旋转
 </TransText>
     <ControlName>TextBox</ControlName>
     <Count>1</Count>
@@ -408,7 +408,7 @@ fc  : softness, biasFactor, relaxationFactor  | Jointパラメータ(標準:0.9/
   </FormText>
   <FormText>
     <OriText>テクスチャ／メモ</OriText>
-    <TransText>材质纹理／备注</TransText>
+    <TransText>材质纹理／脚本</TransText>
     <ControlName>groupBox3</ControlName>
     <Count>1</Count>
   </FormText>
@@ -654,7 +654,7 @@ fc  : softness, biasFactor, relaxationFactor  | Jointパラメータ(標準:0.9/
   </FormText>
   <FormText>
     <OriText>メモ :</OriText>
-    <TransText>备注 :</TransText>
+    <TransText>脚本</TransText>
     <ControlName>label16</ControlName>
     <Count>1</Count>
   </FormText>
@@ -1290,7 +1290,7 @@ fc  : softness, biasFactor, relaxationFactor  | Jointパラメータ(標準:0.9/
   </FormText>
   <FormText>
     <OriText>メモ(&amp;M)</OriText>
-    <TransText>备注(&amp;M)</TransText>
+    <TransText>脚本(&amp;M)</TransText>
     <ControlName>CMenuItem_Material_Copy_Memo</ControlName>
     <Count>1</Count>
   </FormText>

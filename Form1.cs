@@ -91,7 +91,8 @@ namespace PE多功能信息处理插件
                                     new System.Net.WebClient().DownloadData("https://bowlroll.net/file/95442")));
                         if (Update.Value != Resource1.UpdateData)
                         {
-                            BeginInvoke(new MethodInvoker(() => MetroTaskWindow.ShowTaskWindow(Parent, "检测到更新", new TaskWindowControl2(), 10)));
+                            BeginInvoke(new MethodInvoker(
+                                () => MetroTaskWindow.ShowTaskWindow(Parent, "检测到更新", new TaskWindowControl2(), 10)));
                         }
                     }
                 }
@@ -255,8 +256,8 @@ namespace PE多功能信息处理插件
                 foreach (var temp in KeyTemp)
                 {
                     var temp2 = (from T in TabTemp
-                        where temp.TabID == T.TabID
-                        select T).FirstOrDefault();
+                                 where temp.TabID == T.TabID
+                                 select T).FirstOrDefault();
                     if (temp2 != null)
                     {
                         temp2.KeyLIst.Add(new TabInfo.KeyInfo(temp.itemname, temp.itemKey, temp.itemLocalX,
@@ -297,7 +298,7 @@ namespace PE多功能信息处理插件
 
             #endregion
 
-
+            GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
             FormClosed += delegate
             {
                 try
@@ -421,9 +422,10 @@ namespace PE多功能信息处理插件
                                                         if (MirrorBoneName == ThePmxOfNow.Bone[temp].Name)
                                                         {
                                                             var TempBone = (from item in ThePmxOfNow.Bone
-                                                                orderby Getdistance(ThePmxOfNow.Bone[temp].Position,
-                                                                    item.Position) ascending
-                                                                select item).FirstOrDefault();
+                                                                            orderby Getdistance(
+                                                                                ThePmxOfNow.Bone[temp].Position,
+                                                                                item.Position) ascending
+                                                                            select item).FirstOrDefault();
                                                             if (TempBone != ThePmxOfNow.Bone[temp])
                                                             {
                                                                 table.Rows.Add(temp + ":" + ThePmxOfNow.Bone[temp].Name,
@@ -447,9 +449,10 @@ namespace PE多功能信息处理插件
                                                             else
                                                             {
                                                                 var TempBone = (from item in ThePmxOfNow.Bone
-                                                                    orderby Getdistance(ThePmxOfNow.Bone[temp].Position,
-                                                                        item.Position) ascending
-                                                                    select item).FirstOrDefault();
+                                                                                orderby Getdistance(
+                                                                                    ThePmxOfNow.Bone[temp].Position,
+                                                                                    item.Position) ascending
+                                                                                select item).FirstOrDefault();
                                                                 if (TempBone != ThePmxOfNow.Bone[temp])
                                                                 {
                                                                     table.Rows.Add(
@@ -1891,7 +1894,7 @@ namespace PE多功能信息处理插件
                     for (int i = 0; i < count; i++)
                     {
                         MathReturn.Add((float) Math.Round(
-                            (Last - First) * Math.Cos(((Math.PI / 2) / (count - 1)) * i) + First, 2));
+                            (Last - First) * Math.Cos(Math.PI / 2 / (count - 1) * i) + First, 2));
                     }
                     break;
 
@@ -7059,7 +7062,9 @@ namespace PE多功能信息处理插件
             if (JointListForOpera.Count != 0)
             {
                 bool find = false;
-                foreach (var Temp in jointhis.Where(Temp => Temp.HisJoint.All(JointListForOpera.Contains) && Temp.HisJoint.Count == JointListForOpera.Count))
+                foreach (var Temp in jointhis.Where(
+                    Temp => Temp.HisJoint.All(JointListForOpera.Contains) &&
+                            Temp.HisJoint.Count == JointListForOpera.Count))
                 {
                     Temp.SpringConst_Move_FirstXNummer = SpringConst_Move_FirstXNummer.Text;
                     Temp.SpringConst_Move_LastXNummer = SpringConst_Move_LastXNummer.Text;
@@ -7565,8 +7570,9 @@ namespace PE多功能信息处理插件
                     Mousedown = true;
                     tempcontrol = sender as Control;
                     //MetroTabPage page = ShortcutKeyTab.SelectedTab as MetroTabPage;
-                    foreach (var temp in KeyData.Where(temp => new Point(temp.itemLocalX, temp.itemLocaly) == tempcontrol.Location &&
-                                                               ShortcutKeyTab.SelectedIndex == temp.TabID))
+                    foreach (var temp in KeyData.Where(
+                        temp => new Point(temp.itemLocalX, temp.itemLocaly) == tempcontrol.Location &&
+                                ShortcutKeyTab.SelectedIndex == temp.TabID))
                     {
                         operaitem = temp;
                         Keyset.Text = temp.itemKey;
@@ -7600,7 +7606,8 @@ namespace PE多功能信息处理插件
             {
                 Control control = sender as Control;
                 foreach (var temp in KeyData.Where(temp => new Point(operaitem.itemLocalX, operaitem.itemLocaly) ==
-                                                           new Point(temp.itemLocalX, temp.itemLocaly) && ShortcutKeyTab.SelectedIndex == temp.TabID))
+                                                           new Point(temp.itemLocalX, temp.itemLocaly) &&
+                                                           ShortcutKeyTab.SelectedIndex == temp.TabID))
                 {
                     temp.itemLocalX = control.Location.X;
                     temp.itemLocaly = control.Location.Y;
@@ -7657,11 +7664,11 @@ namespace PE多功能信息处理插件
             if (!startset)
             {
                 (from temp in KeyData
-                    where new Point(temp.itemLocalX, temp.itemLocaly) == (sender as Control).Location &&
-                          ShortcutKeyTab.SelectedIndex == temp.TabID
-                    from INFOTEMP in ShortCutInfo
-                    where INFOTEMP.Item.Name == temp.itemFun
-                    select INFOTEMP).FirstOrDefault().Item.PerformClick();
+                 where new Point(temp.itemLocalX, temp.itemLocaly) == (sender as Control).Location &&
+                       ShortcutKeyTab.SelectedIndex == temp.TabID
+                 from INFOTEMP in ShortCutInfo
+                 where INFOTEMP.Item.Name == temp.itemFun
+                 select INFOTEMP).FirstOrDefault().Item.PerformClick();
             }
         }
 
@@ -7785,13 +7792,16 @@ namespace PE多功能信息处理插件
         {
             if (ShowShortcutKey.Checked)
             {
-                foreach (MetroTile TempTile in ShortcutKeyTab.TabPages.Cast<object>().SelectMany(temp => (temp as MetroTabPage).Controls.Cast<MetroTile>()))
+                foreach (MetroTile TempTile in ShortcutKeyTab.TabPages.Cast<object>()
+                    .SelectMany(temp => (temp as MetroTabPage).Controls.Cast<MetroTile>()))
                 {
                     try
                     {
                         //MetroTile TempTile = Controlstemp as MetroTile;
-                        foreach (var keytemp in KeyData.Where(keytemp => new Point(keytemp.itemLocalX, keytemp.itemLocaly) == TempTile.Location &&
-                                                                         keytemp.itemname == TempTile.Text).Where(keytemp => keytemp.itemKey != ""))
+                        foreach (var keytemp in KeyData
+                            .Where(keytemp => new Point(keytemp.itemLocalX, keytemp.itemLocaly) == TempTile.Location &&
+                                              keytemp.itemname == TempTile.Text)
+                            .Where(keytemp => keytemp.itemKey != ""))
                         {
                             TempTile.Text = keytemp.itemname + "|" + keytemp.itemKey;
                             break;
@@ -7804,13 +7814,16 @@ namespace PE多功能信息处理插件
             }
             else
             {
-                foreach (MetroTile TempTile in ShortcutKeyTab.TabPages.Cast<object>().SelectMany(temp => (temp as MetroTabPage).Controls.Cast<MetroTile>()))
+                foreach (MetroTile TempTile in ShortcutKeyTab.TabPages.Cast<object>()
+                    .SelectMany(temp => (temp as MetroTabPage).Controls.Cast<MetroTile>()))
                 {
                     try
                     {
                         //MetroTile TempTile = Controlstemp as MetroTile;
-                        foreach (var keytemp in KeyData.Where(keytemp => new Point(keytemp.itemLocalX, keytemp.itemLocaly) == TempTile.Location &&
-                                                                         keytemp.itemname + "|" + keytemp.itemKey == TempTile.Text).Where(keytemp => keytemp.itemKey != ""))
+                        foreach (var keytemp in KeyData
+                            .Where(keytemp => new Point(keytemp.itemLocalX, keytemp.itemLocaly) == TempTile.Location &&
+                                              keytemp.itemname + "|" + keytemp.itemKey == TempTile.Text)
+                            .Where(keytemp => keytemp.itemKey != ""))
                         {
                             TempTile.Text = keytemp.itemname;
                             break;
@@ -7937,7 +7950,8 @@ namespace PE多功能信息处理插件
                             {
                                 HisTemp = new List<OpenHis>();
                                 HisTemp.AddRange(bootstate.HisOpen.ToArray());
-                                foreach (var Deltemp in HisTemp.Where(Deltemp => Deltemp.modelpath == temp[i].Value.ToString()))
+                                foreach (var Deltemp in HisTemp.Where(
+                                    Deltemp => Deltemp.modelpath == temp[i].Value.ToString()))
                                 {
                                     HisTemp.Remove(Deltemp);
                                     break;
@@ -8377,7 +8391,8 @@ namespace PE多功能信息处理插件
                         Thread.Sleep(10);
                         if (ShowHowMuchSelectVertex.InvokeRequired)
                         {
-                            ShowHowMuchSelectVertex.Invoke(new Action(() => ShowHowMuchSelectVertex.Text = "已选中" + SelectVertexIndex.Count + "个顶点"));
+                            ShowHowMuchSelectVertex.Invoke(new Action(() => ShowHowMuchSelectVertex.Text =
+                                "已选中" + SelectVertexIndex.Count + "个顶点"));
                         }
                         else
                         {
@@ -8492,6 +8507,17 @@ namespace PE多功能信息处理插件
                 case "Z轴":
                     bonecount.Sort((x, y) => -ThePmxOfNow.Bone[x].Position.Z.CompareTo(ThePmxOfNow.Bone[y].Position.Z));
                     break;
+                case "-X轴":
+                    bonecount.Sort((x, y) => -ThePmxOfNow.Bone[x].Position.X.CompareTo(ThePmxOfNow.Bone[y].Position.X));
+                    break;
+
+                case "-Y轴":
+                    bonecount.Sort((x, y) => ThePmxOfNow.Bone[x].Position.Y.CompareTo(ThePmxOfNow.Bone[y].Position.Y));
+                    break;
+
+                case "-Z轴":
+                    bonecount.Sort((x, y) => ThePmxOfNow.Bone[x].Position.Z.CompareTo(ThePmxOfNow.Bone[y].Position.Z));
+                    break;
             }
             return bonecount;
         }
@@ -8591,7 +8617,8 @@ namespace PE多功能信息处理插件
                 if (MenuItem_UpdateSelect == null || SingleBufferedPictureBox == null)
                 {
                     foreach (var obj2 in TransformView.GetType()
-                        .GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Select(info => info.GetValue(TransformView)).Where(obj2 => obj2 != null))
+                        .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                        .Select(info => info.GetValue(TransformView)).Where(obj2 => obj2 != null))
                     {
                         if (obj2 is ToolStripItem)
                         {
@@ -10204,7 +10231,6 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
-
         #region 骨骼列连接
 
         private void BoneConnectMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -10995,7 +11021,6 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
-
         #region 镜像操作
 
         private void MirrorOperaStatus(object sender, EventArgs e)
@@ -11055,8 +11080,8 @@ namespace PE多功能信息处理插件
                         temppmx.Vertex[OriIndex].Bone4 = temppmx.Vertex[MirrorIndex].Bone4;
                         temppmx.Vertex[OriIndex].Weight4 = temppmx.Vertex[MirrorIndex].Weight4;
                         var Bone1 = (from t in MirrorBone
-                            where t.Key.Equals(temppmx.Vertex[MirrorIndex].Bone1)
-                            select t.Value).FirstOrDefault();
+                                     where t.Key.Equals(temppmx.Vertex[MirrorIndex].Bone1)
+                                     select t.Value).FirstOrDefault();
                         if (Bone1 != null)
                         {
                             temppmx.Vertex[OriIndex].Bone1 = Bone1;
@@ -11064,8 +11089,8 @@ namespace PE多功能信息处理插件
                         if (temppmx.Vertex[MirrorIndex].Bone2 != null)
                         {
                             var Bone2 = (from t in MirrorBone
-                                where t.Key.Equals(temppmx.Vertex[MirrorIndex].Bone2)
-                                select t.Value).FirstOrDefault();
+                                         where t.Key.Equals(temppmx.Vertex[MirrorIndex].Bone2)
+                                         select t.Value).FirstOrDefault();
                             if (Bone2 != null)
                             {
                                 temppmx.Vertex[OriIndex].Bone2 = Bone2;
@@ -11074,15 +11099,15 @@ namespace PE多功能信息处理插件
                         if (temppmx.Vertex[MirrorIndex].Bone3 != null)
                         {
                             var Bone3 = (from t in MirrorBone
-                                where t.Key.Equals(temppmx.Vertex[MirrorIndex].Bone3)
-                                select t.Value).FirstOrDefault();
+                                         where t.Key.Equals(temppmx.Vertex[MirrorIndex].Bone3)
+                                         select t.Value).FirstOrDefault();
                             if (Bone3 != null)
                             {
                                 temppmx.Vertex[MirrorIndex].Bone2 = Bone3;
                             }
                             var Bone4 = (from t in MirrorBone
-                                where t.Key.Equals(temppmx.Vertex[MirrorIndex].Bone4)
-                                select t.Value).FirstOrDefault();
+                                         where t.Key.Equals(temppmx.Vertex[MirrorIndex].Bone4)
+                                         select t.Value).FirstOrDefault();
                             if (Bone4 != null)
                             {
                                 temppmx.Vertex[OriIndex].Bone4 = Bone4;
@@ -11125,8 +11150,8 @@ namespace PE多功能信息处理插件
                             if (temppmx.Bone[BoneCount[i]].Parent != null)
                             {
                                 var parent = (from t in BoneCount
-                                    where temppmx.Bone[BoneCount[i]].Parent == temppmx.Bone[t]
-                                    select t).FirstOrDefault();
+                                              where temppmx.Bone[BoneCount[i]].Parent == temppmx.Bone[t]
+                                              select t).FirstOrDefault();
                                 if (parent != 0)
                                 {
                                     TempBone[i].Parent = TempBone[BoneCount.IndexOf(parent)];
@@ -11135,8 +11160,8 @@ namespace PE多功能信息处理插件
                             if (temppmx.Bone[BoneCount[i]].ToBone != null)
                             {
                                 var ToBone = (from t in BoneCount
-                                    where temppmx.Bone[BoneCount[i]].ToBone == temppmx.Bone[t]
-                                    select t).FirstOrDefault();
+                                              where temppmx.Bone[BoneCount[i]].ToBone == temppmx.Bone[t]
+                                              select t).FirstOrDefault();
                                 if (ToBone != 0)
                                 {
                                     TempBone[i].ToBone = TempBone[BoneCount.IndexOf(ToBone)];
@@ -11154,7 +11179,10 @@ namespace PE多功能信息处理插件
                             temppmx.Bone.Add(TempBone[i]);
                             try
                             {
-                                MirrorBone.Add(temppmx.Bone[BoneCount[i]], TempBone[i]); //找到相同骨骼会出错注意,考虑同名问题
+                                if (!MirrorBone.ContainsKey(temppmx.Bone[BoneCount[i]]))
+                                {
+                                    MirrorBone.Add(temppmx.Bone[BoneCount[i]], TempBone[i]); //找到相同骨骼会出错注意,考虑同名问题
+                                }
                             }
                             catch (Exception)
                             {
@@ -11182,12 +11210,12 @@ namespace PE多功能信息处理插件
                                 V3Count += temppmx.Vertex[item].Position;
                             }*/
                             var NUM = (from item in SelectVertexIndex
-                                          let dis = Getdistance(V3Count, temppmx.Vertex[item].Position)
-                                          orderby dis descending
-                                          select dis).First() + 1; //得到选中顶点和中心坐标最远的距离+1
+                                       let dis = Getdistance(V3Count, temppmx.Vertex[item].Position)
+                                       orderby dis descending
+                                       select dis).First() + 1; //得到选中顶点和中心坐标最远的距离+1
                             var tempVertex = (from T in Enumerable.Range(0, temppmx.Vertex.Count).AsParallel()
-                                where NUM >= Getdistance(V3Count, temppmx.Vertex[T].Position)
-                                select T).ToList(); //遍历顶点，得到距离范围内顶点序列
+                                              where NUM >= Getdistance(V3Count, temppmx.Vertex[T].Position)
+                                              select T).ToList(); //遍历顶点，得到距离范围内顶点序列
                             Parallel.ForEach(SelectVertexIndex, item =>
                             {
                                 var num = 10000000000f;
@@ -11217,9 +11245,9 @@ namespace PE多功能信息处理插件
                             foreach (var item in MirrorBone)
                             {
                                 var _Body = (from T in temppmx.Body
-                                    where T.Bone != null
-                                    where T.Bone.Equals(item.Key)
-                                    select T).FirstOrDefault();
+                                             where T.Bone != null
+                                             where T.Bone.Equals(item.Key)
+                                             select T).FirstOrDefault();
                                 if (_Body != null)
                                 {
                                     var CreateBody = (IPXBody) _Body.Clone();
@@ -11247,11 +11275,11 @@ namespace PE多功能信息处理插件
                                 foreach (var item in MirrorBody)
                                 {
                                     var _joint = from T in temppmx.Joint
-                                        where T.BodyB == item.Key
-                                        select T;
+                                                 where T.BodyB == item.Key
+                                                 select T;
                                     var joint2 = from T in temppmx.Joint
-                                        where T.BodyA == item.Key
-                                        select T;
+                                                 where T.BodyA == item.Key
+                                                 select T;
                                     if (_joint.Count() != 0)
                                     {
                                         _joint.ToList().ForEach(T =>
@@ -11303,8 +11331,8 @@ namespace PE多功能信息处理插件
                                                 T.BodyB = item.Value;
                                             }
                                             var find = from T1 in AllAddB
-                                                where T1.BodyA == T.BodyA && T1.BodyB == T.BodyB
-                                                select T1;
+                                                       where T1.BodyA == T.BodyA && T1.BodyB == T.BodyB
+                                                       select T1;
                                             if (find.Count() != 0)
                                             {
                                                 find.ToList().ForEach(T2 => AllAddB.Remove(T2));
@@ -11329,15 +11357,6 @@ namespace PE多功能信息处理插件
                                 return;
                             }
                         }
-                        BeginInvoke(new MethodInvoker(() =>
-                        {
-                            ARGS.Host.Connector.Pmx.Update(temppmx);
-                            ARGS.Host.Connector.Form.UpdateList(UpdateObject.All);
-                            ARGS.Host.Connector.View.PmxView.UpdateView();
-                            ARGS.Host.Connector.View.PmxView.UpdateModel();
-                            ARGS.Host.Connector.View.PmxView.SetSelectedVertexIndices(SDEF.ToArray());
-                            btnGetObject.PerformClick();
-                        }));
 
                         #endregion
                     }
@@ -11354,6 +11373,8 @@ namespace PE多功能信息处理插件
                             TempBone.Add(bone1, bone2);
                             MirrorBone.Add(temppmx.Bone[bone1], temppmx.Bone[bone2]);
                         }
+
+                        #endregion
 
                         #region 骨骼镜像
 
@@ -11385,12 +11406,12 @@ namespace PE多功能信息处理插件
                                           (current, item) => current + temppmx.Vertex[item].Position) /
                                       SelectVertexIndex.Count; //得到中心点坐标
                             var NUM = (from item in SelectVertexIndex
-                                          let dis = Getdistance(V3Count, temppmx.Vertex[item].Position)
-                                          orderby dis descending
-                                          select dis).First() + 1; //得到选中顶点和中心坐标最远的距离
+                                       let dis = Getdistance(V3Count, temppmx.Vertex[item].Position)
+                                       orderby dis descending
+                                       select dis).First() + 1; //得到选中顶点和中心坐标最远的距离
                             var tempVertex = from T in Enumerable.Range(0, temppmx.Vertex.Count).AsParallel()
-                                where NUM >= Getdistance(V3Count, temppmx.Vertex[T].Position)
-                                select T; //遍历顶点，得到距离范围内顶点序列
+                                             where NUM >= Getdistance(V3Count, temppmx.Vertex[T].Position)
+                                             select T; //遍历顶点，得到距离范围内顶点序列
                             Parallel.ForEach(SelectVertexIndex, item =>
                             {
                                 var num = 10000000000f;
@@ -11414,23 +11435,109 @@ namespace PE多功能信息处理插件
 
                         #region 刚体镜像
 
-                        if (MirrorJointCheck.Checked)
+                        var MirrorBody = new Dictionary<int, int>();
+                        var MirrorBody2 = new Dictionary<IPXBody, IPXBody>();
+                        if (MirrorBodyCheck.Checked)
                         {
-                            // ReSharper disable once UnusedVariable
-                            var MirrorBody = new Dictionary<int, int>();
-                            TempBone.AsParallel().ForAll(Temp =>
+
+                            foreach (var Temp in TempBone)
                             {
-                                // ReSharper disable once UnusedVariable
-                                var Body1 = temppmx.Body.FirstOrDefault(x => x.Bone == temppmx.Bone[Temp.Key]);
-                                // ReSharper disable once UnusedVariable
-                                var Body2 = temppmx.Body.FirstOrDefault(x => x.Bone == temppmx.Bone[Temp.Value]);
-                            });
+                                int Body1 = -1;
+                                int Body2 = -1;
+                                for (int i = 0; i < temppmx.Body.Count; i++)
+                                {
+                                    if (temppmx.Bone[Temp.Key] == temppmx.Body[i].Bone)
+                                    {
+                                        Body1 = i;
+                                    }
+                                    else if (temppmx.Bone[Temp.Value] == temppmx.Body[i].Bone)
+                                    {
+                                        Body2 = i;
+                                    }
+                                }
+
+
+                                /* var Body1 = temppmx.Body.FirstOrDefault(x => x.Bone == temppmx.Bone[Temp.Key]);
+                                 var Body2 = temppmx.Body.FirstOrDefault(x => x.Bone == temppmx.Bone[Temp.Value]);*/
+                                if (Body1 == -1 || Body2 == -1) continue;
+                                if (!MirrorBody.ContainsKey(Body1))
+                                {
+                                    MirrorBody.Add(Body1, Body2);
+                                    MirrorBody2.Add(temppmx.Body[Body1], temppmx.Body[Body2]);
+                                }
+
+                                if (MirrorPosionPlusPara.Checked)
+                                {
+                                    temppmx.Body[Body2].Position.X = -temppmx.Body[Body1].Position.X;
+                                    temppmx.Body[Body2].Rotation = -temppmx.Body[Body1].Rotation;
+                                }
+                                else
+                                {
+                                    temppmx.Body[Body2].BoxKind = temppmx.Body[Body1].BoxKind;
+                                    temppmx.Body[Body2].BoxSize = temppmx.Body[Body1].BoxSize;
+                                    temppmx.Body[Body2].Friction = temppmx.Body[Body1].Friction;
+                                    temppmx.Body[Body2].Group = temppmx.Body[Body1].Group;
+                                    temppmx.Body[Body2].Mass = temppmx.Body[Body1].Mass;
+                                    temppmx.Body[Body2].Mode = temppmx.Body[Body1].Mode;
+                                    temppmx.Body[Body2].PositionDamping = temppmx.Body[Body1].PositionDamping;
+                                    temppmx.Body[Body2].Restitution = temppmx.Body[Body1].Restitution;
+                                    temppmx.Body[Body2].RotationDamping = temppmx.Body[Body1].RotationDamping;
+                                }
+                            }
                         }
 
                         #endregion
 
+                        #region J点镜像
+
+                        if (MirrorJointCheck.Checked)
+                        {
+                            //先找到镜像参照的J点对应BodyA,再找到镜像对象的J点对应的BodyA
+                            //根据参照J点的BodyB来确认对象J点的BodyB时候一直，是的话就确定参照J点的镜像是对象J点
+                            foreach (var pxJoint in (from pxJoint in temppmx.Joint
+                                                     where MirrorBody2.ContainsKey(pxJoint.BodyA)
+                                                     from VARIABLE in temppmx.Joint
+                                                     where MirrorBody2[pxJoint.BodyA] == VARIABLE.BodyA
+                                                     where MirrorBody2.ContainsKey(pxJoint.BodyB)
+                                                     where MirrorBody2[pxJoint.BodyB] == VARIABLE.BodyB
+                                                     select new
+                                                     {
+                                                         Ori = temppmx.Joint.IndexOf(pxJoint),
+                                                         Mirror = temppmx.Joint.IndexOf(VARIABLE)
+                                                     }).Where(pxJoint => pxJoint.Mirror == -1 && pxJoint.Ori == -1))
+                            {
+                                if (MirrorPosionPlusPara.Checked)
+                                {
+
+                                    temppmx.Joint[pxJoint.Mirror].Position.X = -temppmx.Joint[pxJoint.Ori].Position.X;
+                                    temppmx.Joint[pxJoint.Mirror].Rotation = -temppmx.Joint[pxJoint.Ori].Rotation;
+                                }
+                                else
+                                {
+                                    temppmx.Joint[pxJoint.Mirror].Kind = temppmx.Joint[pxJoint.Ori].Kind;
+                                    temppmx.Joint[pxJoint.Mirror].Limit_AngleHigh = temppmx.Joint[pxJoint.Ori].Limit_AngleHigh;
+                                    temppmx.Joint[pxJoint.Mirror].Limit_AngleLow = temppmx.Joint[pxJoint.Ori].Limit_AngleLow;
+                                    temppmx.Joint[pxJoint.Mirror].Limit_MoveHigh = temppmx.Joint[pxJoint.Ori].Limit_MoveHigh;
+                                    temppmx.Joint[pxJoint.Mirror].Limit_MoveLow = temppmx.Joint[pxJoint.Ori].Limit_MoveLow;
+                                    temppmx.Joint[pxJoint.Mirror].SpringConst_Move = temppmx.Joint[pxJoint.Ori].SpringConst_Move;
+                                    temppmx.Joint[pxJoint.Mirror].SpringConst_Rotate = temppmx.Joint[pxJoint.Ori].SpringConst_Rotate;
+                                }
+                            }
+                        }
+
                         #endregion
                     }
+                    BeginInvoke(new MethodInvoker(() =>
+                    {
+                        ARGS.Host.Connector.Pmx.Update(temppmx);
+                        ARGS.Host.Connector.Form.UpdateList(UpdateObject.All);
+                        ARGS.Host.Connector.View.PmxView.UpdateView();
+                        ARGS.Host.Connector.View.PmxView.UpdateModel();
+                        /*ARGS.Host.Connector.View.PmxView.SetSelectedVertexIndices(SDEF.ToArray());
+                        btnGetObject.PerformClick();*/
+                        if (SDEF.Count != 0) SetSDEF(SDEF.ToArray());
+                    }));
+
                 }).Start();
             }
             else
@@ -11502,17 +11609,17 @@ namespace PE多功能信息处理插件
                 BoneList.Controls.Add(com);
                 new Task(() =>
                 {
-                    do
-                    {
-                        var temppmx = ARGS.Host.Connector.Pmx.GetCurrentState();
-                        _BoneList.Clear();
-                        _BoneList.AddRange(
-                            temppmx.Bone.Select(
-                                (t, i) => i + ":" +
-                                          t.Name)); //  for (int i = 0; i < temppmx.Bone.Count; i++)  Bonelist.Add(i + ":" + temppmx.Bone[i].Name);
-                        com.DataSource = _BoneList;
-                        Thread.Sleep(1000);
-                    } while (!MirrorMode.Checked);
+                    // do {
+                    var temppmx = ARGS.Host.Connector.Pmx.GetCurrentState();
+                    _BoneList.Clear();
+                    _BoneList.AddRange(
+                        temppmx.Bone.Select(
+                            (t, i) => i + ":" +
+                                      t.Name)); //  for (int i = 0; i < temppmx.Bone.Count; i++)  Bonelist.Add(i + ":" + temppmx.Bone[i].Name);
+
+                    BeginInvoke(new Action(() => com.DataSource = _BoneList));
+                    Thread.Sleep(1000);
+                    //    } while (!MirrorMode.Checked);//每秒钟都刷新下拉框？
                 }).Start();
             }
         }
@@ -11525,7 +11632,6 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
-
         #region 表情操作
 
         private List<MorphOpera.Morph> MorphBacData = new List<MorphOpera.Morph>();
@@ -11674,7 +11780,8 @@ namespace PE多功能信息处理插件
                             FileShare.None);
                         Fileformatter.Serialize(Filestream, morph);
                         Filestream.Close();
-                        BeginInvoke(new MethodInvoker(() => MetroMessageBox.Show(this, "备份完成", "", MessageBoxButtons.OK, MessageBoxIcon.Information)));
+                        BeginInvoke(new MethodInvoker(() => MetroMessageBox.Show(this, "备份完成", "", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)));
                     }
                     catch (Exception)
                     {
@@ -11760,28 +11867,29 @@ namespace PE多功能信息处理插件
                                 if (MorphPositionWithUV.Checked)
                                 {
                                     var Get = (from item in GetPmx.Vertex
-                                        where item.Position.X == temp.x
-                                        where item.Position.Y == temp.y
-                                        where item.Position.Z == temp.z
-                                        where item.UV.X == temp.UVX
-                                        where item.UV.Y == temp.UVY
-                                        select new
-                                        {
-                                            VertexIndex = GetPmx.Vertex.IndexOf(item),
-                                        });
+                                               where item.Position.X == temp.x
+                                               where item.Position.Y == temp.y
+                                               where item.Position.Z == temp.z
+                                               where item.UV.X == temp.UVX
+                                               where item.UV.Y == temp.UVY
+                                               select new
+                                               {
+                                                   VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                               });
                                     // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                                     if (Get == null)
                                     {
                                         if (MorpfSearchClose.Checked)
                                         {
                                             temp.toindex = (from item in GetPmx.Vertex
-                                                orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
-                                                                   Math.Pow(item.Position.Y - temp.y, 2) +
-                                                                   Math.Pow(item.Position.Z - temp.z, 2))) ascending
-                                                select new
-                                                {
-                                                    VertexIndex = GetPmx.Vertex.IndexOf(item),
-                                                }).FirstOrDefault().VertexIndex;
+                                                            orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
+                                                                               Math.Pow(item.Position.Y - temp.y, 2) +
+                                                                               Math.Pow(item.Position.Z - temp.z,
+                                                                                   2))) ascending
+                                                            select new
+                                                            {
+                                                                VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                                            }).FirstOrDefault().VertexIndex;
                                         }
                                         else
                                         {
@@ -11801,7 +11909,9 @@ namespace PE多功能信息处理插件
                                                     Last = OriTemp[inde_x - 1];
                                                 }
                                             }
-                                            foreach (var item in Get.Where(item => item.VertexIndex > Last.toindex && item.VertexIndex < lastindex))
+                                            foreach (var item in Get.Where(
+                                                item => item.VertexIndex > Last.toindex &&
+                                                        item.VertexIndex < lastindex))
                                             {
                                                 temp.toindex = item.VertexIndex;
                                                 lastindex = item.VertexIndex;
@@ -11816,28 +11926,29 @@ namespace PE多功能信息处理插件
                                 else
                                 {
                                     var Get = from item in GetPmx.Vertex
-                                        where item.Position.X == temp.x
-                                        where item.Position.Y == temp.y
-                                        where item.Position.Z == temp.z
-                                        where item.Normal.X == temp.NormalX
-                                        where item.Normal.Y == temp.NormalY
-                                        where item.Normal.Z == temp.NormalZ
-                                        select new
-                                        {
-                                            VertexIndex = GetPmx.Vertex.IndexOf(item),
-                                        };
+                                              where item.Position.X == temp.x
+                                              where item.Position.Y == temp.y
+                                              where item.Position.Z == temp.z
+                                              where item.Normal.X == temp.NormalX
+                                              where item.Normal.Y == temp.NormalY
+                                              where item.Normal.Z == temp.NormalZ
+                                              select new
+                                              {
+                                                  VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                              };
                                     if (Get == null)
                                     {
                                         if (MorpfSearchClose.Checked)
                                         {
                                             temp.toindex = (from item in GetPmx.Vertex
-                                                orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
-                                                                   Math.Pow(item.Position.Y - temp.y, 2) +
-                                                                   Math.Pow(item.Position.Z - temp.z, 2))) ascending
-                                                select new
-                                                {
-                                                    VertexIndex = GetPmx.Vertex.IndexOf(item),
-                                                }).FirstOrDefault().VertexIndex;
+                                                            orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
+                                                                               Math.Pow(item.Position.Y - temp.y, 2) +
+                                                                               Math.Pow(item.Position.Z - temp.z,
+                                                                                   2))) ascending
+                                                            select new
+                                                            {
+                                                                VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                                            }).FirstOrDefault().VertexIndex;
                                         }
                                         else
                                         {
@@ -11857,7 +11968,9 @@ namespace PE多功能信息处理插件
                                                     Last = OriTemp[inde_x - 1];
                                                 }
                                             }
-                                            foreach (var item in Get.Where(item => item.VertexIndex > Last.toindex && item.VertexIndex < lastindex))
+                                            foreach (var item in Get.Where(
+                                                item => item.VertexIndex > Last.toindex &&
+                                                        item.VertexIndex < lastindex))
                                             {
                                                 temp.toindex = item.VertexIndex;
                                                 lastindex = item.VertexIndex;
@@ -11929,7 +12042,6 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
-
         #region 骨骼权重置换
 
         private void ReplaceSelectVertexBone_Click(object sender, EventArgs e)
@@ -12073,7 +12185,6 @@ namespace PE多功能信息处理插件
                             ARGS.Host.Connector.View.PmxView.UpdateView();
                             MetroMessageBox.Show(this, "置换完成", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }));
-
                     }).Start();
                 }
                 else
@@ -12086,28 +12197,32 @@ namespace PE多功能信息处理插件
                 MetroMessageBox.Show(this, "请先选择顶点后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
         #endregion
-        public  void Swap<T>(ref T v0, ref T v1) where T : struct
+        #region 设置为SDEF
+
+        public void Swap<T>(ref T v0, ref T v1) where T : struct
         {
             T t = v0;
             v0 = v1;
             v1 = t;
         }
 
-        public  float Dot(V3 left, V3 right)
+        public float Dot(V3 left, V3 right)
         {
-            return (float)(left.Y * (double)right.Y + left.X * (double)right.X + left.Z * (double)right.Z);
+            return (float) (left.Y * (double) right.Y + left.X * (double) right.X + left.Z * (double) right.Z);
         }
-        public  void SetSDEF(int[] ix)
+
+        public void SetSDEF(int[] ix)
         {
-            IPXPmx pmx = null;//GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
+            IPXPmx pmx = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
             var dictionary = new Dictionary<string, List<IPXVertex>>(ix.Length);
             foreach (var pmxVertex in ix.Select(t1 => pmx.Vertex[t1]))
             {
-                if (pmxVertex.Bone2!=null&&pmxVertex.Bone3==null&&pmxVertex.Weight1!=0&&pmxVertex.Weight2!=0)//确认一系列条件以保证是BDEF2
+                if (pmxVertex.Bone2 != null && pmxVertex.Bone3 == null && pmxVertex.Weight1 != 0 &&
+                    pmxVertex.Weight2 != 0) //确认一系列条件以保证是BDEF2
                 {
                     //优先保证骨骼顺序相同
-
                     var Bone1 = pmx.Bone.IndexOf(pmxVertex.Bone1);
                     var Bone2 = pmx.Bone.IndexOf(pmxVertex.Bone2);
                     if (Bone1 > Bone2)
@@ -12137,7 +12252,7 @@ namespace PE多功能信息处理插件
                 if (num >= 0)
                 {
                     int num2;
-                    int.TryParse(array2[1], out  num2);
+                    int.TryParse(array2[1], out num2);
                     if (num2 >= 0)
                     {
                         var pmxBone = pmx.Bone[num];
@@ -12154,7 +12269,7 @@ namespace PE多功能信息处理插件
                             var pmxVertex2 = t;
                             var vector3 = pmxVertex2.Position;
                             vector3 -= position;
-                            float num5 =Dot(vector2, vector3);
+                            float num5 = Dot(vector2, vector3);
                             num3 = Math.Min(num3, num5);
                             num4 = Math.Max(num4, num5);
                             pmxVertex2.SDEF_C = vector2 * num5 + position;
@@ -12182,12 +12297,7 @@ namespace PE多功能信息处理插件
                 ARGS.Host.Connector.View.PmxView.UpdateModel();
                 ARGS.Host.Connector.View.PmxView.UpdateView();
             }));
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            SetSDEF(ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices());
         }
     }
+    #endregion
 }

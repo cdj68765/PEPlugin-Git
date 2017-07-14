@@ -350,7 +350,6 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -1460,7 +1459,6 @@ namespace PE多功能信息处理插件
             // 
             // 骨骼基础设置
             // 
-            this.骨骼基础设置.Controls.Add(this.button1);
             this.骨骼基础设置.Controls.Add(this.MirrorBoneCheck);
             this.骨骼基础设置.Controls.Add(this.FinBoneCombo);
             this.骨骼基础设置.Controls.Add(this.OriBoneCombox);
@@ -1801,7 +1799,10 @@ namespace PE多功能信息处理插件
             this.LocalSelect.Items.AddRange(new object[] {
             "X轴",
             "Y轴",
-            "Z轴"});
+            "Z轴",
+            "-X轴",
+            "-Y轴",
+            "-Z轴"});
             this.LocalSelect.Location = new System.Drawing.Point(126, 282);
             this.LocalSelect.Name = "LocalSelect";
             this.LocalSelect.Size = new System.Drawing.Size(62, 29);
@@ -2012,9 +2013,9 @@ namespace PE多功能信息处理插件
             this.metroPanel2.HorizontalScrollbarBarColor = true;
             this.metroPanel2.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel2.HorizontalScrollbarSize = 10;
-            this.metroPanel2.Location = new System.Drawing.Point(200, 369);
+            this.metroPanel2.Location = new System.Drawing.Point(205, 369);
             this.metroPanel2.Name = "metroPanel2";
-            this.metroPanel2.Size = new System.Drawing.Size(199, 19);
+            this.metroPanel2.Size = new System.Drawing.Size(183, 19);
             this.metroPanel2.TabIndex = 120;
             this.metroPanel2.VerticalScrollbarBarColor = true;
             this.metroPanel2.VerticalScrollbarHighlightOnWheel = false;
@@ -2024,11 +2025,11 @@ namespace PE多功能信息处理插件
             // 
             this.MirrorOnlyPara.AutoSize = true;
             this.MirrorOnlyPara.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.MirrorOnlyPara.Location = new System.Drawing.Point(114, 4);
+            this.MirrorOnlyPara.Location = new System.Drawing.Point(98, 4);
             this.MirrorOnlyPara.Name = "MirrorOnlyPara";
-            this.MirrorOnlyPara.Size = new System.Drawing.Size(88, 15);
+            this.MirrorOnlyPara.Size = new System.Drawing.Size(75, 15);
             this.MirrorOnlyPara.TabIndex = 103;
-            this.MirrorOnlyPara.Text = "仅镜像参数";
+            this.MirrorOnlyPara.Text = "镜像参数";
             this.MirrorOnlyPara.UseSelectable = true;
             this.MirrorOnlyPara.UseStyleColors = true;
             this.MirrorOnlyPara.Visible = false;
@@ -2038,12 +2039,12 @@ namespace PE多功能信息处理插件
             this.MirrorPosionPlusPara.AutoSize = true;
             this.MirrorPosionPlusPara.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.MirrorPosionPlusPara.Checked = true;
-            this.MirrorPosionPlusPara.Location = new System.Drawing.Point(6, 4);
+            this.MirrorPosionPlusPara.Location = new System.Drawing.Point(15, 4);
             this.MirrorPosionPlusPara.Name = "MirrorPosionPlusPara";
-            this.MirrorPosionPlusPara.Size = new System.Drawing.Size(109, 15);
+            this.MirrorPosionPlusPara.Size = new System.Drawing.Size(75, 15);
             this.MirrorPosionPlusPara.TabIndex = 102;
             this.MirrorPosionPlusPara.TabStop = true;
-            this.MirrorPosionPlusPara.Text = "镜像位置+参数";
+            this.MirrorPosionPlusPara.Text = "镜像位置";
             this.MirrorPosionPlusPara.UseSelectable = true;
             this.MirrorPosionPlusPara.Visible = false;
             // 
@@ -6289,16 +6290,6 @@ namespace PE多功能信息处理插件
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(232, 72);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 135;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Metroform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -6672,6 +6663,5 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroLabel metroLabel26;
         public MetroFramework.Controls.MetroComboBox FinBoneCombo;
         public MetroFramework.Controls.MetroComboBox OriBoneCombox;
-        private System.Windows.Forms.Button button1;
     }
 }
