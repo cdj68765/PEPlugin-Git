@@ -122,7 +122,7 @@
     <value>Resources\program;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UpdateData" xml:space="preserve">
-    <value>2017-06-03</value>
+    <value>2017-07-23</value>
   </data>
   <data name="zn_CN" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>zn_CN.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

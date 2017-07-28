@@ -71,7 +71,7 @@ namespace PE多功能信息处理插件 {
         }
         
         /// <summary>
-        ///   查找类似 2017-06-03 的本地化字符串。
+        ///   查找类似 2017-07-23 的本地化字符串。
         /// </summary>
         internal static string UpdateData {
             get {
