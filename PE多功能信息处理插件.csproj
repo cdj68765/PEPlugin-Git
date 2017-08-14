@@ -128,6 +128,7 @@
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Resources\program" />
     <Compile Include="CheckUpdate.cs">
       <SubType>UserControl</SubType>
@@ -221,7 +222,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0251i\_plugin\"</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0252\_plugin\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -109,7 +110,7 @@ namespace PE多功能信息处理插件
         public static BootState bootstate;
         public static List<ToolItemInfo> ShortCutInfo = new List<ToolItemInfo>();
         public static ContextMenuStrip contextMaterial = null;
-
+        public static ContextMenuStrip contextBone = null;
         public void Run(IPERunArgs args)
         {
             ARGS = args;
@@ -228,7 +229,9 @@ namespace PE多功能信息处理插件
 
                 var point = new System.Drawing.Point(65, 8);
                 var size = new System.Drawing.Size(65, 10);
-                if (int.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(args.Host.Connector.System.HostApplicationPath).ProductVersion.Replace(".", "")) > 0250)
+                if (int.Parse(System.Diagnostics.FileVersionInfo
+                        .GetVersionInfo(args.Host.Connector.System.HostApplicationPath).ProductVersion
+                        .Replace(".", "")) > 0250)
                 {
                     point = new System.Drawing.Point(55, 8);
                     size = new System.Drawing.Size(85, 10);
@@ -253,7 +256,8 @@ namespace PE多功能信息处理插件
                                         string tempchar = "";
                                         foreach (string _Temp in Page.Text.Select(x => x.ToString()).ToArray())
                                         {
-                                            if (_Temp == @"," || _Temp == @"，" || _Temp == @"." || _Temp == @"。" || _Temp == @" " || _Temp == @"　" || _Temp == @";" || _Temp == @"；")
+                                            if (_Temp == @"," || _Temp == @"，" || _Temp == @"." || _Temp == @"。" ||
+                                                _Temp == @" " || _Temp == @"　" || _Temp == @";" || _Temp == @"；")
                                             {
                                                 if (tempchar != "")
                                                 {
@@ -308,7 +312,8 @@ namespace PE多功能信息处理插件
                                                 search = new List<int>(Tsearch);
                                             }
                                         }
-                                        ViewForm.BeginInvoke(new Action(() => ARGS.Host.Connector.View.PmxView.SetSelectedBoneIndices(search.ToArray())));
+                                        ViewForm.BeginInvoke(new Action(() => ARGS.Host.Connector.View.PmxView
+                                            .SetSelectedBoneIndices(search.ToArray())));
                                         break;
 
                                     case "BodySearch":
@@ -337,7 +342,8 @@ namespace PE多功能信息处理插件
                                                 Tsearch = new List<int>(search);
                                             }
                                         }
-                                        ViewForm.BeginInvoke(new Action(() => ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(search.ToArray())));
+                                        ViewForm.BeginInvoke(new Action(() => ARGS.Host.Connector.View.PmxView
+                                            .SetSelectedBodyIndices(search.ToArray())));
                                         break;
 
                                     case "JointSearch":
@@ -365,7 +371,8 @@ namespace PE多功能信息处理插件
                                                 Tsearch = new List<int>(search);
                                             }
                                         }
-                                        ViewForm.BeginInvoke(new Action(() => ARGS.Host.Connector.View.PmxView.SetSelectedJointIndices(search.ToArray())));
+                                        ViewForm.BeginInvoke(new Action(() => ARGS.Host.Connector.View.PmxView
+                                            .SetSelectedJointIndices(search.ToArray())));
                                         break;
                                 }
                                 Formtemp.BeginInvoke(new Action(() =>
@@ -415,7 +422,7 @@ namespace PE多功能信息处理插件
                 {
                     var Font = new System.Drawing.Font("微软雅黑", 7.5f);
                     {
-                        CustomBoneSearch = new TextBox { Name = "BoneSearch" };
+                        CustomBoneSearch = new TextBox {Name = "BoneSearch"};
                         CustomBoneSearch.KeyPress += ControlSearch;
                         CustomBoneSearch.GotFocus += PageGotFoucus;
                         CustomBoneSearch.LostFocus += PageLostFoucus;
@@ -429,7 +436,7 @@ namespace PE多功能信息处理插件
                         CustomBoneSearch.BringToFront();
                     }
                     {
-                        CustomBodySearch = new TextBox { Name = "BodySearch" };
+                        CustomBodySearch = new TextBox {Name = "BodySearch"};
                         CustomBodySearch.KeyPress += ControlSearch;
                         CustomBodySearch.GotFocus += PageGotFoucus;
                         CustomBodySearch.LostFocus += PageLostFoucus;
@@ -443,7 +450,7 @@ namespace PE多功能信息处理插件
                         CustomBodySearch.BringToFront();
                     }
                     {
-                        CustomJointSearch = new TextBox { Name = "JointSearch" };
+                        CustomJointSearch = new TextBox {Name = "JointSearch"};
                         CustomJointSearch.KeyPress += ControlSearch;
                         CustomJointSearch.GotFocus += PageGotFoucus;
                         CustomJointSearch.LostFocus += PageLostFoucus;
@@ -529,7 +536,10 @@ namespace PE多功能信息处理插件
                 {
                     if (ChineseTooltemp.Text == "已汉化")
                     {
-                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]), false);
+                        new TranslateMod(
+                            new List<FormText>(
+                                (new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN)))
+                                as FormText[]), false);
                         bootstate.openstate = 0;
                         ChineseTooltemp.Text = "点击汉化";
                         ControlCheck(true);
@@ -537,7 +547,9 @@ namespace PE多功能信息处理插件
                     }
                     else
                     {
-                        new TranslateMod(new List<FormText>((new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as FormText[]));
+                        new TranslateMod(new List<FormText>(
+                            (new XmlSerializer(typeof(FormText[])).Deserialize(new MemoryStream(Resource1.zn_CN))) as
+                            FormText[]));
                         bootstate.openstate = 1;
                         ChineseTooltemp.Text = "已汉化";
                         ControlCheck(false);
@@ -551,7 +563,8 @@ namespace PE多功能信息处理插件
 
                 Formtemp.TextChanged += (sender, e) =>
                 {
-                    if ((sender as Form).Text != "" && (sender as Form).Text != oldformtext && (sender as Form).Text != oldformtext + " *")
+                    if ((sender as Form).Text != "" && (sender as Form).Text != oldformtext &&
+                        (sender as Form).Text != oldformtext + " *")
                     {
                         oldformtext = (sender as Form).Text;
                         PmxTemp = ARGS.Host.Connector.Pmx.GetCurrentState();
@@ -569,7 +582,8 @@ namespace PE多功能信息处理插件
                                     HisOpen.Remove(temp);
                                     break;
                                 }
-                                HisOpen.Add(new OpenHis(PmxTemp.ModelInfo.ModelName, PmxTemp.FilePath, DateTime.Now.ToLocalTime().ToString()));
+                                HisOpen.Add(new OpenHis(PmxTemp.ModelInfo.ModelName, PmxTemp.FilePath,
+                                    DateTime.Now.ToLocalTime().ToString()));
                                 bootstate.HisOpen = new OpenHis[HisOpen.Count];
                                 HisOpen.CopyTo(bootstate.HisOpen);
                                 ThreadPool.QueueUserWorkItem(Save);
@@ -582,102 +596,254 @@ namespace PE多功能信息处理插件
 
                 #region UV复制模块
 
-                var Add = new ToolStripMenuItem { Text = "合并选中材质的UV到" };
-                EventHandler ToolClick = (o, s) =>
-                  {
-                      var Material = args.Host.Connector.Form.GetSelectedMaterialIndices();
-                      if (Material.Length == 2)
-                      {
-                          var model = args.Host.Connector.Pmx.GetCurrentState();
-                          var Face1 = model.Material[Material[0]].Faces;
-                          var Face2 = model.Material[Material[1]].Faces;
-                          if (Face1.Count == Face2.Count)
-                          {
-                              switch (o.ToString())
-                              {
-                                  case "UV1":
-                                      {
-                                          for (int i = 0; i < Face1.Count; i++)
-                                          {
-                                              model.Material[Material[0]].Faces[i].Vertex1.UVA1 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U, model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
-                                              model.Material[Material[0]].Faces[i].Vertex2.UVA1 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U, model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
-                                              model.Material[Material[0]].Faces[i].Vertex3.UVA1 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U, model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
-                                          }
-                                      }
-                                      break;
-
-                                  case "UV2":
-                                      {
-                                          for (int i = 0; i < Face1.Count; i++)
-                                          {
-                                              model.Material[Material[0]].Faces[i].Vertex1.UVA2 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U, model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
-                                              model.Material[Material[0]].Faces[i].Vertex2.UVA2 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U, model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
-                                              model.Material[Material[0]].Faces[i].Vertex3.UVA2 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U, model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
-                                          }
-                                      }
-                                      break;
-
-                                  case "UV3":
-                                      {
-                                          for (int i = 0; i < Face1.Count; i++)
-                                          {
-                                              model.Material[Material[0]].Faces[i].Vertex1.UVA3 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U, model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
-                                              model.Material[Material[0]].Faces[i].Vertex2.UVA3 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U, model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
-                                              model.Material[Material[0]].Faces[i].Vertex3.UVA3 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U, model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
-                                          }
-                                      }
-                                      break;
-
-                                  case "UV4":
-                                      {
-                                          for (int i = 0; i < Face1.Count; i++)
-                                          {
-                                              model.Material[Material[0]].Faces[i].Vertex1.UVA4 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U, model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
-                                              model.Material[Material[0]].Faces[i].Vertex2.UVA4 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U, model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
-                                              model.Material[Material[0]].Faces[i].Vertex3.UVA4 = new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U, model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
-                                          }
-                                      }
-                                      break;
-                              }
-                              Formtemp.BeginInvoke(new Action(() =>
-                              {
-                                  ARGS.Host.Connector.Pmx.Update(model);
-                                  ARGS.Host.Connector.Form.UpdateList(UpdateObject.Vertex);
-                                  ARGS.Host.Connector.View.PmxView.UpdateModel();
-                                  ARGS.Host.Connector.View.PmxView.UpdateView();
-                              }));
-                              MetroMessageBox.Show(Formtemp, "复制完成", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                          }
-                          else
-                          {
-                              MetroMessageBox.Show(Formtemp, "选中的两个面并不相同", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                          }
-                      }
-                      else
-                      {
-                          MetroMessageBox.Show(Formtemp, "请选择2个材质", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                      }
-                  };
-                Add.DropDownItems.Add("UV1", null, ToolClick);
-                Add.DropDownItems.Add("UV2", null, ToolClick);
-                Add.DropDownItems.Add("UV3", null, ToolClick);
-                Add.DropDownItems.Add("UV4", null, ToolClick);
-                Formtemp.BeginInvoke(new Action(() =>
                 {
-                    List<ToolStripItem> SaveToolStrip = contextMaterial.Items.Cast<ToolStripItem>().ToList();
-                    contextMaterial.Items.Clear();
-                    for (int i = 0; i < SaveToolStrip.Count; i++)
+                    var Add = new ToolStripMenuItem {Text = "合并选中材质的UV到"};
+                    EventHandler ToolClick = (o, s) =>
                     {
-                        contextMaterial.Items.Add(SaveToolStrip[i]);
-                        if (i == 0)
+                        var Material = args.Host.Connector.Form.GetSelectedMaterialIndices();
+                        if (Material.Length == 2)
                         {
-                            contextMaterial.Items.Add(Add);
+                            var model = args.Host.Connector.Pmx.GetCurrentState();
+                            var Face1 = model.Material[Material[0]].Faces;
+                            var Face2 = model.Material[Material[1]].Faces;
+                            if (Face1.Count == Face2.Count)
+                            {
+                                switch (o.ToString())
+                                {
+                                    case "UV1":
+                                    {
+                                        for (int i = 0; i < Face1.Count; i++)
+                                        {
+                                            model.Material[Material[0]].Faces[i].Vertex1.UVA1 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex2.UVA1 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex3.UVA1 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                        }
+                                    }
+                                        break;
+
+                                    case "UV2":
+                                    {
+                                        for (int i = 0; i < Face1.Count; i++)
+                                        {
+                                            model.Material[Material[0]].Faces[i].Vertex1.UVA2 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex2.UVA2 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex3.UVA2 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                        }
+                                    }
+                                        break;
+
+                                    case "UV3":
+                                    {
+                                        for (int i = 0; i < Face1.Count; i++)
+                                        {
+                                            model.Material[Material[0]].Faces[i].Vertex1.UVA3 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex2.UVA3 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex3.UVA3 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                        }
+                                    }
+                                        break;
+
+                                    case "UV4":
+                                    {
+                                        for (int i = 0; i < Face1.Count; i++)
+                                        {
+                                            model.Material[Material[0]].Faces[i].Vertex1.UVA4 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex2.UVA4 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                            model.Material[Material[0]].Faces[i].Vertex3.UVA4 =
+                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
+                                                    model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                        }
+                                    }
+                                        break;
+                                }
+                                Formtemp.BeginInvoke(new Action(() =>
+                                {
+                                    ARGS.Host.Connector.Pmx.Update(model);
+                                    ARGS.Host.Connector.Form.UpdateList(UpdateObject.Vertex);
+                                    ARGS.Host.Connector.View.PmxView.UpdateModel();
+                                    ARGS.Host.Connector.View.PmxView.UpdateView();
+                                }));
+                                MetroMessageBox.Show(Formtemp, "复制完成", "", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MetroMessageBox.Show(Formtemp, "选中的两个面并不相同", "", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                            }
                         }
-                    }
-                }));
+                        else
+                        {
+                            MetroMessageBox.Show(Formtemp, "请选择2个材质", "", MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                        }
+                    };
+                    Add.DropDownItems.Add("UV1", null, ToolClick);
+                    Add.DropDownItems.Add("UV2", null, ToolClick);
+                    Add.DropDownItems.Add("UV3", null, ToolClick);
+                    Add.DropDownItems.Add("UV4", null, ToolClick);
+                    Formtemp.BeginInvoke(new Action(() =>
+                    {
+                        List<ToolStripItem> SaveToolStrip = contextMaterial.Items.Cast<ToolStripItem>().ToList();
+                        contextMaterial.Items.Clear();
+                        for (int i = 0; i < SaveToolStrip.Count; i++)
+                        {
+                            contextMaterial.Items.Add(SaveToolStrip[i]);
+                            if (i == 0)
+                            {
+                                contextMaterial.Items.Add(Add);
+                            }
+                        }
+                    }));
+                }
 
                 #endregion UV复制模块
 
+                #region 骨骼名称置换
+
+                {
+                    var Add = new ToolStripMenuItem {Text = "改变日英名称"};
+                    Func<Dictionary<string, string>> GetDic = delegate
+                    {
+                        var Dic = new Dictionary<string, string>();
+                        var path = new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName +
+                                   @"\_data\和英変換.txt";
+
+                        if (!File.Exists(path))
+                        {
+                            if (File.Exists(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath)
+                                                .DirectoryName +
+                                            @"\_data\榓塸曄姺.txt"))
+                            {
+                                File.Copy(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath)
+                                              .DirectoryName +
+                                          @"\_data\榓塸曄姺.txt", path);
+                            }
+                        }
+                        using (var FileDic = new StreamReader(new FileStream(path, FileMode.OpenOrCreate),
+                            Encoding.GetEncoding(932), false))
+                        {
+                            while (FileDic.Peek() != -1)
+                            {
+                                var TempString = Regex.Split(FileDic.ReadLine(), ", ", RegexOptions.Compiled);
+                                if (!Dic.ContainsKey(TempString[1]))
+                                {
+                                    Dic.Add(TempString[1], TempString[0]);
+                                }
+                            }
+                        }
+                        return Dic;
+                    };
+                    EventHandler ToolClick = (o, s) =>
+                    {
+                        var BoneList = args.Host.Connector.Pmx.GetCurrentState();
+                        var BoneCount = args.Host.Connector.View.PmxView.GetSelectedBoneIndices();
+                        var TempDic = GetDic();
+                        switch (o.ToString())
+                        {
+
+                            case "改变日语名":
+
+                                foreach (var VARIABLE in BoneCount)
+                                {
+                                    if (TempDic.TryGetValue(BoneList.Bone[VARIABLE].Name, out string TempString))
+                                    {
+                                        BoneList.Bone[VARIABLE].Name = TempString;
+                                    }
+                                }
+                                break;
+                            case "改变英语名":
+                                var DicEn = new Dictionary<string, string>();
+                                foreach (var VARIABLE in TempDic.Where(VARIABLE => !DicEn.ContainsKey(VARIABLE.Value)))
+                                {
+                                    DicEn.Add(VARIABLE.Value, VARIABLE.Key);
+                                }
+                                foreach (var VARIABLE in BoneCount.Where(
+                                    VARIABLE => DicEn.ContainsKey(BoneList.Bone[VARIABLE].Name)))
+                                {
+                                    BoneList.Bone[VARIABLE].NameE = DicEn[BoneList.Bone[VARIABLE].Name];
+                                }
+                                break;
+                            case "复制日语名给英语名":
+                                foreach (var Tbone in BoneCount)
+                                {
+                                    BoneList.Bone[Tbone].NameE = BoneList.Bone[Tbone].Name;
+                                }
+                                break;
+                            case "保存到词典":
+                                using (var FileDic =
+                                    new StreamWriter(
+                                        new FileStream(new FileInfo(ARGS.Host.Connector.System.HostApplicationPath)
+                                                           .DirectoryName +
+                                                       @"\_data\和英変換.txt", FileMode.Create),
+                                        Encoding.GetEncoding(932)))
+                                {
+                                    foreach (var VARIABLE in BoneCount)
+                                    {
+                                        if (TempDic.ContainsKey(BoneList.Bone[VARIABLE].NameE))
+                                        {
+                                            TempDic[BoneList.Bone[VARIABLE].NameE] = BoneList.Bone[VARIABLE].Name;
+                                        }
+                                        else
+                                        {
+                                            TempDic.Add(BoneList.Bone[VARIABLE].NameE, BoneList.Bone[VARIABLE].Name);
+                                        }
+                                    }
+                                    foreach (var Temp in TempDic)
+                                    {
+                                        FileDic.WriteLine(Temp.Value + ", " + Temp.Key);
+                                    }
+                                }
+                                break;
+                        }
+                        Formtemp.BeginInvoke(new Action(() =>
+                        {
+                            ARGS.Host.Connector.Pmx.Update(BoneList);
+                            ARGS.Host.Connector.Form.UpdateList(UpdateObject.Bone);
+                        }));
+                    };
+                    Add.DropDownItems.Add("改变日语名", null, ToolClick);
+                    Add.DropDownItems.Add("改变英语名", null, ToolClick);
+                    Add.DropDownItems.Add("复制日语名给英语名", null, ToolClick);
+                    Add.DropDownItems.Add("保存到词典", null, ToolClick);
+                    Formtemp.BeginInvoke(new Action(() =>
+                    {
+                        List<ToolStripItem> SaveToolStrip = contextBone.Items.Cast<ToolStripItem>().ToList();
+                        contextBone.Items.Clear();
+                        for (int i = 0; i < SaveToolStrip.Count; i++)
+                        {
+                            contextBone.Items.Add(SaveToolStrip[i]);
+                            if (i == 0)
+                            {
+                                contextBone.Items.Add(Add);
+                            }
+                        }
+                    }));
+                }
+
+                #endregion
                 new Thread(() =>
                 {
                     #region 快捷键

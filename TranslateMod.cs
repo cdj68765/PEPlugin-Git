@@ -338,9 +338,16 @@ namespace PE多功能信息处理插件
             }
             else if (Control is ContextMenuStrip)
             {
-                if (Control.Name == "contextMaterial" && contextMaterial == null)
+                if (contextMaterial == null || contextBone == null)
                 {
-                    contextMaterial = Control as ContextMenuStrip;
+                    if (Control.Name == "contextMaterial")
+                    {
+                        contextMaterial = Control as ContextMenuStrip;
+                    }
+                    if (Control.Name == "contextBone2")
+                    {
+                        contextBone = Control as ContextMenuStrip;
+                    }
                 }
             }
         }
