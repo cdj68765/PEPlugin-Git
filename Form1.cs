@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -351,6 +352,7 @@ namespace PE多功能信息处理插件
                 {
                     try
                     {
+                        GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
                         if (ALLTAB.SelectedTab.Name == "历史打开")
                         {
                             if (bootstate.HisOpen != null)
@@ -10231,6 +10233,7 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
+
         #region 骨骼列连接
 
         private void BoneConnectMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -11021,6 +11024,7 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
+
         #region 镜像操作
 
         private void MirrorOperaStatus(object sender, EventArgs e)
@@ -11515,12 +11519,18 @@ namespace PE多功能信息处理插件
                                 else
                                 {
                                     temppmx.Joint[pxJoint.Mirror].Kind = temppmx.Joint[pxJoint.Ori].Kind;
-                                    temppmx.Joint[pxJoint.Mirror].Limit_AngleHigh = temppmx.Joint[pxJoint.Ori].Limit_AngleHigh;
-                                    temppmx.Joint[pxJoint.Mirror].Limit_AngleLow = temppmx.Joint[pxJoint.Ori].Limit_AngleLow;
-                                    temppmx.Joint[pxJoint.Mirror].Limit_MoveHigh = temppmx.Joint[pxJoint.Ori].Limit_MoveHigh;
-                                    temppmx.Joint[pxJoint.Mirror].Limit_MoveLow = temppmx.Joint[pxJoint.Ori].Limit_MoveLow;
-                                    temppmx.Joint[pxJoint.Mirror].SpringConst_Move = temppmx.Joint[pxJoint.Ori].SpringConst_Move;
-                                    temppmx.Joint[pxJoint.Mirror].SpringConst_Rotate = temppmx.Joint[pxJoint.Ori].SpringConst_Rotate;
+                                    temppmx.Joint[pxJoint.Mirror].Limit_AngleHigh =
+                                        temppmx.Joint[pxJoint.Ori].Limit_AngleHigh;
+                                    temppmx.Joint[pxJoint.Mirror].Limit_AngleLow =
+                                        temppmx.Joint[pxJoint.Ori].Limit_AngleLow;
+                                    temppmx.Joint[pxJoint.Mirror].Limit_MoveHigh =
+                                        temppmx.Joint[pxJoint.Ori].Limit_MoveHigh;
+                                    temppmx.Joint[pxJoint.Mirror].Limit_MoveLow =
+                                        temppmx.Joint[pxJoint.Ori].Limit_MoveLow;
+                                    temppmx.Joint[pxJoint.Mirror].SpringConst_Move =
+                                        temppmx.Joint[pxJoint.Ori].SpringConst_Move;
+                                    temppmx.Joint[pxJoint.Mirror].SpringConst_Rotate =
+                                        temppmx.Joint[pxJoint.Ori].SpringConst_Rotate;
                                 }
                             }
                         }
@@ -11632,6 +11642,7 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
+
         #region 表情操作
 
         private List<MorphOpera.Morph> MorphBacData = new List<MorphOpera.Morph>();
@@ -12040,8 +12051,333 @@ namespace PE多功能信息处理插件
                 MetroMessageBox.Show(this, "请等待后台数据处理完毕", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+      public  ConcurrentDictionary<int, V3> OriFileVertexList = new ConcurrentDictionary<int, V3>();
+
+        private void VertexMorphOpera_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (int.Parse(System.Diagnostics.FileVersionInfo
+                        .GetVersionInfo(ARGS.Host.Connector.System.HostApplicationPath).ProductVersion
+                        .Replace(".", "")) < 0250)
+                {
+                    MetroMessageBox.Show(this, "此功能需要PE版本高于0.2.5.0", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                var SelectVertex = ARGS.Host.Connector.View.PMDView.GetSelectedVertexIndices();
+                if (SelectVertex.Length == 0)
+                {
+                    MetroMessageBox.Show(this, "请选择顶点后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                var Formtemp = ARGS.Host.Connector.Form as Form;
+                var oldformtexts = oldformtext;
+                if (OriFileVertexList.Count == 0)
+                {
+                    ReadPmxFormFile(ref OriFileVertexList);
+                }
+                if (OriFileVertexList.Count != 0)
+                {
+                    var x = sender as Button;
+                    var TempPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
+                    if ((sender as Button).Name == "MirrorSelectVertexMorph")
+                    {
+                        var DisPosion = new ConcurrentDictionary<int, int>();
+                        Parallel.ForEach(SelectVertex, item =>
+                        {
+                            var num = 10000000000f;
+                            var Select = -1;
+                            foreach (var item2 in OriFileVertexList)
+                            {
+                                var dis = Getdistance(OriFileVertexList[item],
+                                    item2.Value);
+                                if (item != item2.Key)
+                                {
+                                    if (num > dis)
+                                    {
+                                        num = dis;
+                                        Select = item2.Key;
+                                    }
+                                }
+                            }
+                            DisPosion.TryAdd(item, Select);
+                        });
+                        foreach (var VARIABLE in DisPosion)
+                        {
+                            TempPmx.Vertex[VARIABLE.Value].Position = TempPmx.Vertex[VARIABLE.Key].Position.Clone();
+                            TempPmx.Vertex[VARIABLE.Value].Position.X = -TempPmx.Vertex[VARIABLE.Value].Position.X;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var VARIABLE in SelectVertex)
+                        {
+                            TempPmx.Vertex[VARIABLE].Position = OriFileVertexList[VARIABLE];
+                        }
+                    }
+                    ARGS.Host.Connector.Pmx.Update(TempPmx);
+                    ARGS.Host.Connector.Form.UpdateList(UpdateObject.Vertex);
+                    ARGS.Host.Connector.View.PMDView.UpdateView();
+                    ARGS.Host.Connector.View.PmxView.UpdateModel();
+                    return;
+                }
+                else
+                {
+                    MetroMessageBox.Show(this, "原始文件读取失败。请确认文件是否存在", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+            MetroMessageBox.Show(this, "操作失败", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /*   private void FindNewControlInfo(object obj,int count,out object RetObj)
+           {
+               foreach (FieldInfo fi in obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
+               {
+                   object o = fi.GetValue(obj); //获取字段对象
+                   if (o != null)
+                   {
+                       if (o is Control) //判断类型
+                       {
+                         var  OnControl = o as Control;
+                           if (OnControl.Name == "lblEditMorphName")
+                           {
+                               RetObj = OnControl.Text;
+                               return;
+                           }
+                       }
+                       if (MenuItem_SelectVertex != null)
+                       {
+                           if (o is ToolStripItem)
+                           {
+                               var OnControl = o as ToolStripItem;
+                               if (OnControl.Name == "MenuItem_SelectVertex")
+                               {
+                                   MenuItem_SelectVertex = OnControl;
+                               }
+                           }
+                       }
+                       if (o is Form&&count<15)
+                       {
+                           Interlocked.Increment(ref count);
+                           FindNewControlInfo((Form) o, count,out RetObj);
+                           if (RetObj != null)
+                           {
+                               return;
+                           }
+                       }
+                   }
+               }
+               RetObj = null;
+           }*/
+
+        private bool ReadPmxFormFile(ref ConcurrentDictionary<int, V3> Ret)
+        {
+            try
+            {
+                if (Path.GetExtension(ARGS.Host.Connector.Pmx.CurrentPath).ToLower() == ".pmx")
+                {
+                    using (var fs = new FileStream(ARGS.Host.Connector.Pmx.CurrentPath, FileMode.Open))
+                    {
+                        #region 模型头信息
+
+                        var reader = new BinaryReader(fs);
+                        reader.ReadBytes(4);
+                        reader.ReadSingle();
+                        reader.ReadByte();
+                        var encodeMetho = reader.ReadByte();
+                        var additionalUV = reader.ReadByte();
+                        var vertexIndexSize = reader.ReadByte();
+                        reader.ReadByte();
+                        reader.ReadByte();
+                        var boneIndexSize = reader.ReadByte();
+                        reader.ReadByte();
+                        reader.ReadByte();
+
+                        #endregion 模型头信息
+
+                        #region 模型信息
+
+                        for (var x = 0; x < 4; x++)
+                        {
+                            reader.ReadBytes(reader.ReadInt32());
+                        }
+
+                        #endregion 模型信息
+
+                        #region 模型顶点
+
+                        Func<BinaryReader, byte, uint> CastIntRead = (bin, index_size) =>
+                        {
+                            switch (index_size)
+                            {
+                                case 1:
+                                {
+                                    uint num = bin.ReadByte();
+                                    if (num == 255u)
+                                    {
+                                        num = 4294967295u;
+                                    }
+                                    return num;
+                                }
+                                case 2:
+                                {
+                                    uint num = bin.ReadUInt16();
+                                    if (num == 65535u)
+                                    {
+                                        num = 4294967295u;
+                                    }
+                                    return num;
+                                }
+                                case 4:
+                                {
+                                    var num = bin.ReadUInt32();
+                                    return num;
+                                }
+                            }
+                            return 4294967295u;
+                        };
+
+                        Func<BinaryReader, float[]> ReadSinglesToVector3 = binary_reader_ =>
+                        {
+                            var temp = new float[3];
+                            for (var i = 0; i < 3; i++)
+                            {
+                                temp[i] = binary_reader_.ReadSingle();
+                            }
+                            return temp;
+                        };
+                        {
+
+                            var vertex = reader.ReadUInt32();
+                            for (var i = 0; i < vertex; i++)
+                            {
+                                var Tempposion = new float[3];
+                                for (int j = 0; j < 3; j++)
+                                {
+                                    Tempposion[j] = reader.ReadSingle();
+
+                                }
+                                Ret.TryAdd(i, new V3(Tempposion[0], Tempposion[1], Tempposion[2]));
+                                for (var j = 0; j < 5 + additionalUV * 4; j++)
+                                {
+                                    reader.ReadSingle();
+                                }
+
+                                switch (reader.ReadByte())
+                                {
+                                    case 0:
+                                    {
+                                        CastIntRead(reader, boneIndexSize);
+                                    }
+                                        break;
+
+                                    case 1:
+                                    {
+                                        CastIntRead(reader, boneIndexSize);
+                                        CastIntRead(reader, boneIndexSize);
+                                        reader.ReadSingle();
+                                    }
+                                        break;
+
+                                    case 2:
+                                    {
+                                        CastIntRead(reader, boneIndexSize);
+                                        CastIntRead(reader, boneIndexSize);
+                                        CastIntRead(reader, boneIndexSize);
+                                        CastIntRead(reader, boneIndexSize);
+                                        reader.ReadSingle();
+                                        reader.ReadSingle();
+                                        reader.ReadSingle();
+                                        reader.ReadSingle();
+                                    }
+                                        break;
+
+                                    case 3:
+                                    {
+                                        CastIntRead(reader, boneIndexSize);
+                                        CastIntRead(reader, boneIndexSize);
+                                        reader.ReadSingle();
+                                        ReadSinglesToVector3(reader);
+                                        ReadSinglesToVector3(reader);
+                                        ReadSinglesToVector3(reader);
+                                    }
+                                        break;
+
+                                    case 4:
+                                    {
+                                        CastIntRead(reader, boneIndexSize);
+                                        CastIntRead(reader, boneIndexSize);
+                                        CastIntRead(reader, boneIndexSize);
+                                        CastIntRead(reader, boneIndexSize);
+                                        reader.ReadSingle();
+                                        reader.ReadSingle();
+                                        reader.ReadSingle();
+                                        reader.ReadSingle();
+                                        ReadSinglesToVector3(reader);
+                                        ReadSinglesToVector3(reader);
+                                        ReadSinglesToVector3(reader);
+                                    }
+                                        break;
+                                }
+                                reader.ReadSingle();
+                            }
+                        }
+
+                        #endregion 模型顶点
+                    }
+                }
+                else
+                {
+                    using (var fs = new FileStream(ARGS.Host.Connector.Pmx.CurrentPath, FileMode.Open))
+                    {
+                        var reader = new BinaryReader(fs);
+                        reader.ReadBytes(3);
+                        BitConverter.ToSingle(reader.ReadBytes(4), 0);
+                        reader.ReadBytes(20);
+                        reader.ReadBytes(256);
+                        var numVertex = BitConverter.ToUInt32(reader.ReadBytes(4), 0);
+                        for (int j = 0; j < numVertex; j++)
+                        {
+                            var Tempposion = new float[3];
+                            for (int i = 0; i < Tempposion.Length; i++)
+                            {
+                                Tempposion[i] = BitConverter.ToSingle(reader.ReadBytes(4), 0);
+                            }
+                            Ret.TryAdd(j, new V3(Tempposion[0], Tempposion[1], Tempposion[2]));
+                            var NormalVector = new float[3];
+                            for (int i = 0; i < NormalVector.Length; i++)
+                            {
+                                NormalVector[i] = BitConverter.ToSingle(reader.ReadBytes(4), 0);
+                            }
+                            var UV = new float[2];
+                            for (int i = 0; i < UV.Length; i++)
+                            {
+                                UV[i] = BitConverter.ToSingle(reader.ReadBytes(4), 0);
+                            }
+                            var BoneNum = new UInt16[2];
+                            for (int i = 0; i < BoneNum.Length; i++)
+                            {
+                                BoneNum[i] = BitConverter.ToUInt16(reader.ReadBytes(2), 0);
+                            }
+                            reader.ReadByte();
+                            reader.ReadByte();
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
+        }
 
         #endregion
+
         #region 骨骼权重置换
 
         private void ReplaceSelectVertexBone_Click(object sender, EventArgs e)
@@ -12199,6 +12535,7 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
+
         #region 设置为SDEF
 
         public void Swap<T>(ref T v0, ref T v1) where T : struct
@@ -12298,6 +12635,9 @@ namespace PE多功能信息处理插件
                 ARGS.Host.Connector.View.PmxView.UpdateView();
             }));
         }
+
+
     }
+
     #endregion
 }

@@ -95,11 +95,11 @@ namespace PE多功能信息处理插件
 
         private Form Formtemp = null;
         private Form ViewForm = null;
-        private string oldformtext = "";
         private IPXPmx PmxTemp;
         private TextBox CustomBoneSearch = null;
         private TextBox CustomBodySearch = null;
         private TextBox CustomJointSearch = null;
+        public static string oldformtext = "";
         public static TabPage jointpage = null;
         public static TabPage Bonepage = null;
         public static TabPage Bodypage = null;
@@ -111,6 +111,7 @@ namespace PE多功能信息处理插件
         public static List<ToolItemInfo> ShortCutInfo = new List<ToolItemInfo>();
         public static ContextMenuStrip contextMaterial = null;
         public static ContextMenuStrip contextBone = null;
+
         public void Run(IPERunArgs args)
         {
             ARGS = args;
@@ -586,6 +587,11 @@ namespace PE多功能信息处理插件
                                     DateTime.Now.ToLocalTime().ToString()));
                                 bootstate.HisOpen = new OpenHis[HisOpen.Count];
                                 HisOpen.CopyTo(bootstate.HisOpen);
+                                if (newopen != null)
+                                {
+                                    newopen.OriFileVertexList =
+                                        new System.Collections.Concurrent.ConcurrentDictionary<int, PEPlugin.SDX.V3>();
+                                }
                                 ThreadPool.QueueUserWorkItem(Save);
                             }
                         });

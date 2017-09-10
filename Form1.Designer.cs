@@ -95,6 +95,7 @@ namespace PE多功能信息处理插件
             this.StartWeightChangeButton = new MetroFramework.Controls.MetroButton();
             this.Bone1_s = new MetroFramework.Controls.MetroCheckBox();
             this.表情操作 = new MetroFramework.Controls.MetroTabPage();
+            this.MirrorSelectVertexMorph = new MetroFramework.Controls.MetroTile();
             this.MorphCountLabel = new MetroFramework.Controls.MetroLabel();
             this.MorphBackCountLabel = new MetroFramework.Controls.MetroLabel();
             this.MorphBarLabel = new MetroFramework.Controls.MetroLabel();
@@ -350,6 +351,7 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
+            this.InitSelectVerMorph = new MetroFramework.Controls.MetroTile();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -1241,6 +1243,8 @@ namespace PE多功能信息处理插件
             // 
             // 表情操作
             // 
+            this.表情操作.Controls.Add(this.InitSelectVerMorph);
+            this.表情操作.Controls.Add(this.MirrorSelectVertexMorph);
             this.表情操作.Controls.Add(this.MorphCountLabel);
             this.表情操作.Controls.Add(this.MorphBackCountLabel);
             this.表情操作.Controls.Add(this.MorphBarLabel);
@@ -1265,6 +1269,19 @@ namespace PE多功能信息处理插件
             this.表情操作.VerticalScrollbarBarColor = true;
             this.表情操作.VerticalScrollbarHighlightOnWheel = false;
             this.表情操作.VerticalScrollbarSize = 10;
+            // 
+            // MirrorSelectVertexMorph
+            // 
+            this.MirrorSelectVertexMorph.ActiveControl = null;
+            this.MirrorSelectVertexMorph.Location = new System.Drawing.Point(4, 240);
+            this.MirrorSelectVertexMorph.Name = "MirrorSelectVertexMorph";
+            this.MirrorSelectVertexMorph.Size = new System.Drawing.Size(119, 58);
+            this.MirrorSelectVertexMorph.TabIndex = 38;
+            this.MirrorSelectVertexMorph.Text = "镜像选中顶点\r\n表情";
+            this.MirrorSelectVertexMorph.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.MirrorSelectVertexMorph.UseSelectable = true;
+            this.MirrorSelectVertexMorph.UseStyleColors = true;
+            this.MirrorSelectVertexMorph.Click += new System.EventHandler(this.VertexMorphOpera_Click);
             // 
             // MorphCountLabel
             // 
@@ -1382,7 +1399,7 @@ namespace PE多功能信息处理插件
             this.MorphImportSelect.Name = "MorphImportSelect";
             this.MorphImportSelect.Size = new System.Drawing.Size(119, 58);
             this.MorphImportSelect.TabIndex = 13;
-            this.MorphImportSelect.Text = "导入选中表情\r\n到模型";
+            this.MorphImportSelect.Text = "导入选中表情到\r\n模型";
             this.MorphImportSelect.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.MorphImportSelect.UseSelectable = true;
             this.MorphImportSelect.UseStyleColors = true;
@@ -6290,6 +6307,19 @@ namespace PE多功能信息处理插件
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
             // 
+            // InitSelectVerMorph
+            // 
+            this.InitSelectVerMorph.ActiveControl = null;
+            this.InitSelectVerMorph.Location = new System.Drawing.Point(138, 240);
+            this.InitSelectVerMorph.Name = "InitSelectVerMorph";
+            this.InitSelectVerMorph.Size = new System.Drawing.Size(119, 58);
+            this.InitSelectVerMorph.TabIndex = 39;
+            this.InitSelectVerMorph.Text = "初始化选中顶点\r\n表情";
+            this.InitSelectVerMorph.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.InitSelectVerMorph.UseSelectable = true;
+            this.InitSelectVerMorph.UseStyleColors = true;
+            this.InitSelectVerMorph.Click += new System.EventHandler(this.VertexMorphOpera_Click);
+            // 
             // Metroform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -6663,5 +6693,7 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroLabel metroLabel26;
         public MetroFramework.Controls.MetroComboBox FinBoneCombo;
         public MetroFramework.Controls.MetroComboBox OriBoneCombox;
+        private MetroFramework.Controls.MetroTile MirrorSelectVertexMorph;
+        private MetroFramework.Controls.MetroTile InitSelectVerMorph;
     }
 }

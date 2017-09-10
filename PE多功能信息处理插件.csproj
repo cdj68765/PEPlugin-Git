@@ -128,7 +128,6 @@
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
     <None Include="app.config" />
-    <None Include="packages.config" />
     <None Include="Resources\program" />
     <Compile Include="CheckUpdate.cs">
       <SubType>UserControl</SubType>
