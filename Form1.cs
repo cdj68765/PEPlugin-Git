@@ -40,6 +40,7 @@ namespace PE多功能信息处理插件
         public List<int> BoneCount = new List<int>();
         public List<int> BodyCount = new List<int>();
         public List<int> JointCount = new List<int>();
+        public List<int> MaterialCount = new List<int>();
         public IPXPmx GetPmx;
 
         #region 界面操作
@@ -345,9 +346,11 @@ namespace PE多功能信息处理插件
                 List<int> Hisbone = new List<int>();
                 List<int> Hisbody = new List<int>();
                 List<int> Jointbody = new List<int>();
+                List<int> Materialbody = new List<int>();
                 List<IPXBone> BoneHis = new List<IPXBone>();
                 List<IPXBody> BodyHis = new List<IPXBody>();
                 List<IPXJoint> JointHis = new List<IPXJoint>();
+                var MaterialHis = new List<IPXMaterial>();
                 do
                 {
                     try
@@ -721,6 +724,49 @@ namespace PE多功能信息处理插件
                                     }
                                     break;
                                 }
+                                case "Vertex":
+                                    switch (VertexTab.SelectedTab.Text)
+                                    {
+                                        case "材质操作":
+                                            List<int> SelectMaterial =
+                                                new List<int>(ARGS.Host.Connector.Form.GetSelectedMaterialIndices());
+                                            if (!Materialbody.SequenceEqual(SelectMaterial) && !LockSelect.Checked)
+                                            {
+                                                IPXPmx ThePmxOfNow = GetPmx;
+                                                Materialbody = new List<int>(SelectMaterial.ToArray());
+                                                ClearList("Material");
+                                                if (SelectMaterial.Count != 0)
+                                                {
+                                                    if (!SelectMaterial.All(b => MaterialCount.Any(a => a.Equals(b))) ||
+                                                        SelectMaterial.Count != VertexList.RowCount)
+                                                    {
+                                                        MaterialCount.Clear();
+                                                        MaterialCount.AddRange(SelectMaterial);
+                                                        BeginInvoke(new MethodInvoker(() =>
+                                                        {
+                                                            var table = VertexList.DataSource as DataTable;
+                                                            foreach (int temp in SelectMaterial)
+                                                            {
+                                                                table.Rows.Add(temp, ThePmxOfNow.Material[temp].Name);
+                                                            }
+                                                            if (table.Rows.Count == 0) return;
+                                                            InputMaterialName.Text =
+                                                                DeleteMaterialNummer.Checked
+                                                                    ? Regex.Replace(
+                                                                        VertexList.Rows[0].Cells[1].Value.ToString(),
+                                                                        @"\d", "")
+                                                                    : VertexList.Rows[0].Cells[1].Value.ToString();
+                                                        }));
+                                                    }
+                                                    else
+                                                    {
+                                                        InputMaterialName.Text = "";
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                    }
+                                    break;
                             }
                         }
                         else if (AutomaticRadioButton.Checked)
@@ -961,6 +1007,45 @@ namespace PE多功能信息处理插件
                                         }));
                                     }
                                     break;
+                                case "Vertex":
+                                    switch (VertexTab.SelectedTab.Text)
+                                    {
+                                        case "材质操作":
+                                        {
+                                            if (MaterialHis.Count != GetPmx.Material.Count||VertexList.Rows.Count!= GetPmx.Material.Count)
+                                            {
+                                                IPXPmx ThePmxOfNow = GetPmx;
+                                                MaterialHis = new List<IPXMaterial>(ThePmxOfNow.Material.ToArray());
+                                                ClearList("Material");
+                                                BeginInvoke(new MethodInvoker(() =>
+                                                {
+                                                    try
+                                                    {
+                                                        var table = VertexList.DataSource as DataTable;
+                                                        MaterialCount.Clear();
+                                                        for (int temp = 0; temp < ThePmxOfNow.Material.Count; temp++)
+                                                        {
+                                                            table.Rows.Add(temp, ThePmxOfNow.Material[temp].Name);
+                                                        }
+                                                        if (table.Rows.Count == 0) return;
+                                                        InputMaterialName.Text =
+                                                            DeleteMaterialNummer.Checked
+                                                                ? Regex.Replace(
+                                                                    VertexList.Rows[0].Cells[1].Value.ToString(),
+                                                                    @"\d", "")
+                                                                : VertexList.Rows[0].Cells[1].Value.ToString();
+
+
+                                                    }
+                                                    catch (Exception)
+                                                    {
+                                                    }
+                                                }));
+                                            }
+                                        }
+                                            break;
+                                    }
+                                    break;
                             }
                         }
                     }
@@ -1024,6 +1109,7 @@ namespace PE多功能信息处理插件
                 BoneList.MouseUp += GetBoneSelect;
                 BodyList.MouseUp += GetBodySelect;
                 JointList.MouseUp += GetJointSelect;
+                if (VertexTab.SelectedTab.Text== "材质操作")  VertexList.MouseUp+= GetMaterialSelect;
             }
             else
             {
@@ -1042,6 +1128,10 @@ namespace PE多功能信息处理插件
                 {
                     ClearList("joint");
                     JointList.MouseUp -= GetJointSelect;
+                }
+                {
+                    ClearList("Material");
+                    VertexList.MouseUp -= GetMaterialSelect;
                 }
             }
         }
@@ -1114,11 +1204,55 @@ namespace PE多功能信息处理插件
                         table.Rows.Clear();
                     }
                         break;
+                    case "Material":
+                        switch (VertexTab.SelectedTab.Text)
+                        {
+                            case "材质操作":
+                                var table = VertexList.DataSource as DataTable;
+                                table.Rows.Clear();
+                                table.Columns.Clear();
+                                table.Columns.Add("ID");
+                                table.Columns.Add("材质");
+                                table.Rows.Add();
+                                table.Rows.Clear();
+                                break;
+                        }
+                        break;
                 }
             }));
         }
 
-        public void GetJointSelect(object sender, MouseEventArgs e)
+        #region 全局模式下自动获取插件中选中的对象
+
+       void GetMaterialSelect(object sender, MouseEventArgs e)
+        {
+            IPXPmx ThePmxOfNow = ARGS.Host.Connector.Pmx.GetCurrentState();
+            if (AutomaticRadioButton.Checked)
+            {
+
+                var temp = new DataGridViewCell[VertexList.SelectedCells.Count];
+                VertexList.SelectedCells.CopyTo(temp, 0);
+                MaterialCount.Clear();
+                for (int i = 0; i < VertexList.SelectedCells.Count; i++)
+                {
+                    if (temp[i].ColumnIndex == 0)
+                    {
+                        MaterialCount.Add(Convert.ToInt32(temp[i].Value));
+                    }
+                    if (i == VertexList.SelectedCells.Count - 1)
+                    {
+                        InputMaterialName.Text = DeleteMaterialNummer.Checked
+                            ? Regex.Replace(temp[i].Value.ToString(), @"\d", "")
+                            : temp[i].Value.ToString();
+                    }
+                    MaterialCount.Sort();
+                }
+
+            }
+        }
+
+
+        void GetJointSelect(object sender, MouseEventArgs e)
         {
             IPXPmx ThePmxOfNow = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
             if (AutomaticRadioButton.Checked)
@@ -1242,7 +1376,7 @@ namespace PE多功能信息处理插件
             }
         }
 
-        public void GetBodySelect(object sender, MouseEventArgs e)
+        void GetBodySelect(object sender, MouseEventArgs e)
         {
             IPXPmx ThePmxOfNow = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
             if (!AutomaticRadioButton.Checked)
@@ -1311,7 +1445,7 @@ namespace PE多功能信息处理插件
             }
         }
 
-        public void GetBoneSelect(object sender, MouseEventArgs e)
+        void GetBoneSelect(object sender, MouseEventArgs e)
         {
             try
             {
@@ -1343,6 +1477,7 @@ namespace PE多功能信息处理插件
             }
         }
 
+        #endregion
         #endregion
 
         public void ChangeBoneName_Click(object sender, EventArgs e)
@@ -1436,6 +1571,12 @@ namespace PE多功能信息处理插件
                         }
                         Progress_Spinner.Speed = 1;
                         break;
+                    case "Material":
+                        foreach (ListChangeInfo Temp in ChangeList)
+                        {
+                            VertexList.Rows[Temp.i].Cells[1].Value = Temp.Name;
+                        }
+                        break;
                 }
             }
         }
@@ -1484,6 +1625,10 @@ namespace PE多功能信息处理插件
                         //args.Host.Connector.Form.UpdateList(UpdateObject.Vertex);
                         ARGS.Host.Connector.View.TransformView.UpdateView();
                         //ARGS.Host.Connector.View.TransformView.Focus();
+                        break;
+                    case "Material":
+                        ARGS.Host.Connector.Pmx.Update(temppmx);
+                        ARGS.Host.Connector.Form.UpdateList(UpdateObject.Material);
                         break;
                 }
             }
@@ -11683,7 +11828,7 @@ namespace PE多功能信息处理插件
                 }
                     break;
 
-                case "UV操作":
+                case "材质操作":
                 {
                     DataTable table = VertexList.DataSource as DataTable;
                     if (table != null)
@@ -12636,7 +12781,53 @@ namespace PE多功能信息处理插件
             }));
         }
 
-
+        #region 材质名顺序修改
+        private void MaterialNameCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (MaterialNameCheck.CheckState == CheckState.Checked)
+            {
+                InputMaterialName.Enabled = true;
+                InputMaterialName.UseCustomBackColor = false;
+            }
+            else
+            {
+                InputMaterialName.Enabled = false;
+                InputMaterialName.UseCustomBackColor = true;
+            }
+            Refresh();
+        }
+        private void ChangeMaterialName_Click(object sender, EventArgs e)
+        {
+            if (MaterialCount.Count != 0)
+            {
+                ThreadPool.QueueUserWorkItem(state =>
+                {
+                    try
+                    {
+                        var temppmx = ARGS.Host.Connector.Pmx.GetCurrentState();
+                        List<ListChangeInfo> MaterialChangeList = new List<ListChangeInfo>();
+                        var tempString = InputMaterialName.Text;
+                        for (var i = 0; i < MaterialCount.Count; i++)
+                        {
+                            temppmx.Material[MaterialCount[i]].Name = tempString + (i + 1);
+                            MaterialChangeList.Add(!AutomaticRadioButton.Checked
+                                ? new ListChangeInfo(i, tempString + (i + 1))
+                                : new ListChangeInfo(MaterialCount[i], tempString + (i + 1)));
+                        }
+                        ThFunOfSaveToPmx(temppmx, "Material");
+                        TheFunOfChangeListShow(MaterialChangeList, "Material");
+                    }
+                    catch (Exception)
+                    {
+                    }
+                });
+            }
+            else
+            {
+                MetroMessageBox.Show(this, "请先选择材质后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        #endregion
     }
 
     #endregion

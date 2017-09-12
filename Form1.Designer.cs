@@ -95,6 +95,7 @@ namespace PE多功能信息处理插件
             this.StartWeightChangeButton = new MetroFramework.Controls.MetroButton();
             this.Bone1_s = new MetroFramework.Controls.MetroCheckBox();
             this.表情操作 = new MetroFramework.Controls.MetroTabPage();
+            this.InitSelectVerMorph = new MetroFramework.Controls.MetroTile();
             this.MirrorSelectVertexMorph = new MetroFramework.Controls.MetroTile();
             this.MorphCountLabel = new MetroFramework.Controls.MetroLabel();
             this.MorphBackCountLabel = new MetroFramework.Controls.MetroLabel();
@@ -109,7 +110,11 @@ namespace PE多功能信息处理插件
             this.MorphImportSelect = new MetroFramework.Controls.MetroTile();
             this.MorphBack = new MetroFramework.Controls.MetroTile();
             this.LoadMorphBac = new MetroFramework.Controls.MetroTile();
-            this.UV操作 = new MetroFramework.Controls.MetroTabPage();
+            this.材质操作 = new MetroFramework.Controls.MetroTabPage();
+            this.ChangeMaterialName = new MetroFramework.Controls.MetroTile();
+            this.DeleteMaterialNummer = new MetroFramework.Controls.MetroCheckBox();
+            this.MaterialNameCheck = new MetroFramework.Controls.MetroCheckBox();
+            this.InputMaterialName = new MetroFramework.Controls.MetroTextBox();
             this.Bone = new MetroFramework.Controls.MetroTabPage();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.骨骼基础设置 = new MetroFramework.Controls.MetroTabPage();
@@ -351,7 +356,6 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
-            this.InitSelectVerMorph = new MetroFramework.Controls.MetroTile();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -359,6 +363,7 @@ namespace PE多功能信息处理插件
             this.T窗口权重调整.SuspendLayout();
             this.metroPanel1.SuspendLayout();
             this.表情操作.SuspendLayout();
+            this.材质操作.SuspendLayout();
             this.Bone.SuspendLayout();
             this.metroTabControl1.SuspendLayout();
             this.骨骼基础设置.SuspendLayout();
@@ -471,7 +476,7 @@ namespace PE多功能信息处理插件
             | System.Windows.Forms.AnchorStyles.Right)));
             this.VertexTab.Controls.Add(this.T窗口权重调整);
             this.VertexTab.Controls.Add(this.表情操作);
-            this.VertexTab.Controls.Add(this.UV操作);
+            this.VertexTab.Controls.Add(this.材质操作);
             this.VertexTab.Location = new System.Drawing.Point(190, 3);
             this.VertexTab.Name = "VertexTab";
             this.VertexTab.SelectedIndex = 0;
@@ -1270,6 +1275,19 @@ namespace PE多功能信息处理插件
             this.表情操作.VerticalScrollbarHighlightOnWheel = false;
             this.表情操作.VerticalScrollbarSize = 10;
             // 
+            // InitSelectVerMorph
+            // 
+            this.InitSelectVerMorph.ActiveControl = null;
+            this.InitSelectVerMorph.Location = new System.Drawing.Point(138, 240);
+            this.InitSelectVerMorph.Name = "InitSelectVerMorph";
+            this.InitSelectVerMorph.Size = new System.Drawing.Size(119, 58);
+            this.InitSelectVerMorph.TabIndex = 39;
+            this.InitSelectVerMorph.Text = "初始化选中顶点\r\n表情";
+            this.InitSelectVerMorph.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.InitSelectVerMorph.UseSelectable = true;
+            this.InitSelectVerMorph.UseStyleColors = true;
+            this.InitSelectVerMorph.Click += new System.EventHandler(this.VertexMorphOpera_Click);
+            // 
             // MirrorSelectVertexMorph
             // 
             this.MirrorSelectVertexMorph.ActiveControl = null;
@@ -1430,19 +1448,96 @@ namespace PE多功能信息处理插件
             this.LoadMorphBac.UseStyleColors = true;
             this.LoadMorphBac.Click += new System.EventHandler(this.LoadMorphBac_Click);
             // 
-            // UV操作
+            // 材质操作
             // 
-            this.UV操作.HorizontalScrollbarBarColor = true;
-            this.UV操作.HorizontalScrollbarHighlightOnWheel = false;
-            this.UV操作.HorizontalScrollbarSize = 10;
-            this.UV操作.Location = new System.Drawing.Point(4, 38);
-            this.UV操作.Name = "UV操作";
-            this.UV操作.Size = new System.Drawing.Size(398, 257);
-            this.UV操作.TabIndex = 2;
-            this.UV操作.Text = "UV操作";
-            this.UV操作.VerticalScrollbarBarColor = true;
-            this.UV操作.VerticalScrollbarHighlightOnWheel = false;
-            this.UV操作.VerticalScrollbarSize = 10;
+            this.材质操作.Controls.Add(this.ChangeMaterialName);
+            this.材质操作.Controls.Add(this.DeleteMaterialNummer);
+            this.材质操作.Controls.Add(this.MaterialNameCheck);
+            this.材质操作.Controls.Add(this.InputMaterialName);
+            this.材质操作.HorizontalScrollbarBarColor = true;
+            this.材质操作.HorizontalScrollbarHighlightOnWheel = false;
+            this.材质操作.HorizontalScrollbarSize = 10;
+            this.材质操作.Location = new System.Drawing.Point(4, 38);
+            this.材质操作.Name = "材质操作";
+            this.材质操作.Size = new System.Drawing.Size(398, 257);
+            this.材质操作.TabIndex = 2;
+            this.材质操作.Text = "材质操作";
+            this.材质操作.VerticalScrollbarBarColor = true;
+            this.材质操作.VerticalScrollbarHighlightOnWheel = false;
+            this.材质操作.VerticalScrollbarSize = 10;
+            // 
+            // ChangeMaterialName
+            // 
+            this.ChangeMaterialName.ActiveControl = null;
+            this.ChangeMaterialName.Location = new System.Drawing.Point(3, 3);
+            this.ChangeMaterialName.Name = "ChangeMaterialName";
+            this.ChangeMaterialName.Size = new System.Drawing.Size(80, 60);
+            this.ChangeMaterialName.TabIndex = 7;
+            this.ChangeMaterialName.Text = "顺序修改\r\n材质名称";
+            this.ChangeMaterialName.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.ChangeMaterialName.UseSelectable = true;
+            this.ChangeMaterialName.Click += new System.EventHandler(this.ChangeMaterialName_Click);
+            // 
+            // DeleteMaterialNummer
+            // 
+            this.DeleteMaterialNummer.AutoSize = true;
+            this.DeleteMaterialNummer.Checked = true;
+            this.DeleteMaterialNummer.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.DeleteMaterialNummer.Location = new System.Drawing.Point(89, 3);
+            this.DeleteMaterialNummer.Name = "DeleteMaterialNummer";
+            this.DeleteMaterialNummer.Size = new System.Drawing.Size(140, 15);
+            this.DeleteMaterialNummer.TabIndex = 10;
+            this.DeleteMaterialNummer.Text = "去除材质名中的数字";
+            this.DeleteMaterialNummer.UseSelectable = true;
+            this.DeleteMaterialNummer.UseStyleColors = true;
+            // 
+            // MaterialNameCheck
+            // 
+            this.MaterialNameCheck.AutoSize = true;
+            this.MaterialNameCheck.Location = new System.Drawing.Point(89, 19);
+            this.MaterialNameCheck.Name = "MaterialNameCheck";
+            this.MaterialNameCheck.Size = new System.Drawing.Size(88, 15);
+            this.MaterialNameCheck.TabIndex = 9;
+            this.MaterialNameCheck.Text = "指定材质名";
+            this.MaterialNameCheck.UseSelectable = true;
+            this.MaterialNameCheck.UseStyleColors = true;
+            this.MaterialNameCheck.CheckedChanged += new System.EventHandler(this.MaterialNameCheck_CheckedChanged);
+            // 
+            // InputMaterialName
+            // 
+            // 
+            // 
+            // 
+            this.InputMaterialName.CustomButton.Image = null;
+            this.InputMaterialName.CustomButton.Location = new System.Drawing.Point(102, 1);
+            this.InputMaterialName.CustomButton.Name = "";
+            this.InputMaterialName.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.InputMaterialName.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.InputMaterialName.CustomButton.TabIndex = 1;
+            this.InputMaterialName.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.InputMaterialName.CustomButton.UseSelectable = true;
+            this.InputMaterialName.Enabled = false;
+            this.InputMaterialName.Lines = new string[0];
+            this.InputMaterialName.Location = new System.Drawing.Point(89, 40);
+            this.InputMaterialName.MaxLength = 32767;
+            this.InputMaterialName.Name = "InputMaterialName";
+            this.InputMaterialName.PasswordChar = '\0';
+            this.InputMaterialName.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.InputMaterialName.SelectedText = "";
+            this.InputMaterialName.SelectionLength = 0;
+            this.InputMaterialName.SelectionStart = 0;
+            this.InputMaterialName.ShortcutsEnabled = true;
+            this.InputMaterialName.ShowButton = true;
+            this.InputMaterialName.ShowClearButton = true;
+            this.InputMaterialName.Size = new System.Drawing.Size(124, 23);
+            this.InputMaterialName.TabIndex = 8;
+            this.InputMaterialName.UseCustomBackColor = true;
+            this.InputMaterialName.UseCustomForeColor = true;
+            this.InputMaterialName.UseSelectable = true;
+            this.InputMaterialName.UseStyleColors = true;
+            this.InputMaterialName.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.InputMaterialName.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this.InputMaterialName.ButtonClick += new MetroFramework.Controls.MetroTextBox.ButClick(this.ChangeMaterialName_Click);
             // 
             // Bone
             // 
@@ -3297,7 +3392,7 @@ namespace PE多功能信息处理插件
             this.BodyNameCheck.Text = "指定刚体名";
             this.BodyNameCheck.UseSelectable = true;
             this.BodyNameCheck.UseStyleColors = true;
-            this.BodyNameCheck.Click += new System.EventHandler(this.BodyNameCheck_Click);
+            this.BodyNameCheck.CheckedChanged += new System.EventHandler(this.BodyNameCheck_Click);
             // 
             // DeleteBodyNummer
             // 
@@ -3638,7 +3733,6 @@ namespace PE多功能信息处理插件
             this.BodyList.Size = new System.Drawing.Size(230, 300);
             this.BodyList.TabIndex = 2;
             this.BodyList.UseStyleColors = true;
-            this.BodyList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GetBodySelect);
             // 
             // ChangeBodyNameWithBone
             // 
@@ -3736,7 +3830,6 @@ namespace PE多功能信息处理插件
             this.JointList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.JointList.Size = new System.Drawing.Size(230, 300);
             this.JointList.TabIndex = 4;
-            this.JointList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.GetJointSelect);
             // 
             // JointControl2
             // 
@@ -6307,19 +6400,6 @@ namespace PE多功能信息处理插件
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
             // 
-            // InitSelectVerMorph
-            // 
-            this.InitSelectVerMorph.ActiveControl = null;
-            this.InitSelectVerMorph.Location = new System.Drawing.Point(138, 240);
-            this.InitSelectVerMorph.Name = "InitSelectVerMorph";
-            this.InitSelectVerMorph.Size = new System.Drawing.Size(119, 58);
-            this.InitSelectVerMorph.TabIndex = 39;
-            this.InitSelectVerMorph.Text = "初始化选中顶点\r\n表情";
-            this.InitSelectVerMorph.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.InitSelectVerMorph.UseSelectable = true;
-            this.InitSelectVerMorph.UseStyleColors = true;
-            this.InitSelectVerMorph.Click += new System.EventHandler(this.VertexMorphOpera_Click);
-            // 
             // Metroform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -6359,6 +6439,8 @@ namespace PE多功能信息处理插件
             this.metroPanel1.PerformLayout();
             this.表情操作.ResumeLayout(false);
             this.表情操作.PerformLayout();
+            this.材质操作.ResumeLayout(false);
+            this.材质操作.PerformLayout();
             this.Bone.ResumeLayout(false);
             this.metroTabControl1.ResumeLayout(false);
             this.骨骼基础设置.ResumeLayout(false);
@@ -6687,7 +6769,7 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroLabel MirrorModeLabel;
         private MetroFramework.Controls.MetroToggle MirrorMode;
         private MetroFramework.Controls.MetroLabel metroLabel6;
-        private MetroFramework.Controls.MetroTabPage UV操作;
+        private MetroFramework.Controls.MetroTabPage 材质操作;
         private MetroFramework.Controls.MetroTile ReplaceSelectVertexBone;
         private MetroFramework.Controls.MetroLabel metroLabel27;
         private MetroFramework.Controls.MetroLabel metroLabel26;
@@ -6695,5 +6777,9 @@ namespace PE多功能信息处理插件
         public MetroFramework.Controls.MetroComboBox OriBoneCombox;
         private MetroFramework.Controls.MetroTile MirrorSelectVertexMorph;
         private MetroFramework.Controls.MetroTile InitSelectVerMorph;
+        private MetroFramework.Controls.MetroTile ChangeMaterialName;
+        private MetroFramework.Controls.MetroCheckBox DeleteMaterialNummer;
+        private MetroFramework.Controls.MetroCheckBox MaterialNameCheck;
+        private MetroFramework.Controls.MetroTextBox InputMaterialName;
     }
 }
