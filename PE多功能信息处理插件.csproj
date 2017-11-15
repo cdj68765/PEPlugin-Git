@@ -54,6 +54,9 @@
       <HintPath>.\PEPlugin.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SlimDX">
+      <HintPath>..\..\..\..\..\PmxEditor_0252\Lib\SlimDX\x64\SlimDX.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -102,6 +105,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="HighPoly.cs" />
     <Compile Include="JointBezierModeSetAll.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,6 +126,7 @@
     <Compile Include="BodyBezierMode.Designer.cs">
       <DependentUpon>BodyBezierMode.cs</DependentUpon>
     </Compile>
+    <Compile Include="PluginApp.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -221,7 +226,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0252\_plugin\"</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0254\_plugin\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,6 +3,7 @@ using Microsoft.CSharp;
 using PEPlugin;
 using PEPlugin.Pmd;
 using PEPlugin.Pmx;
+using PEPlugin.SDX;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -22,16 +23,16 @@ using static PE多功能信息处理插件.Class2;
 
 namespace PE多功能信息处理插件
 {
-    public class Program : IPEPlugin, IPEPluginOption, IPEImportPlugin, IPEExportPlugin
+    public class Program :IPEPlugin, IPEPluginOption, IPEImportPlugin, IPEExportPlugin
     {
         public static IPERunArgs ARGS;
 
-        public string Description => "";
-        public string Name => "";
+        public new string Description => "";
+        public new string Name => "";
 
         public IPEPluginOption Option => this;
 
-        public string Version => "0";
+        public new string Version => "0";
 
         public string Ext => ".pmx";
 
@@ -117,7 +118,6 @@ namespace PE多功能信息处理插件
             ARGS = args;
             Formtemp = args.Host.Connector.Form as Form;
             ViewForm = args.Host.Connector.View.PmxView as Form;
-
             #region 读取配置
 
             try
@@ -998,7 +998,10 @@ namespace PE多功能信息处理插件
                             };
                             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                             Application.EnableVisualStyles();*/
-                            newopen = new Metroform();
+                           /* myForm f = new myForm(args);
+                            f.Show(); */
+                           newopen = new Metroform();
+                          new  MeasureClass();
                             newopen.Show();
                         }
                         else

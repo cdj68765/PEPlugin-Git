@@ -95,17 +95,9 @@ namespace PE多功能信息处理插件
             this.StartWeightChangeButton = new MetroFramework.Controls.MetroButton();
             this.Bone1_s = new MetroFramework.Controls.MetroCheckBox();
             this.表情操作 = new MetroFramework.Controls.MetroTabPage();
+            this.MorphBackCountLabel = new MetroFramework.Controls.MetroLabel();
             this.InitSelectVerMorph = new MetroFramework.Controls.MetroTile();
             this.MirrorSelectVertexMorph = new MetroFramework.Controls.MetroTile();
-            this.MorphCountLabel = new MetroFramework.Controls.MetroLabel();
-            this.MorphBackCountLabel = new MetroFramework.Controls.MetroLabel();
-            this.MorphBarLabel = new MetroFramework.Controls.MetroLabel();
-            this.metroLabel5 = new MetroFramework.Controls.MetroLabel();
-            this.MorphPositionWithNormal = new MetroFramework.Controls.MetroRadioButton();
-            this.MorphPositionWithUV = new MetroFramework.Controls.MetroRadioButton();
-            this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
-            this.MorpfSearchClose = new MetroFramework.Controls.MetroToggle();
-            this.MorphMissionTaskBar = new MetroFramework.Controls.MetroProgressBar();
             this.MorphSelectAll = new MetroFramework.Controls.MetroButton();
             this.MorphImportSelect = new MetroFramework.Controls.MetroTile();
             this.MorphBack = new MetroFramework.Controls.MetroTile();
@@ -1248,17 +1240,9 @@ namespace PE多功能信息处理插件
             // 
             // 表情操作
             // 
+            this.表情操作.Controls.Add(this.MorphBackCountLabel);
             this.表情操作.Controls.Add(this.InitSelectVerMorph);
             this.表情操作.Controls.Add(this.MirrorSelectVertexMorph);
-            this.表情操作.Controls.Add(this.MorphCountLabel);
-            this.表情操作.Controls.Add(this.MorphBackCountLabel);
-            this.表情操作.Controls.Add(this.MorphBarLabel);
-            this.表情操作.Controls.Add(this.metroLabel5);
-            this.表情操作.Controls.Add(this.MorphPositionWithNormal);
-            this.表情操作.Controls.Add(this.MorphPositionWithUV);
-            this.表情操作.Controls.Add(this.metroLabel4);
-            this.表情操作.Controls.Add(this.MorpfSearchClose);
-            this.表情操作.Controls.Add(this.MorphMissionTaskBar);
             this.表情操作.Controls.Add(this.MorphSelectAll);
             this.表情操作.Controls.Add(this.MorphImportSelect);
             this.表情操作.Controls.Add(this.MorphBack);
@@ -1275,10 +1259,21 @@ namespace PE多功能信息处理插件
             this.表情操作.VerticalScrollbarHighlightOnWheel = false;
             this.表情操作.VerticalScrollbarSize = 10;
             // 
+            // MorphBackCountLabel
+            // 
+            this.MorphBackCountLabel.AutoSize = true;
+            this.MorphBackCountLabel.Enabled = false;
+            this.MorphBackCountLabel.Location = new System.Drawing.Point(253, 107);
+            this.MorphBackCountLabel.Name = "MorphBackCountLabel";
+            this.MorphBackCountLabel.Size = new System.Drawing.Size(128, 19);
+            this.MorphBackCountLabel.TabIndex = 52;
+            this.MorphBackCountLabel.Text = "备份表情顶点数：0";
+            this.MorphBackCountLabel.UseStyleColors = true;
+            // 
             // InitSelectVerMorph
             // 
             this.InitSelectVerMorph.ActiveControl = null;
-            this.InitSelectVerMorph.Location = new System.Drawing.Point(138, 240);
+            this.InitSelectVerMorph.Location = new System.Drawing.Point(129, 128);
             this.InitSelectVerMorph.Name = "InitSelectVerMorph";
             this.InitSelectVerMorph.Size = new System.Drawing.Size(119, 58);
             this.InitSelectVerMorph.TabIndex = 39;
@@ -1291,7 +1286,7 @@ namespace PE多功能信息处理插件
             // MirrorSelectVertexMorph
             // 
             this.MirrorSelectVertexMorph.ActiveControl = null;
-            this.MirrorSelectVertexMorph.Location = new System.Drawing.Point(4, 240);
+            this.MirrorSelectVertexMorph.Location = new System.Drawing.Point(4, 128);
             this.MirrorSelectVertexMorph.Name = "MirrorSelectVertexMorph";
             this.MirrorSelectVertexMorph.Size = new System.Drawing.Size(119, 58);
             this.MirrorSelectVertexMorph.TabIndex = 38;
@@ -1300,104 +1295,6 @@ namespace PE多功能信息处理插件
             this.MirrorSelectVertexMorph.UseSelectable = true;
             this.MirrorSelectVertexMorph.UseStyleColors = true;
             this.MirrorSelectVertexMorph.Click += new System.EventHandler(this.VertexMorphOpera_Click);
-            // 
-            // MorphCountLabel
-            // 
-            this.MorphCountLabel.AutoSize = true;
-            this.MorphCountLabel.Location = new System.Drawing.Point(129, 195);
-            this.MorphCountLabel.Name = "MorphCountLabel";
-            this.MorphCountLabel.Size = new System.Drawing.Size(142, 19);
-            this.MorphCountLabel.TabIndex = 37;
-            this.MorphCountLabel.Text = "匹配表情顶点数：0个";
-            this.MorphCountLabel.UseStyleColors = true;
-            // 
-            // MorphBackCountLabel
-            // 
-            this.MorphBackCountLabel.AutoSize = true;
-            this.MorphBackCountLabel.Location = new System.Drawing.Point(129, 176);
-            this.MorphBackCountLabel.Name = "MorphBackCountLabel";
-            this.MorphBackCountLabel.Size = new System.Drawing.Size(128, 19);
-            this.MorphBackCountLabel.TabIndex = 36;
-            this.MorphBackCountLabel.Text = "备份表情顶点数：0";
-            this.MorphBackCountLabel.UseStyleColors = true;
-            // 
-            // MorphBarLabel
-            // 
-            this.MorphBarLabel.AutoSize = true;
-            this.MorphBarLabel.Location = new System.Drawing.Point(129, 146);
-            this.MorphBarLabel.Name = "MorphBarLabel";
-            this.MorphBarLabel.Size = new System.Drawing.Size(50, 19);
-            this.MorphBarLabel.TabIndex = 35;
-            this.MorphBarLabel.Text = "0->100";
-            this.MorphBarLabel.UseStyleColors = true;
-            // 
-            // metroLabel5
-            // 
-            this.metroLabel5.AutoSize = true;
-            this.metroLabel5.Location = new System.Drawing.Point(129, 46);
-            this.metroLabel5.Name = "metroLabel5";
-            this.metroLabel5.Size = new System.Drawing.Size(93, 19);
-            this.metroLabel5.TabIndex = 34;
-            this.metroLabel5.Text = "顶点匹配模式";
-            this.metroLabel5.UseStyleColors = true;
-            // 
-            // MorphPositionWithNormal
-            // 
-            this.MorphPositionWithNormal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.MorphPositionWithNormal.AutoSize = true;
-            this.MorphPositionWithNormal.FontSize = MetroFramework.MetroCheckBoxSize.Medium;
-            this.MorphPositionWithNormal.Location = new System.Drawing.Point(129, 84);
-            this.MorphPositionWithNormal.Name = "MorphPositionWithNormal";
-            this.MorphPositionWithNormal.Size = new System.Drawing.Size(91, 19);
-            this.MorphPositionWithNormal.TabIndex = 32;
-            this.MorphPositionWithNormal.Text = "坐标+法线";
-            this.MorphPositionWithNormal.UseSelectable = true;
-            this.MorphPositionWithNormal.UseStyleColors = true;
-            // 
-            // MorphPositionWithUV
-            // 
-            this.MorphPositionWithUV.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.MorphPositionWithUV.AutoSize = true;
-            this.MorphPositionWithUV.Checked = true;
-            this.MorphPositionWithUV.FontSize = MetroFramework.MetroCheckBoxSize.Medium;
-            this.MorphPositionWithUV.Location = new System.Drawing.Point(129, 65);
-            this.MorphPositionWithUV.Name = "MorphPositionWithUV";
-            this.MorphPositionWithUV.Size = new System.Drawing.Size(82, 19);
-            this.MorphPositionWithUV.TabIndex = 31;
-            this.MorphPositionWithUV.TabStop = true;
-            this.MorphPositionWithUV.Text = "坐标+UV";
-            this.MorphPositionWithUV.UseSelectable = true;
-            this.MorphPositionWithUV.UseStyleColors = true;
-            // 
-            // metroLabel4
-            // 
-            this.metroLabel4.AutoSize = true;
-            this.metroLabel4.Location = new System.Drawing.Point(239, 46);
-            this.metroLabel4.Name = "metroLabel4";
-            this.metroLabel4.Size = new System.Drawing.Size(149, 19);
-            this.metroLabel4.TabIndex = 17;
-            this.metroLabel4.Text = "是否使用最近顶点匹配";
-            this.metroLabel4.UseStyleColors = true;
-            // 
-            // MorpfSearchClose
-            // 
-            this.MorpfSearchClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.MorpfSearchClose.AutoSize = true;
-            this.MorpfSearchClose.DisplayFocus = true;
-            this.MorpfSearchClose.Location = new System.Drawing.Point(239, 68);
-            this.MorpfSearchClose.Name = "MorpfSearchClose";
-            this.MorpfSearchClose.Size = new System.Drawing.Size(80, 16);
-            this.MorpfSearchClose.TabIndex = 16;
-            this.MorpfSearchClose.Text = "Off";
-            this.MorpfSearchClose.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.MorpfSearchClose.UseSelectable = true;
-            // 
-            // MorphMissionTaskBar
-            // 
-            this.MorphMissionTaskBar.Location = new System.Drawing.Point(129, 111);
-            this.MorphMissionTaskBar.Name = "MorphMissionTaskBar";
-            this.MorphMissionTaskBar.Size = new System.Drawing.Size(259, 27);
-            this.MorphMissionTaskBar.TabIndex = 15;
             // 
             // MorphSelectAll
             // 
@@ -1413,11 +1310,11 @@ namespace PE多功能信息处理插件
             // MorphImportSelect
             // 
             this.MorphImportSelect.ActiveControl = null;
-            this.MorphImportSelect.Location = new System.Drawing.Point(4, 176);
+            this.MorphImportSelect.Location = new System.Drawing.Point(253, 46);
             this.MorphImportSelect.Name = "MorphImportSelect";
-            this.MorphImportSelect.Size = new System.Drawing.Size(119, 58);
+            this.MorphImportSelect.Size = new System.Drawing.Size(120, 58);
             this.MorphImportSelect.TabIndex = 13;
-            this.MorphImportSelect.Text = "导入选中表情到\r\n模型";
+            this.MorphImportSelect.Text = "为选中顶点导入\r\n选中表情";
             this.MorphImportSelect.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.MorphImportSelect.UseSelectable = true;
             this.MorphImportSelect.UseStyleColors = true;
@@ -1426,11 +1323,11 @@ namespace PE多功能信息处理插件
             // MorphBack
             // 
             this.MorphBack.ActiveControl = null;
-            this.MorphBack.Location = new System.Drawing.Point(3, 111);
+            this.MorphBack.Location = new System.Drawing.Point(4, 46);
             this.MorphBack.Name = "MorphBack";
             this.MorphBack.Size = new System.Drawing.Size(120, 58);
             this.MorphBack.TabIndex = 11;
-            this.MorphBack.Text = "备份全部顶点\r\n表情";
+            this.MorphBack.Text = "备份全部顶点\r\n表情到文件";
             this.MorphBack.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.MorphBack.UseSelectable = true;
             this.MorphBack.UseStyleColors = true;
@@ -1439,11 +1336,11 @@ namespace PE多功能信息处理插件
             // LoadMorphBac
             // 
             this.LoadMorphBac.ActiveControl = null;
-            this.LoadMorphBac.Location = new System.Drawing.Point(3, 46);
+            this.LoadMorphBac.Location = new System.Drawing.Point(129, 46);
             this.LoadMorphBac.Name = "LoadMorphBac";
             this.LoadMorphBac.Size = new System.Drawing.Size(120, 58);
             this.LoadMorphBac.TabIndex = 10;
-            this.LoadMorphBac.Text = "载入表情备份";
+            this.LoadMorphBac.Text = "从文件载入\r\n表情备份";
             this.LoadMorphBac.UseSelectable = true;
             this.LoadMorphBac.UseStyleColors = true;
             this.LoadMorphBac.Click += new System.EventHandler(this.LoadMorphBac_Click);
@@ -6753,15 +6650,6 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroTile LoadMorphBac;
         private MetroFramework.Controls.MetroTile MorphImportSelect;
         private MetroFramework.Controls.MetroButton MorphSelectAll;
-        private MetroFramework.Controls.MetroProgressBar MorphMissionTaskBar;
-        private MetroFramework.Controls.MetroToggle MorpfSearchClose;
-        private MetroFramework.Controls.MetroRadioButton MorphPositionWithNormal;
-        private MetroFramework.Controls.MetroRadioButton MorphPositionWithUV;
-        private MetroFramework.Controls.MetroLabel metroLabel4;
-        private MetroFramework.Controls.MetroLabel metroLabel5;
-        private MetroFramework.Controls.MetroLabel MorphBarLabel;
-        private MetroFramework.Controls.MetroLabel MorphCountLabel;
-        private MetroFramework.Controls.MetroLabel MorphBackCountLabel;
         private MetroFramework.Controls.MetroCheckBox MirrorBoneCheck;
         private MetroFramework.Controls.MetroPanel metroPanel2;
         private MetroFramework.Controls.MetroRadioButton MirrorOnlyPara;
@@ -6781,5 +6669,6 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroCheckBox DeleteMaterialNummer;
         private MetroFramework.Controls.MetroCheckBox MaterialNameCheck;
         private MetroFramework.Controls.MetroTextBox InputMaterialName;
+        private MetroFramework.Controls.MetroLabel MorphBackCountLabel;
     }
 }

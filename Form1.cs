@@ -25,6 +25,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PXCPlugin;
+using PXCPlugin.UIModel;
 using static PE多功能信息处理插件.Class2;
 using static PE多功能信息处理插件.Program;
 
@@ -319,7 +321,6 @@ namespace PE多功能信息处理插件
                         }
                         catch (Exception)
                         {
-                            // ignored
                         }
                     }
                     newopen.Dispose();
@@ -327,7 +328,6 @@ namespace PE多功能信息处理插件
                 }
                 catch (Exception)
                 {
-                    // ignored
                 }
             };
             Activated += delegate
@@ -1012,7 +1012,8 @@ namespace PE多功能信息处理插件
                                     {
                                         case "材质操作":
                                         {
-                                            if (MaterialHis.Count != GetPmx.Material.Count||VertexList.Rows.Count!= GetPmx.Material.Count)
+                                            if (MaterialHis.Count != GetPmx.Material.Count ||
+                                                VertexList.Rows.Count != GetPmx.Material.Count)
                                             {
                                                 IPXPmx ThePmxOfNow = GetPmx;
                                                 MaterialHis = new List<IPXMaterial>(ThePmxOfNow.Material.ToArray());
@@ -1109,7 +1110,7 @@ namespace PE多功能信息处理插件
                 BoneList.MouseUp += GetBoneSelect;
                 BodyList.MouseUp += GetBodySelect;
                 JointList.MouseUp += GetJointSelect;
-                if (VertexTab.SelectedTab.Text== "材质操作")  VertexList.MouseUp+= GetMaterialSelect;
+                if (VertexTab.SelectedTab.Text == "材质操作") VertexList.MouseUp += GetMaterialSelect;
             }
             else
             {
@@ -1224,7 +1225,7 @@ namespace PE多功能信息处理插件
 
         #region 全局模式下自动获取插件中选中的对象
 
-       void GetMaterialSelect(object sender, MouseEventArgs e)
+        void GetMaterialSelect(object sender, MouseEventArgs e)
         {
             IPXPmx ThePmxOfNow = ARGS.Host.Connector.Pmx.GetCurrentState();
             if (AutomaticRadioButton.Checked)
@@ -1478,6 +1479,7 @@ namespace PE多功能信息处理插件
         }
 
         #endregion
+
         #endregion
 
         public void ChangeBoneName_Click(object sender, EventArgs e)
@@ -1843,7 +1845,7 @@ namespace PE多功能信息处理插件
 
         public void StartAnalyseBoneDeleteCheck_Click(object sender, EventArgs e)
         {
-            ThreadPool.QueueUserWorkItem(state =>
+            new Thread(() =>
             {
                 IPXPmx TEMPPMX = ARGS.Host.Connector.Pmx.GetCurrentState();
                 List<int> delList;
@@ -1865,27 +1867,48 @@ namespace PE多功能信息处理插件
                 }
 
                 delBoneList.Clear();
-                foreach (IPXBone DelTemp in delList.Select(DelTemp => TEMPPMX.Bone[DelTemp]).ToList())
+                var DelObject = new ConcurrentBag<object>();
+                foreach (var DelTemp in delList.Select(DelTemp => TEMPPMX.Bone[DelTemp]).AsParallel())
                 {
-                    TEMPPMX.Bone.Remove(DelTemp);
-                }
-                ThFunOfSaveToPmx(TEMPPMX, "Bone");
-                if (AnalyseBoneDeleteBodyAndJoointCheck.Checked)
-                {
-                    TEMPPMX = ARGS.Host.Connector.Pmx.GetCurrentState();
-                    foreach (IPXBody DelTemp in TEMPPMX.Body.Where(t => t.Bone == null))
+                    DelObject.Add(DelTemp);
+                    if (AnalyseBoneDeleteBodyAndJoointCheck.Checked)
                     {
-                        TEMPPMX.Body.Remove(DelTemp);
+                        foreach (var DelBody in TEMPPMX.Body.Where(t => t.Bone == DelTemp).AsParallel())
+                        {
+                            DelObject.Add(DelBody);
+                            foreach (var DelJoint in TEMPPMX.Joint.Where(t => t.BodyA == DelBody || t.BodyB == DelBody)
+                                .AsParallel())
+                            {
+                                DelObject.Add(DelJoint);
+                            }
+                        }
                     }
+                }
+                foreach (var DelTemp in DelObject.AsParallel())
+                {
+                    if (DelTemp is IPXBone)
+                    {
+                        TEMPPMX.Bone.Remove(DelTemp as IPXBone);
+                    }
+                    else if (DelTemp is IPXBody)
+                    {
+                        TEMPPMX.Body.Remove(DelTemp as IPXBody);
+                    }
+                    else if (DelTemp is IPXJoint)
+                    {
+                        TEMPPMX.Joint.Remove(DelTemp as IPXJoint);
+                    }
+                }
+                BeginInvoke(new MethodInvoker(() =>
+                {
                     ARGS.Host.Connector.Pmx.Update(TEMPPMX);
-                    TEMPPMX = ARGS.Host.Connector.Pmx.GetCurrentState();
-                    foreach (IPXJoint DelTemp in TEMPPMX.Joint.Where(t => t.BodyA == null || t.BodyB == null))
-                    {
-                        TEMPPMX.Joint.Remove(DelTemp);
-                    }
-                    ThFunOfSaveToPmx(TEMPPMX, "Joint");
-                }
-            });
+                    ARGS.Host.Connector.Form.UpdateList(UpdateObject.All);
+                    ARGS.Host.Connector.View.PmxView.UpdateView();
+                    ARGS.Host.Connector.View.PmxView.UpdateModel();
+                    ClearList("bone");
+                }));
+
+            }).Start();
         }
 
         public void MoreThanZeroNumCheck(object sender, KeyPressEventArgs e)
@@ -10115,7 +10138,6 @@ namespace PE多功能信息处理插件
 
         private void VertexList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            //IPXPmx ThePmxOfNow = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
             var temp = new DataGridViewCell[VertexList.SelectedCells.Count];
             switch (VertexTab.SelectedTab.Text)
             {
@@ -10192,10 +10214,10 @@ namespace PE多功能信息处理插件
                         {
                             MorphBackCountLabel.Text =
                                 "备份表情顶点数：" + MorphBacData[temp[0].RowIndex].VertexList.Length.ToString();
-                            MorphCountLabel.Text = "匹配表情顶点数：" + MorphBacData[temp[0].RowIndex].VertexList
-                                                       .Select(item2 => MorphSearchList
-                                                           .Find(b => b.index == item2.index).toindex)
-                                                       .Count(Index => Index != -1);
+                            /*  MorphCountLabel.Text = "匹配表情顶点数：" + MorphBacData[temp[0].RowIndex].VertexList
+                                                         .Select(item2 => MorphSearchList
+                                                             .Find(b => b.index == item2.index).toindex)
+                                                         .Count(Index => Index != -1);*/
                             /*  foreach (var Index in MorphBacData[temp[0].RowIndex].VertexList.Select(item2 => MorphSearchList.Find(b => b.index == item2.index).toindex).Where(Index => Index != -1))
                               {
                                   Interlocked.Increment(ref i);
@@ -11844,31 +11866,16 @@ namespace PE多功能信息处理插件
                     break;
             }
         }
-
         private void MorphBack_Click(object sender, EventArgs e)
         {
-            GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
             var morph = new MorphOpera();
+            GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
             if (GetPmx?.Morph.Count == 0) return;
             var task = new Task(() =>
             {
                 MorphBacData = new List<MorphOpera.Morph>();
                 List<int> VerIndex = new List<int>();
                 List<MorphOpera.Index> Verindex = new List<MorphOpera.Index>();
-                var i = 0;
-                new Thread(() =>
-                {
-                    MorphMissionTaskBar.Value = 0;
-                    MorphMissionTaskBar.Maximum = GetPmx.Morph.Count;
-                    do
-                    {
-                        Thread.Sleep(5);
-                        MorphMissionTaskBar.Value = i;
-                        MorphBarLabel.Text = i + "->" + MorphMissionTaskBar.Maximum;
-                    } while (MorphMissionTaskBar.Value != MorphMissionTaskBar.Maximum);
-                    MorphMissionTaskBar.Value = 0;
-                    MorphBarLabel.Text = "0->100";
-                }).Start();
                 foreach (var item in GetPmx.Morph)
                 {
                     if (item.IsVertex)
@@ -11895,7 +11902,8 @@ namespace PE多功能信息处理插件
                                     UVY = item2.Vertex.UV.Y,
                                     NormalX = item2.Vertex.Normal.X,
                                     NormalY = item2.Vertex.Normal.Y,
-                                    NormalZ = item2.Vertex.Normal.Z
+                                    NormalZ = item2.Vertex.Normal.Z,
+                                    toindex = -1
                                 };
                                 Verindex.Add(temp);
                             }
@@ -11911,7 +11919,6 @@ namespace PE多功能信息处理插件
                         TempData.VertexList = _Vertex.ToArray();
                         MorphBacData.Add(TempData);
                     }
-                    Interlocked.Increment(ref i);
                 }
                 morph.MorphList = MorphBacData.ToArray();
                 morph.IndexList = Verindex.ToArray();
@@ -11922,7 +11929,6 @@ namespace PE多功能信息处理插件
                 Save.Title = "备份表情";
                 Save.Filter = "Xml文件(*.Xml)|*.Xml";
                 Save.AddExtension = true;
-                // ReSharper disable once PossibleNullReferenceException
                 Save.FileName = GetPmx.ModelInfo.ModelName;
                 Save.ShowDialog();
                 if (Save.FileName == "") return;
@@ -11964,7 +11970,6 @@ namespace PE多功能信息处理插件
             }
             using (OpenFileDialog open = new OpenFileDialog())
             {
-                MorphMissionTaskBar.Value = 0;
                 open.Title = "载入表情";
                 open.Filter = "Xml文件(*.Xml)|*.Xml";
                 open.AddExtension = true;
@@ -11978,7 +11983,6 @@ namespace PE多功能信息处理插件
                     Stream stream = new FileStream(open.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
                     MorphOpera Data = (MorphOpera) formatter.Deserialize(stream);
                     stream.Close();
-                    // ReSharper disable once InvertIf
                     if (Data.MorphList.Length != 0)
                     {
                         MorphBacData = new List<MorphOpera.Morph>(Data.MorphList);
@@ -12000,147 +12004,7 @@ namespace PE多功能信息处理插件
                         MorphMission = new Task(() =>
                         {
                             GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
-                            //IPXPmxBuilder bdx = ARGS.Host.Builder.Pmx;
-                            //  var OriTemp = new ConcurrentBag<MorphOpera.Index>(Data.IndexList);
                             var OriTemp = new List<MorphOpera.Index>(Data.IndexList);
-                            var i = 0;
-                            new Thread(() =>
-                            {
-                                MorphMissionTaskBar.Value = 0;
-                                MorphMissionTaskBar.Maximum = Data.IndexList.Length;
-                                do
-                                {
-                                    Thread.Sleep(5);
-                                    MorphMissionTaskBar.Value = i;
-                                    MorphBarLabel.Text = i + "->" + Data.IndexList.Length;
-                                } while (MorphMissionTaskBar.Value != MorphMissionTaskBar.Maximum);
-                                MorphMissionTaskBar.Value = 0;
-                                MorphBarLabel.Text = "0->100";
-                            }).Start();
-                            MorphOpera.Index Last = null;
-                            foreach (var temp in OriTemp)
-                            {
-                                if (MorphPositionWithUV.Checked)
-                                {
-                                    var Get = (from item in GetPmx.Vertex
-                                               where item.Position.X == temp.x
-                                               where item.Position.Y == temp.y
-                                               where item.Position.Z == temp.z
-                                               where item.UV.X == temp.UVX
-                                               where item.UV.Y == temp.UVY
-                                               select new
-                                               {
-                                                   VertexIndex = GetPmx.Vertex.IndexOf(item),
-                                               });
-                                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                                    if (Get == null)
-                                    {
-                                        if (MorpfSearchClose.Checked)
-                                        {
-                                            temp.toindex = (from item in GetPmx.Vertex
-                                                            orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
-                                                                               Math.Pow(item.Position.Y - temp.y, 2) +
-                                                                               Math.Pow(item.Position.Z - temp.z,
-                                                                                   2))) ascending
-                                                            select new
-                                                            {
-                                                                VertexIndex = GetPmx.Vertex.IndexOf(item),
-                                                            }).FirstOrDefault().VertexIndex;
-                                        }
-                                        else
-                                        {
-                                            temp.toindex = -1;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (Get.Count() != 1)
-                                        {
-                                            var lastindex = 1000000000;
-                                            if (Last == null)
-                                            {
-                                                var inde_x = OriTemp.IndexOf(temp);
-                                                if (inde_x != 0)
-                                                {
-                                                    Last = OriTemp[inde_x - 1];
-                                                }
-                                            }
-                                            foreach (var item in Get.Where(
-                                                item => item.VertexIndex > Last.toindex &&
-                                                        item.VertexIndex < lastindex))
-                                            {
-                                                temp.toindex = item.VertexIndex;
-                                                lastindex = item.VertexIndex;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            temp.toindex = Get.FirstOrDefault().VertexIndex;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    var Get = from item in GetPmx.Vertex
-                                              where item.Position.X == temp.x
-                                              where item.Position.Y == temp.y
-                                              where item.Position.Z == temp.z
-                                              where item.Normal.X == temp.NormalX
-                                              where item.Normal.Y == temp.NormalY
-                                              where item.Normal.Z == temp.NormalZ
-                                              select new
-                                              {
-                                                  VertexIndex = GetPmx.Vertex.IndexOf(item),
-                                              };
-                                    if (Get == null)
-                                    {
-                                        if (MorpfSearchClose.Checked)
-                                        {
-                                            temp.toindex = (from item in GetPmx.Vertex
-                                                            orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
-                                                                               Math.Pow(item.Position.Y - temp.y, 2) +
-                                                                               Math.Pow(item.Position.Z - temp.z,
-                                                                                   2))) ascending
-                                                            select new
-                                                            {
-                                                                VertexIndex = GetPmx.Vertex.IndexOf(item),
-                                                            }).FirstOrDefault().VertexIndex;
-                                        }
-                                        else
-                                        {
-                                            temp.toindex = -1;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (Get.Count() != 1)
-                                        {
-                                            int lastindex = 1000000000;
-                                            if (Last == null)
-                                            {
-                                                var inde_x = OriTemp.IndexOf(temp);
-                                                if (inde_x != 0)
-                                                {
-                                                    Last = OriTemp[inde_x - 1];
-                                                }
-                                            }
-                                            foreach (var item in Get.Where(
-                                                item => item.VertexIndex > Last.toindex &&
-                                                        item.VertexIndex < lastindex))
-                                            {
-                                                temp.toindex = item.VertexIndex;
-                                                lastindex = item.VertexIndex;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            temp.toindex = Get.FirstOrDefault().VertexIndex;
-                                        }
-                                    }
-                                }
-                                Last = temp;
-                                Interlocked.Increment(ref i);
-                            }
                             MorphSearchList = OriTemp.ToList();
                             MorphMission = null;
                         });
@@ -12149,60 +12013,73 @@ namespace PE多功能信息处理插件
                 }
                 catch (Exception)
                 {
-                    // ignored
                 }
             }
         }
 
         private void MorphImportSelect_Click(object sender, EventArgs e)
         {
-            if (MorphMission == null)
-            {
-                if (MorphBacData.Count != 0)
-                {
-                    ThreadPool.QueueUserWorkItem(state =>
-                    {
-                        GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
-                        for (int i = VertexList.SelectedRows.Count - 1; i >= 0; i--)
-                        {
-                            var item = MorphBacData[VertexList.Rows.IndexOf(VertexList.SelectedRows[i])];
-                            var CreateMorph = ARGS.Host.Builder.Pmx.Morph();
-                            CreateMorph.Kind = MorphKind.Vertex;
-                            CreateMorph.Name = item.MorphName;
-                            CreateMorph.Panel = item.Panel;
-                            foreach (var item2 in item.VertexList)
-                            {
-                                var Index = MorphSearchList.Find(b => b.index == item2.index).toindex;
-                                if (Index != -1)
-                                    CreateMorph.Offsets.Add(
-                                        ARGS.Host.Builder.Pmx.VertexMorphOffset(GetPmx.Vertex[Index],
-                                            new V3(item2.tox, item2.toy, item2.toz)));
-                            }
-                            GetPmx.Morph.Add(CreateMorph);
-                        }
 
-                        BeginInvoke(new MethodInvoker(() =>
-                        {
-                            ARGS.Host.Connector.Pmx.Update(GetPmx);
-                            ARGS.Host.Connector.Form.UpdateList(UpdateObject.Morph);
-                            ARGS.Host.Connector.View.PmxView.UpdateModel();
-                            ARGS.Host.Connector.View.PmxView.UpdateView();
-                        }));
-                    });
+            if (MorphBacData.Count != 0)
+            {
+                GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
+                var VertexIndex = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices();
+                if (VertexIndex.Length == 0)
+                {
+                    MetroMessageBox.Show(this, "请选择顶点后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
+                for (int i = VertexList.SelectedRows.Count - 1; i >= 0; i--)
+                {
+                    var item = MorphBacData[VertexList.Rows.IndexOf(VertexList.SelectedRows[i])];
+                    var CreateMorph = ARGS.Host.Builder.Pmx.Morph();
+                    CreateMorph.Kind = MorphKind.Vertex;
+                    CreateMorph.Name = item.MorphName;
+                    CreateMorph.Panel = item.Panel;
+                    foreach (var VertexTemp in VertexIndex)
+                    {
+                        foreach (var MorphTemp in MorphSearchList)
+                        {
+                            var Digits = 5;
+                            if (Math.Round(GetPmx.Vertex[VertexTemp].Position.X, Digits) ==
+                                Math.Round(MorphTemp.x, Digits) &&
+                                Math.Round(GetPmx.Vertex[VertexTemp].Position.Y, Digits) ==
+                                Math.Round(MorphTemp.y, Digits) &&
+                                Math.Round(GetPmx.Vertex[VertexTemp].Position.Z, Digits) ==
+                                Math.Round(MorphTemp.z, Digits))
+                            {
+                                var MorphFind = item.VertexList.FirstOrDefault(x => x.index == MorphTemp.index);
+                                if (MorphFind != null)
+                                {
+                                    CreateMorph.Offsets.Add(ARGS.Host.Builder.Pmx.VertexMorphOffset(
+                                        GetPmx.Vertex[VertexTemp],
+                                        new V3(MorphFind.tox, MorphFind.toy, MorphFind.toz)));
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    GetPmx.Morph.Add(CreateMorph);
+                }
+                ARGS.Host.Connector.Pmx.Update(GetPmx);
+                ARGS.Host.Connector.Form.UpdateList(UpdateObject.All);
+                ARGS.Host.Connector.View.PmxView.UpdateModel();
+                ARGS.Host.Connector.View.PmxView.UpdateView();
+                MetroMessageBox.Show(this, "还原表情顶点完成", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MetroMessageBox.Show(this, "请等待后台数据处理完毕", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MetroMessageBox.Show(this, "请从文件载入表情备份后再继续后", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-      public  ConcurrentDictionary<int, V3> OriFileVertexList = new ConcurrentDictionary<int, V3>();
+
+        public  ConcurrentDictionary<int, V3> OriFileVertexList = new ConcurrentDictionary<int, V3>();
 
         private void VertexMorphOpera_Click(object sender, EventArgs e)
         {
             try
             {
-                if (int.Parse(System.Diagnostics.FileVersionInfo
+                if (int.Parse(FileVersionInfo
                         .GetVersionInfo(ARGS.Host.Connector.System.HostApplicationPath).ProductVersion
                         .Replace(".", "")) < 0250)
                 {
@@ -12215,15 +12092,15 @@ namespace PE多功能信息处理插件
                     MetroMessageBox.Show(this, "请选择顶点后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                var Formtemp = ARGS.Host.Connector.Form as Form;
-                var oldformtexts = oldformtext;
+               /* var Formtemp = ARGS.Host.Connector.Form as Form;
+                var oldformtexts = oldformtext;*/
                 if (OriFileVertexList.Count == 0)
                 {
                     ReadPmxFormFile(ref OriFileVertexList);
                 }
                 if (OriFileVertexList.Count != 0)
                 {
-                    var x = sender as Button;
+                    //var x = sender as Button;
                     var TempPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
                     if ((sender as Button).Name == "MirrorSelectVertexMorph")
                     {
