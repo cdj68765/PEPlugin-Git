@@ -157,7 +157,7 @@ namespace PE多功能信息处理插件
                     if (e.Button == MouseButtons.Left)
                     {
                        st = uim.GetTransformedBonePosition(bx);
-                        vp = viewCtrl.VCursorPosition;
+                        vp = viewCtrl.VCursorPosition;//仮想カーソル位置 
                         viewCtrl.VCursorPosition = st;
                     }
                 }

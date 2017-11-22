@@ -2604,7 +2604,7 @@ fc  : softness, biasFactor, relaxationFactor  | Joint参数(標準:0.9/0.3/1)
   </FormText>
   <FormText>
     <OriText>別窓を開く(&amp;D)</OriText>
-    <TransText>打开其他窗口(&amp;D)</TransText>
+    <TransText>打开新的PmxEditor(&amp;D)</TransText>
     <ControlName>MenuItem_DuplicateOpen</ControlName>
     <Count>1</Count>
   </FormText>

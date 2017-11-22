@@ -1000,8 +1000,8 @@ namespace PE多功能信息处理插件
                             Application.EnableVisualStyles();*/
                            /* myForm f = new myForm(args);
                             f.Show(); */
-                           newopen = new Metroform();
-                          new  MeasureClass();
+                         newopen = new Metroform();
+                         // new  MeasureClass()
                             newopen.Show();
                         }
                         else

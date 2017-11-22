@@ -107,6 +107,9 @@ namespace PE多功能信息处理插件
             this.DeleteMaterialNummer = new MetroFramework.Controls.MetroCheckBox();
             this.MaterialNameCheck = new MetroFramework.Controls.MetroCheckBox();
             this.InputMaterialName = new MetroFramework.Controls.MetroTextBox();
+            this.顶点操作 = new MetroFramework.Controls.MetroTabPage();
+            this.TheNumNeedSelect = new MetroFramework.Controls.MetroTextBox();
+            this.GetVerTexCro = new MetroFramework.Controls.MetroButton();
             this.Bone = new MetroFramework.Controls.MetroTabPage();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.骨骼基础设置 = new MetroFramework.Controls.MetroTabPage();
@@ -356,6 +359,7 @@ namespace PE多功能信息处理插件
             this.metroPanel1.SuspendLayout();
             this.表情操作.SuspendLayout();
             this.材质操作.SuspendLayout();
+            this.顶点操作.SuspendLayout();
             this.Bone.SuspendLayout();
             this.metroTabControl1.SuspendLayout();
             this.骨骼基础设置.SuspendLayout();
@@ -386,7 +390,7 @@ namespace PE多功能信息处理插件
             this.ALLTAB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ALLTAB.Location = new System.Drawing.Point(20, 60);
             this.ALLTAB.Name = "ALLTAB";
-            this.ALLTAB.SelectedIndex = 1;
+            this.ALLTAB.SelectedIndex = 0;
             this.ALLTAB.Size = new System.Drawing.Size(600, 340);
             this.ALLTAB.TabIndex = 0;
             this.ALLTAB.UseSelectable = true;
@@ -469,9 +473,10 @@ namespace PE多功能信息处理插件
             this.VertexTab.Controls.Add(this.T窗口权重调整);
             this.VertexTab.Controls.Add(this.表情操作);
             this.VertexTab.Controls.Add(this.材质操作);
+            this.VertexTab.Controls.Add(this.顶点操作);
             this.VertexTab.Location = new System.Drawing.Point(190, 3);
             this.VertexTab.Name = "VertexTab";
-            this.VertexTab.SelectedIndex = 0;
+            this.VertexTab.SelectedIndex = 3;
             this.VertexTab.Size = new System.Drawing.Size(406, 299);
             this.VertexTab.TabIndex = 103;
             this.VertexTab.UseSelectable = true;
@@ -1435,6 +1440,66 @@ namespace PE多功能信息处理插件
             this.InputMaterialName.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.InputMaterialName.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             this.InputMaterialName.ButtonClick += new MetroFramework.Controls.MetroTextBox.ButClick(this.ChangeMaterialName_Click);
+            // 
+            // 顶点操作
+            // 
+            this.顶点操作.Controls.Add(this.TheNumNeedSelect);
+            this.顶点操作.Controls.Add(this.GetVerTexCro);
+            this.顶点操作.HorizontalScrollbarBarColor = true;
+            this.顶点操作.HorizontalScrollbarHighlightOnWheel = false;
+            this.顶点操作.HorizontalScrollbarSize = 10;
+            this.顶点操作.Location = new System.Drawing.Point(4, 38);
+            this.顶点操作.Name = "顶点操作";
+            this.顶点操作.Size = new System.Drawing.Size(398, 257);
+            this.顶点操作.TabIndex = 3;
+            this.顶点操作.Text = "顶点操作";
+            this.顶点操作.VerticalScrollbarBarColor = true;
+            this.顶点操作.VerticalScrollbarHighlightOnWheel = false;
+            this.顶点操作.VerticalScrollbarSize = 10;
+            // 
+            // TheNumNeedSelect
+            // 
+            // 
+            // 
+            // 
+            this.TheNumNeedSelect.CustomButton.Image = null;
+            this.TheNumNeedSelect.CustomButton.Location = new System.Drawing.Point(15, 1);
+            this.TheNumNeedSelect.CustomButton.Name = "";
+            this.TheNumNeedSelect.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.TheNumNeedSelect.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TheNumNeedSelect.CustomButton.TabIndex = 1;
+            this.TheNumNeedSelect.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.TheNumNeedSelect.CustomButton.UseSelectable = true;
+            this.TheNumNeedSelect.CustomButton.Visible = false;
+            this.TheNumNeedSelect.Lines = new string[] {
+        "99"};
+            this.TheNumNeedSelect.Location = new System.Drawing.Point(84, 22);
+            this.TheNumNeedSelect.MaxLength = 32767;
+            this.TheNumNeedSelect.Name = "TheNumNeedSelect";
+            this.TheNumNeedSelect.PasswordChar = '\0';
+            this.TheNumNeedSelect.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TheNumNeedSelect.SelectedText = "";
+            this.TheNumNeedSelect.SelectionLength = 0;
+            this.TheNumNeedSelect.SelectionStart = 0;
+            this.TheNumNeedSelect.ShortcutsEnabled = true;
+            this.TheNumNeedSelect.Size = new System.Drawing.Size(37, 23);
+            this.TheNumNeedSelect.TabIndex = 14;
+            this.TheNumNeedSelect.Text = "99";
+            this.TheNumNeedSelect.UseSelectable = true;
+            this.TheNumNeedSelect.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.TheNumNeedSelect.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this.TheNumNeedSelect.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumCheckOnlyOneToNine);
+            // 
+            // GetVerTexCro
+            // 
+            this.GetVerTexCro.Location = new System.Drawing.Point(3, 22);
+            this.GetVerTexCro.Name = "GetVerTexCro";
+            this.GetVerTexCro.Size = new System.Drawing.Size(75, 23);
+            this.GetVerTexCro.TabIndex = 3;
+            this.GetVerTexCro.Text = "Start";
+            this.GetVerTexCro.UseSelectable = true;
+            this.GetVerTexCro.UseStyleColors = true;
+            this.GetVerTexCro.Click += new System.EventHandler(this.GetVerTexCro_Click);
             // 
             // Bone
             // 
@@ -6338,6 +6403,7 @@ namespace PE多功能信息处理插件
             this.表情操作.PerformLayout();
             this.材质操作.ResumeLayout(false);
             this.材质操作.PerformLayout();
+            this.顶点操作.ResumeLayout(false);
             this.Bone.ResumeLayout(false);
             this.metroTabControl1.ResumeLayout(false);
             this.骨骼基础设置.ResumeLayout(false);
@@ -6670,5 +6736,8 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroCheckBox MaterialNameCheck;
         private MetroFramework.Controls.MetroTextBox InputMaterialName;
         private MetroFramework.Controls.MetroLabel MorphBackCountLabel;
+        private MetroFramework.Controls.MetroTabPage 顶点操作;
+        private MetroFramework.Controls.MetroButton GetVerTexCro;
+        public MetroFramework.Controls.MetroTextBox TheNumNeedSelect;
     }
 }

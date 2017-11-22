@@ -126,6 +126,7 @@
     <Compile Include="BodyBezierMode.Designer.cs">
       <DependentUpon>BodyBezierMode.cs</DependentUpon>
     </Compile>
+    <Compile Include="MathHelper.cs" />
     <Compile Include="PluginApp.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>

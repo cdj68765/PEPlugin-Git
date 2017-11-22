@@ -29,11 +29,14 @@ using PXCPlugin;
 using PXCPlugin.UIModel;
 using static PE多功能信息处理插件.Class2;
 using static PE多功能信息处理插件.Program;
+using PXCPlugin.Event;
+using SlimDX;
 
 #endregion
 
 namespace PE多功能信息处理插件
 {
+
     public partial class Metroform : MetroForm
     {
         public bool Run = true;
@@ -45,11 +48,13 @@ namespace PE多功能信息处理插件
         public List<int> MaterialCount = new List<int>();
         public IPXPmx GetPmx;
 
+
         #region 界面操作
 
         public Metroform()
         {
             InitializeComponent();
+            new PXC_Opera(ARGS.Host.Connector.System.GetCPluginRunArgsClone());
             SetStyle(
                 ControlStyles.OptimizedDoubleBuffer
                 | ControlStyles.ResizeRedraw
@@ -59,7 +64,7 @@ namespace PE多功能信息处理插件
                 | ControlStyles.SupportsTransparentBackColor, true);
             Style = metroStyleManager.Style = (MetroColorStyle) bootstate.StyleState;
             Meminfo.Click += delegate { GC.Collect(); };
-            CheckForIllegalCrossThreadCalls = false;
+            //CheckForIllegalCrossThreadCalls = false;
             Task.Factory.StartNew(() =>
             {
                 while (Run)
@@ -341,9 +346,10 @@ namespace PE多功能信息处理插件
                 }
 
             };
+
             Task.Factory.StartNew(() =>
             {
-                List<int> Hisbone = new List<int>();
+                return;
                 List<int> Hisbody = new List<int>();
                 List<int> Jointbody = new List<int>();
                 List<int> Materialbody = new List<int>();
@@ -388,6 +394,10 @@ namespace PE多功能信息处理插件
                                         {
                                             // ignored
                                         }
+                                        finally
+                                        {
+
+                                        }
                                     }));
                                 }
                             }
@@ -401,10 +411,10 @@ namespace PE多功能信息处理插件
                                     List<int> selectbone =
                                         new List<int>(ARGS.Host.Connector.View.PMDView.GetSelectedBoneIndices()
                                             .Distinct());
-                                    if (!Hisbone.SequenceEqual(selectbone) && !LockSelect.Checked)
+                                    if (BoneSelectCheck && !LockSelect.Checked)
                                     {
                                         IPXPmx ThePmxOfNow = GetPmx;
-                                        Hisbone = new List<int>(selectbone.ToArray());
+
                                         ClearList("bone");
                                         if (selectbone.Count != 0)
                                         {
@@ -483,7 +493,9 @@ namespace PE多功能信息处理插件
                                         {
                                             InputBoneName.Text = "";
                                         }
+                                        BoneSelectCheck = false;
                                     }
+
                                 }
                                     break;
 
@@ -1057,6 +1069,7 @@ namespace PE多功能信息处理插件
             }, TaskCreationOptions.LongRunning);
         }
 
+
         public void ThemeSet_Click(object sender, EventArgs e)
         {
             Theme = metroStyleManager.Theme = metroStyleManager.Theme == MetroThemeStyle.Light
@@ -1139,7 +1152,7 @@ namespace PE多功能信息处理插件
 
         private void ClearList(string mode)
         {
-            BeginInvoke(new MethodInvoker(() =>
+            // BeginInvoke(new MethodInvoker(() =>
             {
                 switch (mode)
                 {
@@ -1220,7 +1233,8 @@ namespace PE多功能信息处理插件
                         }
                         break;
                 }
-            }));
+            }
+            // ));
         }
 
         #region 全局模式下自动获取插件中选中的对象
@@ -1911,6 +1925,8 @@ namespace PE多功能信息处理插件
             }).Start();
         }
 
+        #region 输入字符检测
+
         public void MoreThanZeroNumCheck(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar != '\b' && e.KeyChar != '.' && e.KeyChar != '\u0016' && e.KeyChar != '\u0003') //这是允许输入退格键
@@ -1935,6 +1951,22 @@ namespace PE多功能信息处理插件
                 }
             }
         }
+
+        public void NumCheckOnlyOneToNine(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != '\b' && e.KeyChar != '\u0016' && e.KeyChar != '\u0003') //这是允许输入退格键
+            {
+                if ((e.KeyChar < '0') || (e.KeyChar > '9')) //这是允许输入0-9数字
+                {
+                    if (e.KeyChar != '-')
+                    {
+                        e.Handled = true;
+                    }
+                }
+            }
+        }
+
+        #endregion
 
         public void BodyNameCheck_Click(object sender, EventArgs e)
         {
@@ -11866,6 +11898,7 @@ namespace PE多功能信息处理插件
                     break;
             }
         }
+
         private void MorphBack_Click(object sender, EventArgs e)
         {
             var morph = new MorphOpera();
@@ -12073,7 +12106,8 @@ namespace PE多功能信息处理插件
             }
         }
 
-        public  ConcurrentDictionary<int, V3> OriFileVertexList = new ConcurrentDictionary<int, V3>();
+        public ConcurrentDictionary<int, V3> OriFileVertexList = new ConcurrentDictionary<int, V3>();
+        internal bool BoneSelectCheck;
 
         private void VertexMorphOpera_Click(object sender, EventArgs e)
         {
@@ -12092,8 +12126,8 @@ namespace PE多功能信息处理插件
                     MetroMessageBox.Show(this, "请选择顶点后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-               /* var Formtemp = ARGS.Host.Connector.Form as Form;
-                var oldformtexts = oldformtext;*/
+                /* var Formtemp = ARGS.Host.Connector.Form as Form;
+                 var oldformtexts = oldformtext;*/
                 if (OriFileVertexList.Count == 0)
                 {
                     ReadPmxFormFile(ref OriFileVertexList);
@@ -12658,7 +12692,10 @@ namespace PE多功能信息处理插件
             }));
         }
 
+        #endregion
+
         #region 材质名顺序修改
+
         private void MaterialNameCheck_CheckedChanged(object sender, EventArgs e)
         {
             if (MaterialNameCheck.CheckState == CheckState.Checked)
@@ -12673,6 +12710,7 @@ namespace PE多功能信息处理插件
             }
             Refresh();
         }
+
         private void ChangeMaterialName_Click(object sender, EventArgs e)
         {
             if (MaterialCount.Count != 0)
@@ -12704,8 +12742,234 @@ namespace PE多功能信息处理插件
                 MetroMessageBox.Show(this, "请先选择材质后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        internal void PEObjectSelectShow2UI()
+        {
+
+            Task.Factory.StartNew(() =>
+            {
+                IPXPmx ThePmxOfNow = ARGS.Host.Connector.Pmx.GetCurrentState();
+                if (BoneSelectCheck)
+                {
+                    ClearList("bone");
+                    List<int> selectbone =
+                        new List<int>(ARGS.Host.Connector.View.PMDView.GetSelectedBoneIndices()
+                            .Distinct());
+                    if (selectbone.Count != 0)
+                    {
+                        BoneCount.Clear();
+                        BoneCount.AddRange(selectbone);
+
+                        var table = BoneList.DataSource as DataTable;
+                        foreach (int temp in selectbone)
+                        {
+                            if (MirrorMode.Checked)
+                            {
+                                table.Rows.Add(temp, ThePmxOfNow.Bone[temp].Name);
+                            }
+                            else
+                            {
+                                var MirrorBoneName = ThePmxOfNow.Bone[temp].Name
+                                    .Replace(MirrorOriChar.Text, MirrorFinChar.Text);
+
+                                if (MirrorBoneName == ThePmxOfNow.Bone[temp].Name)
+                                {
+                                    var TempBone = (from item in ThePmxOfNow.Bone
+                                                    orderby Getdistance(
+                                                        ThePmxOfNow.Bone[temp].Position,
+                                                        item.Position) ascending
+                                                    select item).FirstOrDefault();
+                                    if (TempBone != ThePmxOfNow.Bone[temp])
+                                    {
+                                        table.Rows.Add(temp + ":" + ThePmxOfNow.Bone[temp].Name,
+                                            "->",
+                                            ThePmxOfNow.Bone.IndexOf(TempBone) + ":" +
+                                            TempBone.Name);
+                                    }
+                                }
+                                else
+                                {
+                                    var getbone =
+                                        ThePmxOfNow.Bone.FirstOrDefault(
+                                            x => x.Name == MirrorBoneName);
+                                    if (getbone != null)
+                                    {
+                                        table.Rows.Add(temp + ":" + ThePmxOfNow.Bone[temp].Name,
+                                            "->",
+                                            ThePmxOfNow.Bone.IndexOf(getbone) + ":" +
+                                            MirrorBoneName);
+                                    }
+                                    else
+                                    {
+                                        var TempBone = (from item in ThePmxOfNow.Bone
+                                                        orderby Getdistance(
+                                                            ThePmxOfNow.Bone[temp].Position,
+                                                            item.Position) ascending
+                                                        select item).FirstOrDefault();
+                                        if (TempBone != ThePmxOfNow.Bone[temp])
+                                        {
+                                            table.Rows.Add(
+                                                temp + ":" + ThePmxOfNow.Bone[temp].Name, "->",
+                                                ThePmxOfNow.Bone.IndexOf(TempBone) + ":" +
+                                                TempBone.Name);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (table.Rows.Count != 0)
+                        {
+                            InputBoneName.Text =
+                                DeleteBoneNummer.Checked
+                                    ? Regex.Replace(BoneList.Rows[0].Cells[1].Value.ToString(),
+                                        @"\d", "")
+                                    : BoneList.Rows[0].Cells[1].Value.ToString();
+                        }
+
+
+                    }
+                    else
+                    {
+                        InputBoneName.Text = "";
+                    }
+
+                    BoneSelectCheck = false;
+                }
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+        }
+
+        #endregion
+
+        #region 顶点靠近最近面模块
+
+        private void GetVerTexCro_Click(object sender, EventArgs e)
+        {
+            var SelectVertexIndex = ARGS.Host.Connector.View.PMDView.GetSelectedVertexIndices();
+            if (SelectVertexIndex.Length == 0)
+            {
+                MetroMessageBox.Show(this, "请先选择顶点后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            IPXPmx pmx = ARGS.Host.Connector.Pmx.GetCurrentState();
+            var PartsSelect = ARGS.Host.Connector.View.PMDViewHelper.PartsSelect;
+            var VerToFaceMat = new Dictionary<IPXVertex, int>();
+            var FaceSet = new HashSet<IPXFace>();
+            //筛选顶点,除去包含选中顶点所在材质的全部顶点
+            foreach (var PartsSelectTemp in PartsSelect.GetCheckedMaterialIndices())
+            {
+                foreach (var FacesTemp in pmx.Material[PartsSelectTemp].Faces)
+                {
+                    if (!VerToFaceMat.ContainsKey(FacesTemp.Vertex1))
+                    {
+                        VerToFaceMat.Add(FacesTemp.Vertex1, PartsSelectTemp);
+                    }
+                    if (!VerToFaceMat.ContainsKey(FacesTemp.Vertex2))
+                    {
+                        VerToFaceMat.Add(FacesTemp.Vertex2, PartsSelectTemp);
+                    }
+                    if (!VerToFaceMat.ContainsKey(FacesTemp.Vertex3))
+                    {
+                        VerToFaceMat.Add(FacesTemp.Vertex3, PartsSelectTemp);
+                    }
+                    FaceSet.Add(FacesTemp);
+                }
+            }
+
+            V3 VerOffset(Vector3 GetThe_crossover_point, IPXVertex SelectVertex)
+            {
+                //http://www.jianshu.com/p/4230a3379fee资料来源
+                float VerDis =
+                    (float) (Vector3.Distance(GetThe_crossover_point, SelectVertex.Position.ToVector3()) *
+                             0.2);
+                return GetThe_crossover_point +
+                       Vector3.Normalize(
+                           SelectVertex.Position.ToVector3() - GetThe_crossover_point) * VerDis;
+            }
+
+            Parallel.ForEach(SelectVertexIndex, VerIndex =>
+            {
+                var SelectVertex = pmx.Vertex[VerIndex];
+                HashSet<IPXVertex> VertexSet = new HashSet<IPXVertex>();
+                //计算选中顶点到除顶点所在材质以外的顶点
+                var DisVertex = (from item in VerToFaceMat
+                                 let TempM = VerToFaceMat[SelectVertex]
+                                 where item.Value != TempM
+                                 orderby Vector3.Distance(SelectVertex.Position.ToVector3(),
+                                     item.Key.Position.ToVector3()) ascending
+                                 select item.Key).Take(int.Parse(TheNumNeedSelect.Text)).ToList();
+                var GetThe_crossover_point = new List<Vector3>();
+                foreach (var FaceList in from Face in FaceSet
+                                         where DisVertex.Contains(Face.Vertex1)
+                                         where DisVertex.Contains(Face.Vertex2)
+                                         where DisVertex.Contains(Face.Vertex3)
+                                         select Face)
+                {
+                    //计算顶点法线与面的交点是否在面内部
+                    var Posion = MathHelper.直线与平面的交点(SelectVertex, FaceList);
+                    if (MathHelper.点是否在三角平面内判定(Posion, FaceList))
+                    {
+                        GetThe_crossover_point.Add(Posion);
+                    }
+                }
+                //对于获得了1个交点的，那么就进入顶点偏移环节，对于超过1个交点，计算距离最近的交点，对于没有获得交点，那么就使用模式2
+                if (GetThe_crossover_point.Count == 1)
+                {
+                    SelectVertex.Position= VerOffset(GetThe_crossover_point[0], SelectVertex);
+                }else if (GetThe_crossover_point.Count == 0)
+                {
+                    //以距离选中顶点最近的三个顶点为基准，建立面，并与选中顶点进行计算
+                    IPXPmxBuilder bdx = ARGS.Host.Builder.Pmx;
+                    var TempFace = bdx.Face();
+                    TempFace.Vertex1 = DisVertex[0];
+                    TempFace.Vertex2 = DisVertex[1];
+                    TempFace.Vertex3 = DisVertex[2];
+                    SelectVertex.Position = VerOffset(MathHelper.直线与平面的交点(SelectVertex, TempFace), SelectVertex);
+                }
+                else
+                {
+                    //对于多于1个面选中的 使用顶点距离排序，选最近的
+                    var SelectPosion = (from SelPosion in GetThe_crossover_point
+                                        orderby Vector3.Distance(SelectVertex.Position.ToVector3(),
+                                            SelPosion) ascending
+                                        select SelPosion).FirstOrDefault();
+                    SelectVertex.Position = VerOffset(SelectPosion, SelectVertex);
+                }
+            });
+            ARGS.Host.Connector.Pmx.Update(pmx);
+            ARGS.Host.Connector.Form.UpdateList(UpdateObject.Vertex);
+            ARGS.Host.Connector.View.PmxView.UpdateView();
+            ARGS.Host.Connector.View.PmxView.UpdateModel();
+            ThFunOfSaveToPmx(pmx, "Vertex");
+        }
+
         #endregion
     }
 
-    #endregion
+    class PXC_Opera : PXCPluginClass
+    {
+        private IPXCPluginRunArgs PXCArgs;
+        private IPXViewControl ViewControl;
+        private IPXEventConnector EventControl;
+        private IPXViewEventListener ViewEventCreate;
+
+        public PXC_Opera(IPXCPluginRunArgs iPXCPluginRunArgs)
+        { 
+            base.Run(iPXCPluginRunArgs);
+            PXCArgs = iPXCPluginRunArgs;
+            ViewControl = PXCBridge.ViewCtrl(PXCArgs.Connector); //注册视图
+            EventControl = PXCBridge.CreateEventConnector(PXCArgs.Connector); // 订阅事件
+            ViewEventCreate = EventControl.CreateViewEventListener();
+           /* ViewEventCreate.ObjectSelected += (o, s) =>
+            {
+                newopen.BoneSelectCheck = s.Bone;
+            };
+            ViewEventCreate.MouseUp += delegate
+            {
+                if(newopen.BoneSelectCheck)
+                newopen.PEObjectSelectShow2UI();
+            };*/
+
+        }
+    }
 }
