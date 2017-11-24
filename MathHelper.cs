@@ -69,7 +69,6 @@ namespace PE多功能信息处理插件
             //http://blog.csdn.net/abcjennifer/article/details/6688080资料来源
             var TempPlane = new Plane(SelectFace.Vertex1.Position.ToVector3(), SelectFace.Vertex2.Position.ToVector3(),
                 SelectFace.Vertex3.Position.ToVector3());
-
             var t = ((SelectFace.Vertex1.Position.X - SelectVertex.Position.X) * TempPlane.Normal.X +
                      (SelectFace.Vertex1.Position.Y - SelectVertex.Position.Y) * TempPlane.Normal.Y +
                      (SelectFace.Vertex1.Position.Z - SelectVertex.Position.Z) * TempPlane.Normal.Z) /

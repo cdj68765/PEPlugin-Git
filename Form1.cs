@@ -1954,15 +1954,20 @@ namespace PE多功能信息处理插件
 
         public void NumCheckOnlyOneToNine(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar != '\b' && e.KeyChar != '\u0016' && e.KeyChar != '\u0003') //这是允许输入退格键
+            if (e.KeyChar != '\b' && e.KeyChar != '\u0016' && e.KeyChar != '\u0003' &&
+                e.KeyChar != '\u0003') //这是允许输入退格键
             {
                 if ((e.KeyChar < '0') || (e.KeyChar > '9')) //这是允许输入0-9数字
                 {
-                    if (e.KeyChar != '-')
-                    {
-                        e.Handled = true;
-                    }
+                    e.Handled = true;
                 }
+            }
+            var Temp = sender as MetroTextBox;
+            if (Temp.Text == "") Temp.Text = "99";
+            int.TryParse(Temp.Text, out int Out);
+            if (Out > 100)
+            {
+                Temp.Text = "100";
             }
         }
 
@@ -12879,12 +12884,13 @@ namespace PE多功能信息处理插件
             V3 VerOffset(Vector3 GetThe_crossover_point, IPXVertex SelectVertex)
             {
                 //http://www.jianshu.com/p/4230a3379fee资料来源
-                float VerDis =
-                    (float) (Vector3.Distance(GetThe_crossover_point, SelectVertex.Position.ToVector3()) *
-                             0.2);
-                return GetThe_crossover_point +
-                       Vector3.Normalize(
-                           SelectVertex.Position.ToVector3() - GetThe_crossover_point) * VerDis;
+                /* float VerDis =
+                     (float) (Vector3.Distance(GetThe_crossover_point, SelectVertex.Position.ToVector3()) *
+                              0.2);
+                 return GetThe_crossover_point +
+                        Vector3.Normalize(
+                            SelectVertex.Position.ToVector3() - GetThe_crossover_point) * VerDis;*/
+              return Vector3.SmoothStep(GetThe_crossover_point, SelectVertex.Position.ToVector3(), 0.2f);
             }
 
             Parallel.ForEach(SelectVertexIndex, VerIndex =>
@@ -12942,7 +12948,82 @@ namespace PE多功能信息处理插件
             ARGS.Host.Connector.View.PmxView.UpdateModel();
             ThFunOfSaveToPmx(pmx, "Vertex");
         }
+        private void GetEdge_Click(object sender, EventArgs e)
+        {
+            var SelectVertexIndex = ARGS.Host.Connector.View.PMDView.GetSelectedVertexIndices();
+            if (SelectVertexIndex.Length == 0)
+            {
+                MetroMessageBox.Show(this, "请先选择顶点后再继续", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            IPXPmx pmx = ARGS.Host.Connector.Pmx.GetCurrentState();
+            var SelectVertex = pmx.Vertex[SelectVertexIndex[0]];
+            var PartsSelect = ARGS.Host.Connector.View.PMDViewHelper.PartsSelect;
+            var VerToFaceMat = new Dictionary<IPXVertex, List<IPXVertex>>();
+            //筛选顶点,除去包含选中顶点所在材质的全部顶点
+            var SelecrMat = false;
+            foreach (var PartsSelectTemp in PartsSelect.GetCheckedMaterialIndices())
+            {
+                foreach (var FacesTemp in pmx.Material[PartsSelectTemp].Faces)
+                {
+                    if (!SelecrMat)
+                    {
+                        if (FacesTemp.Vertex1 == SelectVertex || FacesTemp.Vertex2 == SelectVertex ||
+                            FacesTemp.Vertex3 == SelectVertex)
+                        {
+                            SelecrMat = true;
+                        }
+                        continue;
+                    }
+                    if (!VerToFaceMat.ContainsKey(FacesTemp.Vertex1))
+                    {
+                        VerToFaceMat.Add(FacesTemp.Vertex1,
+                            new List<IPXVertex>() {FacesTemp.Vertex2, FacesTemp.Vertex3});
+                  
+                    }
+                    else
+                    {
+                        if(!VerToFaceMat[FacesTemp.Vertex1].Contains(FacesTemp.Vertex2))
+                        VerToFaceMat[FacesTemp.Vertex1].Add(FacesTemp.Vertex2);
+                        if (!VerToFaceMat[FacesTemp.Vertex1].Contains(FacesTemp.Vertex3))
+                            VerToFaceMat[FacesTemp.Vertex1].Add(FacesTemp.Vertex3);
+                    }
+                    if (!VerToFaceMat.ContainsKey(FacesTemp.Vertex2))
+                    {
+                        VerToFaceMat.Add(FacesTemp.Vertex2,
+                            new List<IPXVertex>() { FacesTemp.Vertex1, FacesTemp.Vertex3 });
+                     
+                    }
+                    else
+                    {
+                        if (!VerToFaceMat[FacesTemp.Vertex2].Contains(FacesTemp.Vertex1))
+                            VerToFaceMat[FacesTemp.Vertex2].Add(FacesTemp.Vertex1);
+                        if (!VerToFaceMat[FacesTemp.Vertex2].Contains(FacesTemp.Vertex3))
+                            VerToFaceMat[FacesTemp.Vertex2].Add(FacesTemp.Vertex3);
+                       
+                    }
+                    if (!VerToFaceMat.ContainsKey(FacesTemp.Vertex3))
+                    {
+                        VerToFaceMat.Add(FacesTemp.Vertex3,
+                            new List<IPXVertex>() { FacesTemp.Vertex1, FacesTemp.Vertex2 });
 
+                    }
+                    else
+                    {
+                        if (!VerToFaceMat[FacesTemp.Vertex3].Contains(FacesTemp.Vertex1))
+                            VerToFaceMat[FacesTemp.Vertex3].Add(FacesTemp.Vertex1);
+                        if (!VerToFaceMat[FacesTemp.Vertex3].Contains(FacesTemp.Vertex2))
+                            VerToFaceMat[FacesTemp.Vertex3].Add(FacesTemp.Vertex2);
+                    }
+                }
+                if (SelecrMat) break;
+            }
+            //假设a=(x1,y1,z1),b=(x2,y2,z2) a*b=x1x2+y1y2+z1z2 |a|=√(x1^2+y1^2+z1^2).|b|=√(x2^2+y2^2+z2^2) cosθ=a*b/(|a|*|b|) 角θ=arccosθ
+            foreach (var Vertex in VerToFaceMat[SelectVertex])
+            {
+
+            }
+        }
         #endregion
     }
 

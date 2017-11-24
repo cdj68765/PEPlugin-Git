@@ -108,6 +108,8 @@ namespace PE多功能信息处理插件
             this.MaterialNameCheck = new MetroFramework.Controls.MetroCheckBox();
             this.InputMaterialName = new MetroFramework.Controls.MetroTextBox();
             this.顶点操作 = new MetroFramework.Controls.MetroTabPage();
+            this.metroTrackBar1 = new MetroFramework.Controls.MetroTrackBar();
+            this.CrossRate = new MetroFramework.Controls.MetroTextBox();
             this.TheNumNeedSelect = new MetroFramework.Controls.MetroTextBox();
             this.GetVerTexCro = new MetroFramework.Controls.MetroButton();
             this.Bone = new MetroFramework.Controls.MetroTabPage();
@@ -351,6 +353,7 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
+            this.GetEdge = new MetroFramework.Controls.MetroButton();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -1443,6 +1446,9 @@ namespace PE多功能信息处理插件
             // 
             // 顶点操作
             // 
+            this.顶点操作.Controls.Add(this.GetEdge);
+            this.顶点操作.Controls.Add(this.metroTrackBar1);
+            this.顶点操作.Controls.Add(this.CrossRate);
             this.顶点操作.Controls.Add(this.TheNumNeedSelect);
             this.顶点操作.Controls.Add(this.GetVerTexCro);
             this.顶点操作.HorizontalScrollbarBarColor = true;
@@ -1456,6 +1462,50 @@ namespace PE多功能信息处理插件
             this.顶点操作.VerticalScrollbarBarColor = true;
             this.顶点操作.VerticalScrollbarHighlightOnWheel = false;
             this.顶点操作.VerticalScrollbarSize = 10;
+            // 
+            // metroTrackBar1
+            // 
+            this.metroTrackBar1.BackColor = System.Drawing.Color.Transparent;
+            this.metroTrackBar1.Location = new System.Drawing.Point(3, 80);
+            this.metroTrackBar1.MouseWheelBarPartitions = 5;
+            this.metroTrackBar1.Name = "metroTrackBar1";
+            this.metroTrackBar1.Size = new System.Drawing.Size(75, 23);
+            this.metroTrackBar1.TabIndex = 16;
+            this.metroTrackBar1.Text = "metroTrackBar1";
+            this.metroTrackBar1.UseCustomBackColor = true;
+            this.metroTrackBar1.UseWaitCursor = true;
+            // 
+            // CrossRate
+            // 
+            // 
+            // 
+            // 
+            this.CrossRate.CustomButton.Image = null;
+            this.CrossRate.CustomButton.Location = new System.Drawing.Point(15, 1);
+            this.CrossRate.CustomButton.Name = "";
+            this.CrossRate.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.CrossRate.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.CrossRate.CustomButton.TabIndex = 1;
+            this.CrossRate.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.CrossRate.CustomButton.UseSelectable = true;
+            this.CrossRate.CustomButton.Visible = false;
+            this.CrossRate.Lines = new string[] {
+        "99"};
+            this.CrossRate.Location = new System.Drawing.Point(84, 80);
+            this.CrossRate.MaxLength = 32767;
+            this.CrossRate.Name = "CrossRate";
+            this.CrossRate.PasswordChar = '\0';
+            this.CrossRate.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.CrossRate.SelectedText = "";
+            this.CrossRate.SelectionLength = 0;
+            this.CrossRate.SelectionStart = 0;
+            this.CrossRate.ShortcutsEnabled = true;
+            this.CrossRate.Size = new System.Drawing.Size(37, 23);
+            this.CrossRate.TabIndex = 15;
+            this.CrossRate.Text = "99";
+            this.CrossRate.UseSelectable = true;
+            this.CrossRate.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.CrossRate.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
             // TheNumNeedSelect
             // 
@@ -6362,6 +6412,17 @@ namespace PE多功能信息处理插件
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
             // 
+            // GetEdge
+            // 
+            this.GetEdge.Location = new System.Drawing.Point(3, 51);
+            this.GetEdge.Name = "GetEdge";
+            this.GetEdge.Size = new System.Drawing.Size(75, 23);
+            this.GetEdge.TabIndex = 17;
+            this.GetEdge.Text = "Start";
+            this.GetEdge.UseSelectable = true;
+            this.GetEdge.UseStyleColors = true;
+            this.GetEdge.Click += new System.EventHandler(this.GetEdge_Click);
+            // 
             // Metroform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -6739,5 +6800,8 @@ namespace PE多功能信息处理插件
         private MetroFramework.Controls.MetroTabPage 顶点操作;
         private MetroFramework.Controls.MetroButton GetVerTexCro;
         public MetroFramework.Controls.MetroTextBox TheNumNeedSelect;
+        public MetroFramework.Controls.MetroTextBox CrossRate;
+        private MetroFramework.Controls.MetroTrackBar metroTrackBar1;
+        private MetroFramework.Controls.MetroButton GetEdge;
     }
 }
