@@ -36,7 +36,6 @@ using SlimDX;
 
 namespace PE多功能信息处理插件
 {
-
     public partial class Metroform : MetroForm
     {
         public bool Run = true;
@@ -47,7 +46,6 @@ namespace PE多功能信息处理插件
         public List<int> JointCount = new List<int>();
         public List<int> MaterialCount = new List<int>();
         public IPXPmx GetPmx;
-
 
         #region 界面操作
 
@@ -62,9 +60,9 @@ namespace PE多功能信息处理插件
                 | ControlStyles.AllPaintingInWmPaint
                 | ControlStyles.UserPaint
                 | ControlStyles.SupportsTransparentBackColor, true);
-            Style = metroStyleManager.Style = (MetroColorStyle) bootstate.StyleState;
+            Style = metroStyleManager.Style = (MetroColorStyle)bootstate.StyleState;
             Meminfo.Click += delegate { GC.Collect(); };
-            //CheckForIllegalCrossThreadCalls = false;
+            CheckForIllegalCrossThreadCalls = false;
             Task.Factory.StartNew(() =>
             {
                 while (Run)
@@ -96,7 +94,7 @@ namespace PE多功能信息处理插件
                         var Update =
                             new Regex(
                                     @"((?<!\d)((\d{2,4}(\.|年|\/|\-))((((0?[13578]|1[02])(\.|月|\/|\-))((3[01])|([12][0-9])|(0?[1-9])))|(0?2(\.|月|\/|\-)((2[0-8])|(1[0-9])|(0?[1-9])))|(((0?[469]|11)(\.|月|\/|\-))((30)|([12][0-9])|(0?[1-9]))))|((([0-9]{2})((0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))(\.|年|\/|\-))0?2(\.|月|\/|\-)29))日?(?!\d))")
-                                .Match(System.Text.Encoding.UTF8.GetString(
+                                .Match(Encoding.UTF8.GetString(
                                     new System.Net.WebClient().DownloadData("https://bowlroll.net/file/95442")));
                         if (Update.Value != Resource1.UpdateData)
                         {
@@ -210,10 +208,10 @@ namespace PE多功能信息处理插件
                     bootstate.WeightAppleKey = '*';
                     bootstate.WeightGetKey = '/';
                 }
-                WeightAddKey.Text = ((char) bootstate.WeightAddKey).ToString();
-                WeightMinusKey.Text = ((char) bootstate.WeightMinusKey).ToString();
-                WeightAppleKey.Text = ((char) bootstate.WeightAppleKey).ToString();
-                WeightGetKey.Text = ((char) bootstate.WeightGetKey).ToString();
+                WeightAddKey.Text = ((char)bootstate.WeightAddKey).ToString();
+                WeightMinusKey.Text = ((char)bootstate.WeightMinusKey).ToString();
+                WeightAppleKey.Text = ((char)bootstate.WeightAppleKey).ToString();
+                WeightGetKey.Text = ((char)bootstate.WeightGetKey).ToString();
             }
             catch (Exception)
             {
@@ -258,7 +256,7 @@ namespace PE多功能信息处理插件
                     new FileStream(
                         new FileInfo(ARGS.Host.Connector.System.HostApplicationPath).DirectoryName +
                         @"\_data\KeyData.XML", FileMode.Open, FileAccess.Read, FileShare.Read);
-                List<keySet> KeyTemp = new List<keySet>((keySet[]) formatter.Deserialize(stream));
+                List<keySet> KeyTemp = new List<keySet>((keySet[])formatter.Deserialize(stream));
                 stream.Close();
                 KeyTemp.Sort((x, y) => x.TabID.CompareTo(y.TabID));
                 List<TabInfo> TabTemp = new List<TabInfo>();
@@ -282,7 +280,7 @@ namespace PE多功能信息处理插件
                 {
                     foreach (var temp in TabTemp)
                     {
-                        MetroTabPage page = new MetroTabPage {Text = temp.TabName};
+                        MetroTabPage page = new MetroTabPage { Text = temp.TabName };
                         ShortcutKeyTab.TabPages.Add(page);
                         foreach (var temp2 in temp.KeyLIst)
                         {
@@ -344,18 +342,17 @@ namespace PE多功能信息处理插件
                 catch (Exception)
                 {
                 }
-
             };
 
             Task.Factory.StartNew(() =>
             {
-                return;
-                List<int> Hisbody = new List<int>();
-                List<int> Jointbody = new List<int>();
-                List<int> Materialbody = new List<int>();
-                List<IPXBone> BoneHis = new List<IPXBone>();
-                List<IPXBody> BodyHis = new List<IPXBody>();
-                List<IPXJoint> JointHis = new List<IPXJoint>();
+                // return;
+                var Hisbody = new HashSet<int>();
+                var Jointbody = new HashSet<int>();
+                var Materialbody = new HashSet<int>();
+                var BoneHis = new HashSet<IPXBone>();
+                var BodyHis = new HashSet<IPXBody>();
+                var JointHis = new HashSet<IPXJoint>();
                 var MaterialHis = new List<IPXMaterial>();
                 do
                 {
@@ -396,7 +393,6 @@ namespace PE多功能信息处理插件
                                         }
                                         finally
                                         {
-
                                         }
                                     }));
                                 }
@@ -407,61 +403,33 @@ namespace PE多功能信息处理插件
                             switch (ALLTAB.SelectedTab.Name)
                             {
                                 case "Bone":
-                                {
-                                    List<int> selectbone =
-                                        new List<int>(ARGS.Host.Connector.View.PMDView.GetSelectedBoneIndices()
-                                            .Distinct());
-                                    if (BoneSelectCheck && !LockSelect.Checked)
                                     {
-                                        IPXPmx ThePmxOfNow = GetPmx;
-
-                                        ClearList("bone");
-                                        if (selectbone.Count != 0)
+                                        var selectbone =
+                                            ARGS.Host.Connector.View.PMDView.GetSelectedBoneIndices()
+                                                .Distinct();
+                                        if (BoneSelectCheck && !LockSelect.Checked)
                                         {
-                                            BoneCount.Clear();
-                                            BoneCount.AddRange(selectbone);
-                                            BeginInvoke(new MethodInvoker(() =>
+                                            IPXPmx ThePmxOfNow = GetPmx;
+                                            ClearList("bone");
+                                            if (selectbone.Count() != 0)
                                             {
-                                                var table = BoneList.DataSource as DataTable;
-                                                foreach (int temp in selectbone)
+                                                BoneCount.Clear();
+                                                BoneCount.AddRange(selectbone);
+                                                BeginInvoke(new MethodInvoker(() =>
                                                 {
-                                                    if (MirrorMode.Checked)
+                                                    var table = BoneList.DataSource as DataTable;
+                                                    foreach (int temp in selectbone)
                                                     {
-                                                        table.Rows.Add(temp, ThePmxOfNow.Bone[temp].Name);
-                                                    }
-                                                    else
-                                                    {
-                                                        var MirrorBoneName = ThePmxOfNow.Bone[temp].Name
-                                                            .Replace(MirrorOriChar.Text, MirrorFinChar.Text);
-
-                                                        if (MirrorBoneName == ThePmxOfNow.Bone[temp].Name)
+                                                        if (MirrorMode.Checked)
                                                         {
-                                                            var TempBone = (from item in ThePmxOfNow.Bone
-                                                                            orderby Getdistance(
-                                                                                ThePmxOfNow.Bone[temp].Position,
-                                                                                item.Position) ascending
-                                                                            select item).FirstOrDefault();
-                                                            if (TempBone != ThePmxOfNow.Bone[temp])
-                                                            {
-                                                                table.Rows.Add(temp + ":" + ThePmxOfNow.Bone[temp].Name,
-                                                                    "->",
-                                                                    ThePmxOfNow.Bone.IndexOf(TempBone) + ":" +
-                                                                    TempBone.Name);
-                                                            }
+                                                            table.Rows.Add(temp, ThePmxOfNow.Bone[temp].Name);
                                                         }
                                                         else
                                                         {
-                                                            var getbone =
-                                                                ThePmxOfNow.Bone.FirstOrDefault(
-                                                                    x => x.Name == MirrorBoneName);
-                                                            if (getbone != null)
-                                                            {
-                                                                table.Rows.Add(temp + ":" + ThePmxOfNow.Bone[temp].Name,
-                                                                    "->",
-                                                                    ThePmxOfNow.Bone.IndexOf(getbone) + ":" +
-                                                                    MirrorBoneName);
-                                                            }
-                                                            else
+                                                            var MirrorBoneName = ThePmxOfNow.Bone[temp].Name
+                                                                .Replace(MirrorOriChar.Text, MirrorFinChar.Text);
+
+                                                            if (MirrorBoneName == ThePmxOfNow.Bone[temp].Name)
                                                             {
                                                                 var TempBone = (from item in ThePmxOfNow.Bone
                                                                                 orderby Getdistance(
@@ -470,272 +438,298 @@ namespace PE多功能信息处理插件
                                                                                 select item).FirstOrDefault();
                                                                 if (TempBone != ThePmxOfNow.Bone[temp])
                                                                 {
-                                                                    table.Rows.Add(
-                                                                        temp + ":" + ThePmxOfNow.Bone[temp].Name, "->",
+                                                                    table.Rows.Add(temp + ":" + ThePmxOfNow.Bone[temp].Name,
+                                                                        "->",
                                                                         ThePmxOfNow.Bone.IndexOf(TempBone) + ":" +
                                                                         TempBone.Name);
                                                                 }
                                                             }
+                                                            else
+                                                            {
+                                                                var getbone =
+                                                                    ThePmxOfNow.Bone.FirstOrDefault(
+                                                                        x => x.Name == MirrorBoneName);
+                                                                if (getbone != null)
+                                                                {
+                                                                    table.Rows.Add(temp + ":" + ThePmxOfNow.Bone[temp].Name,
+                                                                        "->",
+                                                                        ThePmxOfNow.Bone.IndexOf(getbone) + ":" +
+                                                                        MirrorBoneName);
+                                                                }
+                                                                else
+                                                                {
+                                                                    var TempBone = (from item in ThePmxOfNow.Bone
+                                                                                    orderby Getdistance(
+                                                                                        ThePmxOfNow.Bone[temp].Position,
+                                                                                        item.Position) ascending
+                                                                                    select item).FirstOrDefault();
+                                                                    if (TempBone != ThePmxOfNow.Bone[temp])
+                                                                    {
+                                                                        table.Rows.Add(
+                                                                            temp + ":" + ThePmxOfNow.Bone[temp].Name, "->",
+                                                                            ThePmxOfNow.Bone.IndexOf(TempBone) + ":" +
+                                                                            TempBone.Name);
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                }
-                                                if (table.Rows.Count != 0)
-                                                {
-                                                    InputBoneName.Text =
-                                                        DeleteBoneNummer.Checked
-                                                            ? Regex.Replace(BoneList.Rows[0].Cells[1].Value.ToString(),
-                                                                @"\d", "")
-                                                            : BoneList.Rows[0].Cells[1].Value.ToString();
-                                                }
-                                            }));
+                                                    if (table.Rows.Count != 0)
+                                                    {
+                                                        InputBoneName.Text =
+                                                            DeleteBoneNummer.Checked
+                                                                ? Regex.Replace(BoneList.Rows[0].Cells[1].Value.ToString(),
+                                                                    @"\d", "")
+                                                                : BoneList.Rows[0].Cells[1].Value.ToString();
+                                                    }
+                                                }));
+                                            }
+                                            else
+                                            {
+                                                InputBoneName.Text = "";
+                                            }
+                                            BoneSelectCheck = false;
                                         }
-                                        else
-                                        {
-                                            InputBoneName.Text = "";
-                                        }
-                                        BoneSelectCheck = false;
                                     }
-
-                                }
                                     break;
 
                                 case "Body":
-                                {
-                                    var table = BodyList.DataSource as DataTable;
-                                    List<int> selectbody =
-                                        new List<int>(ARGS.Host.Connector.View.PMDView.GetSelectedBodyIndices());
-                                    if (!Hisbody.SequenceEqual(selectbody) && !LockSelect.Checked)
                                     {
-                                        IPXPmx ThePmxOfNow = GetPmx;
-                                        Hisbody = new List<int>(selectbody.ToArray());
-                                        ClearList("body");
-                                        if (selectbody.Count != 0)
+                                        var table = BodyList.DataSource as DataTable;
+                                        var selectbody =
+                                            new HashSet<int>(ARGS.Host.Connector.View.PMDView.GetSelectedBodyIndices());
+                                        if (!Hisbody.SequenceEqual(selectbody) && !LockSelect.Checked)
                                         {
-                                            if (!selectbody.All(b => BodyCount.Any(a => a.Equals(b))) ||
-                                                selectbody.Count != BodyList.RowCount)
+                                            IPXPmx ThePmxOfNow = GetPmx;
+                                            Hisbody = new HashSet<int>(selectbody.ToArray());
+                                            ClearList("body");
+                                            if (selectbody.Count != 0)
                                             {
-                                                BodyCount.Clear();
-                                                BodyCount.AddRange(selectbody);
-                                                BeginInvoke(new MethodInvoker(() =>
+                                                if (!selectbody.All(b => BodyCount.Any(a => a.Equals(b))) ||
+                                                    selectbody.Count != BodyList.RowCount)
                                                 {
-                                                    try
+                                                    BodyCount.Clear();
+                                                    BodyCount.AddRange(selectbody);
+                                                    BeginInvoke(new MethodInvoker(() =>
                                                     {
-                                                        foreach (int temp in selectbody)
+                                                        try
                                                         {
-                                                            table.Rows.Add(temp, ThePmxOfNow.Body[temp].Name);
+                                                            foreach (int temp in selectbody)
+                                                            {
+                                                                table.Rows.Add(temp, ThePmxOfNow.Body[temp].Name);
+                                                            }
+                                                            if (table.Rows.Count == 0) return;
+                                                            InputBodyName.Text =
+                                                                DeleteBodyNummer.Checked
+                                                                    ? Regex.Replace(
+                                                                        BodyList.Rows[0].Cells[1].Value.ToString(), @"\d",
+                                                                        "")
+                                                                    : BodyList.Rows[0].Cells[1].Value.ToString();
+                                                            if (CheckSyncSelect.Checked)
+                                                            {
+                                                                MassFuntionFirstNummer.Text = ThePmxOfNow.Body[BodyCount[0]]
+                                                                    .Mass.ToString();
+                                                                MassFuntionLastNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[BodyCount.Count - 1]].Mass.ToString();
+
+                                                                PositionDampingFirstNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[0]].PositionDamping.ToString();
+                                                                PositionDampingLastNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[BodyCount.Count - 1]].PositionDamping
+                                                                    .ToString();
+
+                                                                RotationDampingFirstNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[0]].RotationDamping.ToString();
+                                                                RotationDampingLastNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[BodyCount.Count - 1]].RotationDamping
+                                                                    .ToString();
+
+                                                                RestitutionFuntionFirstNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[0]].Restitution.ToString();
+                                                                RestitutionFuntionLastNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[BodyCount.Count - 1]].Restitution
+                                                                    .ToString();
+
+                                                                FrictionFuntionFirstNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[0]].Friction.ToString();
+                                                                FrictionFuntionLastNummer.Text = ThePmxOfNow
+                                                                    .Body[BodyCount[BodyCount.Count - 1]].Friction
+                                                                    .ToString();
+                                                            }
                                                         }
-                                                        if (table.Rows.Count == 0) return;
-                                                        InputBodyName.Text =
-                                                            DeleteBodyNummer.Checked
-                                                                ? Regex.Replace(
-                                                                    BodyList.Rows[0].Cells[1].Value.ToString(), @"\d",
-                                                                    "")
-                                                                : BodyList.Rows[0].Cells[1].Value.ToString();
-                                                        if (CheckSyncSelect.Checked)
+                                                        catch (Exception)
                                                         {
-                                                            MassFuntionFirstNummer.Text = ThePmxOfNow.Body[BodyCount[0]]
-                                                                .Mass.ToString();
-                                                            MassFuntionLastNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[BodyCount.Count - 1]].Mass.ToString();
-
-                                                            PositionDampingFirstNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[0]].PositionDamping.ToString();
-                                                            PositionDampingLastNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[BodyCount.Count - 1]].PositionDamping
-                                                                .ToString();
-
-                                                            RotationDampingFirstNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[0]].RotationDamping.ToString();
-                                                            RotationDampingLastNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[BodyCount.Count - 1]].RotationDamping
-                                                                .ToString();
-
-                                                            RestitutionFuntionFirstNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[0]].Restitution.ToString();
-                                                            RestitutionFuntionLastNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[BodyCount.Count - 1]].Restitution
-                                                                .ToString();
-
-                                                            FrictionFuntionFirstNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[0]].Friction.ToString();
-                                                            FrictionFuntionLastNummer.Text = ThePmxOfNow
-                                                                .Body[BodyCount[BodyCount.Count - 1]].Friction
-                                                                .ToString();
+                                                            // ignored
                                                         }
-                                                    }
-                                                    catch (Exception)
-                                                    {
-                                                        // ignored
-                                                    }
-                                                }));
-                                            }
-                                            else
-                                            {
-                                                InputBodyName.Text = "";
+                                                    }));
+                                                }
+                                                else
+                                                {
+                                                    InputBodyName.Text = "";
+                                                }
                                             }
                                         }
                                     }
-                                }
                                     break;
 
                                 case "joint":
-                                {
-                                    List<int> selectjoint =
-                                        new List<int>(ARGS.Host.Connector.View.PMDView.GetSelectedJointIndices());
-                                    if (!Jointbody.SequenceEqual(selectjoint) && !LockSelect.Checked)
                                     {
-                                        IPXPmx ThePmxOfNow = GetPmx;
-                                        Jointbody = new List<int>(selectjoint.ToArray());
-                                        ClearList("joint");
-                                        if (selectjoint.Count != 0)
+                                        List<int> selectjoint =
+                                            new List<int>(ARGS.Host.Connector.View.PMDView.GetSelectedJointIndices());
+                                        if (!Jointbody.SequenceEqual(selectjoint) && !LockSelect.Checked)
                                         {
-                                            if (!selectjoint.All(b => JointCount.Any(a => a.Equals(b))) ||
-                                                selectjoint.Count != JointList.RowCount)
+                                            IPXPmx ThePmxOfNow = GetPmx;
+                                            Jointbody = new HashSet<int>(selectjoint.ToArray());
+                                            ClearList("joint");
+                                            if (selectjoint.Count != 0)
                                             {
-                                                JointCount.Clear();
-                                                JointCount.AddRange(selectjoint);
-                                                BeginInvoke(new MethodInvoker(() =>
+                                                if (!selectjoint.All(b => JointCount.Any(a => a.Equals(b))) ||
+                                                    selectjoint.Count != JointList.RowCount)
                                                 {
-                                                    var table = JointList.DataSource as DataTable;
-                                                    foreach (int temp in selectjoint)
+                                                    JointCount.Clear();
+                                                    JointCount.AddRange(selectjoint);
+                                                    BeginInvoke(new MethodInvoker(() =>
                                                     {
-                                                        table.Rows.Add(temp, ThePmxOfNow.Joint[temp].Name);
-                                                    }
-                                                    if (table.Rows.Count == 0) return;
-                                                    InputJointName.Text =
-                                                        DeleteJointNummer.Checked
-                                                            ? Regex.Replace(JointList.Rows[0].Cells[1].Value.ToString(),
-                                                                @"\d", "")
-                                                            : JointList.Rows[0].Cells[1].Value.ToString();
-                                                    if (CheckSyncSelect.Checked)
-                                                    {
-                                                        SpringConst_Move_FirstXNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].SpringConst_Move.X
-                                                                .ToString();
-                                                        SpringConst_Move_LastXNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .SpringConst_Move.X.ToString();
+                                                        var table = JointList.DataSource as DataTable;
+                                                        foreach (int temp in selectjoint)
+                                                        {
+                                                            table.Rows.Add(temp, ThePmxOfNow.Joint[temp].Name);
+                                                        }
+                                                        if (table.Rows.Count == 0) return;
+                                                        InputJointName.Text =
+                                                            DeleteJointNummer.Checked
+                                                                ? Regex.Replace(JointList.Rows[0].Cells[1].Value.ToString(),
+                                                                    @"\d", "")
+                                                                : JointList.Rows[0].Cells[1].Value.ToString();
+                                                        if (CheckSyncSelect.Checked)
+                                                        {
+                                                            SpringConst_Move_FirstXNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].SpringConst_Move.X
+                                                                    .ToString();
+                                                            SpringConst_Move_LastXNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .SpringConst_Move.X.ToString();
 
-                                                        SpringConst_Move_FirstYNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].SpringConst_Move.Y
-                                                                .ToString();
-                                                        SpringConst_Move_LastYNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .SpringConst_Move.Y.ToString();
+                                                            SpringConst_Move_FirstYNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].SpringConst_Move.Y
+                                                                    .ToString();
+                                                            SpringConst_Move_LastYNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .SpringConst_Move.Y.ToString();
 
-                                                        SpringConst_Move_FirstZNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].SpringConst_Move.Z
-                                                                .ToString();
-                                                        SpringConst_Move_LastZNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .SpringConst_Move.Z.ToString();
+                                                            SpringConst_Move_FirstZNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].SpringConst_Move.Z
+                                                                    .ToString();
+                                                            SpringConst_Move_LastZNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .SpringConst_Move.Z.ToString();
 
-                                                        SpringConst_Rotate_FirstXNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].SpringConst_Rotate.X
-                                                                .ToString();
-                                                        SpringConst_Rotate_LastXNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .SpringConst_Rotate.X.ToString();
+                                                            SpringConst_Rotate_FirstXNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].SpringConst_Rotate.X
+                                                                    .ToString();
+                                                            SpringConst_Rotate_LastXNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .SpringConst_Rotate.X.ToString();
 
-                                                        SpringConst_Rotate_FirstYNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].SpringConst_Rotate.Y
-                                                                .ToString();
-                                                        SpringConst_Rotate_LastYNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .SpringConst_Rotate.Y.ToString();
+                                                            SpringConst_Rotate_FirstYNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].SpringConst_Rotate.Y
+                                                                    .ToString();
+                                                            SpringConst_Rotate_LastYNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .SpringConst_Rotate.Y.ToString();
 
-                                                        SpringConst_Rotate_FirstZNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].SpringConst_Rotate.Z
-                                                                .ToString();
-                                                        SpringConst_Rotate_LastZNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .SpringConst_Rotate.Z.ToString();
+                                                            SpringConst_Rotate_FirstZNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].SpringConst_Rotate.Z
+                                                                    .ToString();
+                                                            SpringConst_Rotate_LastZNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .SpringConst_Rotate.Z.ToString();
 
-                                                        Limit_MoveLow_FirstXNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].Limit_MoveLow.X.ToString();
-                                                        Limit_MoveLow_LastXNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .Limit_MoveLow.X.ToString();
-                                                        Limit_MoveHigh_FirstXNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].Limit_MoveHigh.X
-                                                                .ToString();
-                                                        Limit_MoveHigh_LastXNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .Limit_MoveHigh.X.ToString();
+                                                            Limit_MoveLow_FirstXNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].Limit_MoveLow.X.ToString();
+                                                            Limit_MoveLow_LastXNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .Limit_MoveLow.X.ToString();
+                                                            Limit_MoveHigh_FirstXNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].Limit_MoveHigh.X
+                                                                    .ToString();
+                                                            Limit_MoveHigh_LastXNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .Limit_MoveHigh.X.ToString();
 
-                                                        Limit_MoveLow_FirstYNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].Limit_MoveLow.Y.ToString();
-                                                        Limit_MoveLow_LastYNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .Limit_MoveLow.Y.ToString();
-                                                        Limit_MoveHigh_FirstYNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].Limit_MoveHigh.Y
-                                                                .ToString();
-                                                        Limit_MoveHigh_LastYNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .Limit_MoveHigh.Y.ToString();
+                                                            Limit_MoveLow_FirstYNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].Limit_MoveLow.Y.ToString();
+                                                            Limit_MoveLow_LastYNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .Limit_MoveLow.Y.ToString();
+                                                            Limit_MoveHigh_FirstYNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].Limit_MoveHigh.Y
+                                                                    .ToString();
+                                                            Limit_MoveHigh_LastYNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .Limit_MoveHigh.Y.ToString();
 
-                                                        Limit_MoveLow_FirstZNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].Limit_MoveLow.Z.ToString();
-                                                        Limit_MoveLow_LastZNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .Limit_MoveLow.Z.ToString();
-                                                        Limit_MoveHigh_FirstZNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[0]].Limit_MoveHigh.Z
-                                                                .ToString();
-                                                        Limit_MoveHigh_LastZNummer.Text =
-                                                            ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                                .Limit_MoveHigh.Z.ToString();
+                                                            Limit_MoveLow_FirstZNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].Limit_MoveLow.Z.ToString();
+                                                            Limit_MoveLow_LastZNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .Limit_MoveLow.Z.ToString();
+                                                            Limit_MoveHigh_FirstZNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[0]].Limit_MoveHigh.Z
+                                                                    .ToString();
+                                                            Limit_MoveHigh_LastZNummer.Text =
+                                                                ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                    .Limit_MoveHigh.Z.ToString();
 
-                                                        Limit_AngleLow_FirstXNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleLow
-                                                             .X)) / Math.PI).ToString();
-                                                        Limit_AngleLow_LastXNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                             .Limit_AngleLow.X)) / Math.PI).ToString();
-                                                        Limit_AngleHigh_FirstXNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleHigh
-                                                             .X)) / Math.PI).ToString();
-                                                        Limit_AngleHigh_LastXNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                             .Limit_AngleHigh.X)) / Math.PI).ToString();
+                                                            Limit_AngleLow_FirstXNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleLow
+                                                                 .X)) / Math.PI).ToString();
+                                                            Limit_AngleLow_LastXNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                 .Limit_AngleLow.X)) / Math.PI).ToString();
+                                                            Limit_AngleHigh_FirstXNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleHigh
+                                                                 .X)) / Math.PI).ToString();
+                                                            Limit_AngleHigh_LastXNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                 .Limit_AngleHigh.X)) / Math.PI).ToString();
 
-                                                        Limit_AngleLow_FirstYNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleLow
-                                                             .Y)) / Math.PI).ToString();
-                                                        Limit_AngleLow_LastYNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                             .Limit_AngleLow.Y)) / Math.PI).ToString();
-                                                        Limit_AngleHigh_FirstYNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleHigh
-                                                             .Y)) / Math.PI).ToString();
-                                                        Limit_AngleHigh_LastYNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                             .Limit_AngleHigh.Y)) / Math.PI).ToString();
+                                                            Limit_AngleLow_FirstYNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleLow
+                                                                 .Y)) / Math.PI).ToString();
+                                                            Limit_AngleLow_LastYNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                 .Limit_AngleLow.Y)) / Math.PI).ToString();
+                                                            Limit_AngleHigh_FirstYNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleHigh
+                                                                 .Y)) / Math.PI).ToString();
+                                                            Limit_AngleHigh_LastYNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                 .Limit_AngleHigh.Y)) / Math.PI).ToString();
 
-                                                        Limit_AngleLow_FirstZNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleLow
-                                                             .Z)) / Math.PI).ToString();
-                                                        Limit_AngleLow_LastZNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                             .Limit_AngleLow.Z)) / Math.PI).ToString();
-                                                        Limit_AngleHigh_FirstZNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleHigh
-                                                             .Z)) / Math.PI).ToString();
-                                                        Limit_AngleHigh_LastZNummer.Text =
-                                                        (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
-                                                             .Limit_AngleHigh.Z)) / Math.PI).ToString();
-                                                    }
-                                                }));
-                                            }
-                                            else
-                                            {
-                                                InputJointName.Text = "";
+                                                            Limit_AngleLow_FirstZNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleLow
+                                                                 .Z)) / Math.PI).ToString();
+                                                            Limit_AngleLow_LastZNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                 .Limit_AngleLow.Z)) / Math.PI).ToString();
+                                                            Limit_AngleHigh_FirstZNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[0]].Limit_AngleHigh
+                                                                 .Z)) / Math.PI).ToString();
+                                                            Limit_AngleHigh_LastZNummer.Text =
+                                                            (180 * ((ThePmxOfNow.Joint[JointCount[JointCount.Count - 1]]
+                                                                 .Limit_AngleHigh.Z)) / Math.PI).ToString();
+                                                        }
+                                                    }));
+                                                }
+                                                else
+                                                {
+                                                    InputJointName.Text = "";
+                                                }
                                             }
                                         }
+                                        break;
                                     }
-                                    break;
-                                }
                                 case "Vertex":
                                     switch (VertexTab.SelectedTab.Text)
                                     {
@@ -745,7 +739,7 @@ namespace PE多功能信息处理插件
                                             if (!Materialbody.SequenceEqual(SelectMaterial) && !LockSelect.Checked)
                                             {
                                                 IPXPmx ThePmxOfNow = GetPmx;
-                                                Materialbody = new List<int>(SelectMaterial.ToArray());
+                                                Materialbody = new HashSet<int>(SelectMaterial.ToArray());
                                                 ClearList("Material");
                                                 if (SelectMaterial.Count != 0)
                                                 {
@@ -789,7 +783,7 @@ namespace PE多功能信息处理插件
                                     if (BoneHis.Count != GetPmx.Bone.Count)
                                     {
                                         IPXPmx ThePmxOfNow = GetPmx;
-                                        BoneHis = new List<IPXBone>(ThePmxOfNow.Bone);
+                                        BoneHis = new HashSet<IPXBone>(ThePmxOfNow.Bone);
                                         ClearList("bone");
                                         BeginInvoke(new MethodInvoker(() =>
                                         {
@@ -819,7 +813,7 @@ namespace PE多功能信息处理插件
                                     if (BodyHis.Count != GetPmx.Body.Count)
                                     {
                                         IPXPmx ThePmxOfNow = GetPmx;
-                                        BodyHis = new List<IPXBody>(ThePmxOfNow.Body);
+                                        BodyHis = new HashSet<IPXBody>(ThePmxOfNow.Body);
                                         ClearList("body");
                                         BeginInvoke(new MethodInvoker(() =>
                                         {
@@ -881,7 +875,7 @@ namespace PE多功能信息处理插件
                                     if (JointHis.Count != GetPmx.Joint.Count)
                                     {
                                         IPXPmx ThePmxOfNow = GetPmx;
-                                        JointHis = new List<IPXJoint>(ThePmxOfNow.Joint);
+                                        JointHis = new HashSet<IPXJoint>(ThePmxOfNow.Joint);
                                         ClearList("joint");
                                         BeginInvoke(new MethodInvoker(() =>
                                         {
@@ -1019,43 +1013,42 @@ namespace PE多功能信息处理插件
                                         }));
                                     }
                                     break;
+
                                 case "Vertex":
                                     switch (VertexTab.SelectedTab.Text)
                                     {
                                         case "材质操作":
-                                        {
-                                            if (MaterialHis.Count != GetPmx.Material.Count ||
-                                                VertexList.Rows.Count != GetPmx.Material.Count)
                                             {
-                                                IPXPmx ThePmxOfNow = GetPmx;
-                                                MaterialHis = new List<IPXMaterial>(ThePmxOfNow.Material.ToArray());
-                                                ClearList("Material");
-                                                BeginInvoke(new MethodInvoker(() =>
+                                                if (MaterialHis.Count != GetPmx.Material.Count ||
+                                                    VertexList.Rows.Count != GetPmx.Material.Count)
                                                 {
-                                                    try
+                                                    IPXPmx ThePmxOfNow = GetPmx;
+                                                    MaterialHis = new List<IPXMaterial>(ThePmxOfNow.Material.ToArray());
+                                                    ClearList("Material");
+                                                    BeginInvoke(new MethodInvoker(() =>
                                                     {
-                                                        var table = VertexList.DataSource as DataTable;
-                                                        MaterialCount.Clear();
-                                                        for (int temp = 0; temp < ThePmxOfNow.Material.Count; temp++)
+                                                        try
                                                         {
-                                                            table.Rows.Add(temp, ThePmxOfNow.Material[temp].Name);
+                                                            var table = VertexList.DataSource as DataTable;
+                                                            MaterialCount.Clear();
+                                                            for (int temp = 0; temp < ThePmxOfNow.Material.Count; temp++)
+                                                            {
+                                                                table.Rows.Add(temp, ThePmxOfNow.Material[temp].Name);
+                                                            }
+                                                            if (table.Rows.Count == 0) return;
+                                                            InputMaterialName.Text =
+                                                                DeleteMaterialNummer.Checked
+                                                                    ? Regex.Replace(
+                                                                        VertexList.Rows[0].Cells[1].Value.ToString(),
+                                                                        @"\d", "")
+                                                                    : VertexList.Rows[0].Cells[1].Value.ToString();
                                                         }
-                                                        if (table.Rows.Count == 0) return;
-                                                        InputMaterialName.Text =
-                                                            DeleteMaterialNummer.Checked
-                                                                ? Regex.Replace(
-                                                                    VertexList.Rows[0].Cells[1].Value.ToString(),
-                                                                    @"\d", "")
-                                                                : VertexList.Rows[0].Cells[1].Value.ToString();
-
-
-                                                    }
-                                                    catch (Exception)
-                                                    {
-                                                    }
-                                                }));
+                                                        catch (Exception)
+                                                        {
+                                                        }
+                                                    }));
+                                                }
                                             }
-                                        }
                                             break;
                                     }
                                     break;
@@ -1068,7 +1061,6 @@ namespace PE多功能信息处理插件
                 } while (Run);
             }, TaskCreationOptions.LongRunning);
         }
-
 
         public void ThemeSet_Click(object sender, EventArgs e)
         {
@@ -1084,16 +1076,16 @@ namespace PE多功能信息处理插件
             bootstate.StyleState = new Random().Next(0, 13);
             if (bootstate.StyleState != 2)
             {
-                Style = metroStyleManager.Style = (MetroColorStyle) bootstate.StyleState;
+                Style = metroStyleManager.Style = (MetroColorStyle)bootstate.StyleState;
             }
             else
             {
                 bootstate.StyleState = new Random().Next(3, 13);
-                Style = metroStyleManager.Style = (MetroColorStyle) bootstate.StyleState;
+                Style = metroStyleManager.Style = (MetroColorStyle)bootstate.StyleState;
             }
             foreach (var Temp in ListForm)
             {
-                Temp.Style = (MetroColorStyle) bootstate.StyleState;
+                Temp.Style = (MetroColorStyle)bootstate.StyleState;
                 Temp.Refresh();
             }
             ThreadPool.QueueUserWorkItem(Save);
@@ -1157,67 +1149,68 @@ namespace PE多功能信息处理插件
                 switch (mode)
                 {
                     case "bone":
-                    {
-                        var table = BoneList.DataSource as DataTable;
-                        if (MirrorMode.Checked)
                         {
-                            table.Rows.Clear();
-                            table.Columns.Clear();
-                            table.Columns.Add("骨骼顺序");
-                            table.Columns.Add("骨骼名称");
-                            table.Rows.Add();
-                            table.Rows.Clear();
-                        }
-                        else
-                        {
-                            foreach (Control item in BoneList.Controls.Cast<Control>()
-                                .Where(item => item.Name == "MirrorControl"))
+                            var table = BoneList.DataSource as DataTable;
+                            if (MirrorMode.Checked)
                             {
-                                item.Visible = false;
-                                break;
+                                table.Rows.Clear();
+                                table.Columns.Clear();
+                                table.Columns.Add("骨骼顺序");
+                                table.Columns.Add("骨骼名称");
+                                table.Rows.Add();
+                                table.Rows.Clear();
                             }
-                            /*foreach (Control item in BoneList.Controls)
+                            else
                             {
-                                if (item.Name == "MirrorControl")
+                                foreach (Control item in BoneList.Controls.Cast<Control>()
+                                    .Where(item => item.Name == "MirrorControl"))
                                 {
                                     item.Visible = false;
                                     break;
                                 }
-                            }*/
-                            table.Rows.Clear();
-                            table.Columns.Clear();
-                            table.Columns.Add("参照骨骼");
-                            table.Columns.Add("->");
-                            table.Columns.Add("镜像骨骼");
-                            table.Rows.Add();
-                            table.Rows.Clear();
+                                /*foreach (Control item in BoneList.Controls)
+                                {
+                                    if (item.Name == "MirrorControl")
+                                    {
+                                        item.Visible = false;
+                                        break;
+                                    }
+                                }*/
+                                table.Rows.Clear();
+                                table.Columns.Clear();
+                                table.Columns.Add("参照骨骼");
+                                table.Columns.Add("->");
+                                table.Columns.Add("镜像骨骼");
+                                table.Rows.Add();
+                                table.Rows.Clear();
+                            }
                         }
-                    }
                         break;
 
                     case "body":
-                    {
-                        var table = BodyList.DataSource as DataTable;
-                        table.Rows.Clear();
-                        table.Columns.Clear();
-                        table.Columns.Add("刚体顺序");
-                        table.Columns.Add("刚体名称");
-                        table.Rows.Add();
-                        table.Rows.Clear();
-                    }
+                        {
+                            var table = BodyList.DataSource as DataTable;
+                            table.Rows.Clear();
+                            table.Columns.Clear();
+                            table.Columns.Add("刚体顺序");
+                            table.Columns.Add("刚体名称");
+                            table.Rows.Add();
+                            table.Rows.Clear();
+                        }
                         break;
 
                     case "joint":
-                    {
-                        var table = JointList.DataSource as DataTable;
-                        table.Rows.Clear();
-                        table.Columns.Clear();
-                        table.Columns.Add("J点顺序");
-                        table.Columns.Add("J点名称");
-                        table.Rows.Add();
-                        table.Rows.Clear();
-                    }
+                        {
+                            var table = JointList.DataSource as DataTable;
+                            table.Rows.Clear();
+                            table.Columns.Clear();
+                            table.Columns.Add("J点顺序");
+                            table.Columns.Add("J点名称");
+                            table.Rows.Add();
+                            table.Rows.Clear();
+                        }
                         break;
+
                     case "Material":
                         switch (VertexTab.SelectedTab.Text)
                         {
@@ -1239,12 +1232,11 @@ namespace PE多功能信息处理插件
 
         #region 全局模式下自动获取插件中选中的对象
 
-        void GetMaterialSelect(object sender, MouseEventArgs e)
+        private void GetMaterialSelect(object sender, MouseEventArgs e)
         {
             IPXPmx ThePmxOfNow = ARGS.Host.Connector.Pmx.GetCurrentState();
             if (AutomaticRadioButton.Checked)
             {
-
                 var temp = new DataGridViewCell[VertexList.SelectedCells.Count];
                 VertexList.SelectedCells.CopyTo(temp, 0);
                 MaterialCount.Clear();
@@ -1262,12 +1254,10 @@ namespace PE多功能信息处理插件
                     }
                     MaterialCount.Sort();
                 }
-
             }
         }
 
-
-        void GetJointSelect(object sender, MouseEventArgs e)
+        private void GetJointSelect(object sender, MouseEventArgs e)
         {
             IPXPmx ThePmxOfNow = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
             if (AutomaticRadioButton.Checked)
@@ -1391,7 +1381,7 @@ namespace PE多功能信息处理插件
             }
         }
 
-        void GetBodySelect(object sender, MouseEventArgs e)
+        private void GetBodySelect(object sender, MouseEventArgs e)
         {
             IPXPmx ThePmxOfNow = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
             if (!AutomaticRadioButton.Checked)
@@ -1460,7 +1450,7 @@ namespace PE多功能信息处理插件
             }
         }
 
-        void GetBoneSelect(object sender, MouseEventArgs e)
+        private void GetBoneSelect(object sender, MouseEventArgs e)
         {
             try
             {
@@ -1587,6 +1577,7 @@ namespace PE多功能信息处理插件
                         }
                         Progress_Spinner.Speed = 1;
                         break;
+
                     case "Material":
                         foreach (ListChangeInfo Temp in ChangeList)
                         {
@@ -1642,6 +1633,7 @@ namespace PE多功能信息处理插件
                         ARGS.Host.Connector.View.TransformView.UpdateView();
                         //ARGS.Host.Connector.View.TransformView.Focus();
                         break;
+
                     case "Material":
                         ARGS.Host.Connector.Pmx.Update(temppmx);
                         ARGS.Host.Connector.Form.UpdateList(UpdateObject.Material);
@@ -1835,7 +1827,7 @@ namespace PE多功能信息处理插件
 
         private void GetBone(IList<IPXBone> tempbone)
         {
-            List<IPXBone> bone = new List<IPXBone> {tempbone[0]};
+            List<IPXBone> bone = new List<IPXBone> { tempbone[0] };
             IPXBone Tempbone = tempbone[0].ToBone;
             bone.AddRange(tempbone.Where(temp => temp == Tempbone));
             /*foreach (var temp in tempbone)
@@ -1921,7 +1913,6 @@ namespace PE多功能信息处理插件
                     ARGS.Host.Connector.View.PmxView.UpdateModel();
                     ClearList("bone");
                 }));
-
             }).Start();
         }
 
@@ -2093,14 +2084,14 @@ namespace PE多功能信息处理插件
                     A = (Last - First) / (count - 1);
                     for (int i = 0; i < count; i++)
                     {
-                        MathReturn.Add((float) Math.Round(i * A + First, 2));
+                        MathReturn.Add((float)Math.Round(i * A + First, 2));
                     }
                     break;
 
                 case "=Cos(Xπ)":
                     for (int i = 0; i < count; i++)
                     {
-                        MathReturn.Add((float) Math.Round(
+                        MathReturn.Add((float)Math.Round(
                             (Last - First) * Math.Cos(Math.PI / 2 / (count - 1) * i) + First, 2));
                     }
                     break;
@@ -2109,7 +2100,7 @@ namespace PE多功能信息处理插件
                     A = (count * (Last - First)) / 4;
                     for (int i = 1; i < count + 1; i++)
                     {
-                        MathReturn.Add((float) Math.Round(A / i, 2));
+                        MathReturn.Add((float)Math.Round(A / i, 2));
                     }
                     break;
 
@@ -2121,7 +2112,7 @@ namespace PE多功能信息处理插件
                     A = (count * (Last - First)) / 4;
                     for (int i = 1; i < count + 1; i++)
                     {
-                        MathReturn.Add((float) Math.Round(A / i, 2));
+                        MathReturn.Add((float)Math.Round(A / i, 2));
                     }
                     MathReturn.Reverse();
                     break;
@@ -2129,7 +2120,7 @@ namespace PE多功能信息处理插件
                 case "=Sin(Xπ)":
                     for (int i = 0; i < count; i++)
                     {
-                        MathReturn.Add((float) Math.Round(
+                        MathReturn.Add((float)Math.Round(
                             (Last - First) * Math.Sin((Math.PI / (count - 1)) * i) + First, 2));
                     }
                     break;
@@ -2555,7 +2546,7 @@ namespace PE多功能信息处理插件
                             }
                             break;
                     }
-                    ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(new[] {BodyCount[0]});
+                    ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(new[] { BodyCount[0] });
                 }
                 else
                 {
@@ -2882,7 +2873,7 @@ namespace PE多功能信息处理插件
                                                 Text = "刚体半径/宽,批处理模式",
                                                 SetDate = new TheDataForBezier("Radial", RadialFirstNummer.Text,
                                                         RadialLastNummer.Text, BodyListForOpera.ToArray())
-                                                    {UseMode = 1}
+                                                { UseMode = 1 }
                                             };
                                             NewOpen.Show(Owner);
                                             ListForm.Add(NewOpen);
@@ -2936,7 +2927,7 @@ namespace PE多功能信息处理插件
                                                 Text = "刚体高度,批处理模式",
                                                 SetDate = new TheDataForBezier("Height", HeightFirstNummer.Text,
                                                         HeightLastNummer.Text, BodyListForOpera.ToArray())
-                                                    {UseMode = 1}
+                                                { UseMode = 1 }
                                             };
                                             NewOpen.Show(Owner);
                                             ListForm.Add(NewOpen);
@@ -2990,7 +2981,7 @@ namespace PE多功能信息处理插件
                                                 Text = "刚体深度,批处理模式",
                                                 SetDate = new TheDataForBezier("Depth", DepthFirstNummer.Text,
                                                         DepthLastNummer.Text, BodyListForOpera.ToArray())
-                                                    {UseMode = 1}
+                                                { UseMode = 1 }
                                             };
                                             NewOpen.Show(Owner);
                                             ListForm.Add(NewOpen);
@@ -3813,7 +3804,7 @@ namespace PE多功能信息处理插件
                     ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
                     ARGS.Host.Connector.View.PmxView.UpdateView();
 
-                    ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(new[] {BodyCount[0]});
+                    ARGS.Host.Connector.View.PmxView.SetSelectedBodyIndices(new[] { BodyCount[0] });
                 }
                 else
                 {
@@ -4594,15 +4585,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_X.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.X =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.X =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.X =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                 }
                             }
@@ -4655,15 +4646,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_Y.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Y =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Y =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.Y =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                 }
                             }
@@ -4716,15 +4707,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_Z.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Z =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Z =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.Z =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                 }
                             }
@@ -4736,7 +4727,7 @@ namespace PE多功能信息处理插件
                     ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
                     ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
                     ARGS.Host.Connector.View.PmxView.UpdateView();
-                    ARGS.Host.Connector.View.PmxView.SetSelectedJointIndices(new[] {JointCount[0]});
+                    ARGS.Host.Connector.View.PmxView.SetSelectedJointIndices(new[] { JointCount[0] });
                 }
                 else
                 {
@@ -4772,7 +4763,7 @@ namespace PE多功能信息处理插件
                                                     Limit_MoveLow_FirstXNummer.Text, Limit_MoveLow_LastXNummer.Text,
                                                     Limit_MoveHigh_FirstXNummer.Text, Limit_MoveHigh_LastXNummer.Text,
                                                     JointListForOpera.ToArray())
-                                                {UseMode = 1}
+                                            { UseMode = 1 }
                                         };
                                         NewOpen.Show(Owner);
                                         ListForm.Add(NewOpen);
@@ -4828,7 +4819,7 @@ namespace PE多功能信息处理插件
                                                     Limit_MoveLow_FirstYNummer.Text, Limit_MoveLow_LastYNummer.Text,
                                                     Limit_MoveHigh_FirstYNummer.Text, Limit_MoveHigh_LastYNummer.Text,
                                                     JointListForOpera.ToArray())
-                                                {UseMode = 1}
+                                            { UseMode = 1 }
                                         };
                                         NewOpen.Show(Owner);
                                         ListForm.Add(NewOpen);
@@ -4884,7 +4875,7 @@ namespace PE多功能信息处理插件
                                                     Limit_MoveLow_FirstZNummer.Text, Limit_MoveLow_LastZNummer.Text,
                                                     Limit_MoveHigh_FirstZNummer.Text, Limit_MoveHigh_LastZNummer.Text,
                                                     JointListForOpera.ToArray())
-                                                {UseMode = 1}
+                                            { UseMode = 1 }
                                         };
                                         NewOpen.Show(Owner);
                                         ListForm.Add(NewOpen);
@@ -4940,7 +4931,7 @@ namespace PE多功能信息处理插件
                                                     Limit_AngleLow_FirstXNummer.Text, Limit_AngleLow_LastXNummer.Text,
                                                     Limit_AngleHigh_FirstXNummer.Text, Limit_AngleHigh_LastXNummer.Text,
                                                     JointListForOpera.ToArray())
-                                                {UseMode = 1}
+                                            { UseMode = 1 }
                                         };
                                         NewOpen.Show(Owner);
                                         ListForm.Add(NewOpen);
@@ -4968,15 +4959,15 @@ namespace PE多功能信息处理插件
                                                 Limit_Angle_FuntionSelect_X.SelectedItem.ToString() == "=-A/X+B")
                                             {
                                                 ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.X =
-                                                    -(float) ((Temp[i] * Math.PI) / 180);
+                                                    -(float)((Temp[i] * Math.PI) / 180);
                                             }
                                             else
                                             {
                                                 ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.X =
-                                                    (float) ((Temp[i] * Math.PI) / 180);
+                                                    (float)((Temp[i] * Math.PI) / 180);
                                             }
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.X =
-                                                (float) ((Temp2[i] * Math.PI) / 180);
+                                                (float)((Temp2[i] * Math.PI) / 180);
                                         }
                                     }
                                 }
@@ -5007,7 +4998,7 @@ namespace PE多功能信息处理插件
                                                     Limit_AngleLow_FirstYNummer.Text, Limit_AngleLow_LastYNummer.Text,
                                                     Limit_AngleHigh_FirstYNummer.Text, Limit_AngleHigh_LastYNummer.Text,
                                                     JointListForOpera.ToArray())
-                                                {UseMode = 1}
+                                            { UseMode = 1 }
                                         };
                                         NewOpen.Show(Owner);
                                         ListForm.Add(NewOpen);
@@ -5035,15 +5026,15 @@ namespace PE多功能信息处理插件
                                                 Limit_Angle_FuntionSelect_Y.SelectedItem.ToString() == "=-A/X+B")
                                             {
                                                 ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Y =
-                                                    -(float) ((Temp[i] * Math.PI) / 180);
+                                                    -(float)((Temp[i] * Math.PI) / 180);
                                             }
                                             else
                                             {
                                                 ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Y =
-                                                    (float) ((Temp[i] * Math.PI) / 180);
+                                                    (float)((Temp[i] * Math.PI) / 180);
                                             }
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.Y =
-                                                (float) ((Temp2[i] * Math.PI) / 180);
+                                                (float)((Temp2[i] * Math.PI) / 180);
                                         }
                                     }
                                 }
@@ -5074,7 +5065,7 @@ namespace PE多功能信息处理插件
                                                     Limit_AngleLow_FirstZNummer.Text, Limit_AngleLow_LastZNummer.Text,
                                                     Limit_AngleHigh_FirstZNummer.Text, Limit_AngleHigh_LastZNummer.Text,
                                                     JointListForOpera.ToArray())
-                                                {UseMode = 1}
+                                            { UseMode = 1 }
                                         };
                                         NewOpen.Show(Owner);
                                         ListForm.Add(NewOpen);
@@ -5102,15 +5093,15 @@ namespace PE多功能信息处理插件
                                                 Limit_Angle_FuntionSelect_Z.SelectedItem.ToString() == "=-A/X+B")
                                             {
                                                 ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Z =
-                                                    -(float) ((Temp[i] * Math.PI) / 180);
+                                                    -(float)((Temp[i] * Math.PI) / 180);
                                             }
                                             else
                                             {
                                                 ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Z =
-                                                    (float) ((Temp[i] * Math.PI) / 180);
+                                                    (float)((Temp[i] * Math.PI) / 180);
                                             }
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.Z =
-                                                (float) ((Temp2[i] * Math.PI) / 180);
+                                                (float)((Temp2[i] * Math.PI) / 180);
                                         }
                                     }
                                 }
@@ -5395,15 +5386,15 @@ namespace PE多功能信息处理插件
                                                 Limit_Angle_FuntionSelect_X.SelectedItem.ToString() == "=-A/X+B")
                                             {
                                                 ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.X =
-                                                    -(float) ((Temp[i] * Math.PI) / 180);
+                                                    -(float)((Temp[i] * Math.PI) / 180);
                                             }
                                             else
                                             {
                                                 ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.X =
-                                                    (float) ((Temp[i] * Math.PI) / 180);
+                                                    (float)((Temp[i] * Math.PI) / 180);
                                             }
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleHigh.X =
-                                                (float) ((Temp2[i] * Math.PI) / 180);
+                                                (float)((Temp2[i] * Math.PI) / 180);
                                         }
                                     }
                                 }
@@ -5474,15 +5465,15 @@ namespace PE多功能信息处理插件
                                                 Limit_Angle_FuntionSelect_Y.SelectedItem.ToString() == "=-A/X+B")
                                             {
                                                 ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.Y =
-                                                    -(float) ((Temp[i] * Math.PI) / 180);
+                                                    -(float)((Temp[i] * Math.PI) / 180);
                                             }
                                             else
                                             {
                                                 ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.Y =
-                                                    (float) ((Temp[i] * Math.PI) / 180);
+                                                    (float)((Temp[i] * Math.PI) / 180);
                                             }
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleHigh.Y =
-                                                (float) ((Temp2[i] * Math.PI) / 180);
+                                                (float)((Temp2[i] * Math.PI) / 180);
                                         }
                                     }
                                 }
@@ -5553,15 +5544,15 @@ namespace PE多功能信息处理插件
                                                 Limit_Angle_FuntionSelect_Z.SelectedItem.ToString() == "=-A/X+B")
                                             {
                                                 ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.Z =
-                                                    -(float) ((Temp[i] * Math.PI) / 180);
+                                                    -(float)((Temp[i] * Math.PI) / 180);
                                             }
                                             else
                                             {
                                                 ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.Z =
-                                                    (float) ((Temp[i] * Math.PI) / 180);
+                                                    (float)((Temp[i] * Math.PI) / 180);
                                             }
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleHigh.Z =
-                                                (float) ((Temp2[i] * Math.PI) / 180);
+                                                (float)((Temp2[i] * Math.PI) / 180);
                                         }
                                     }
                                 }
@@ -5818,7 +5809,7 @@ namespace PE多功能信息处理插件
                                     SetDate = new TheDataForBezier("Limit_Move_X", Limit_MoveLow_FirstXNummer.Text,
                                             Limit_MoveLow_LastXNummer.Text, Limit_MoveHigh_FirstXNummer.Text,
                                             Limit_MoveHigh_LastXNummer.Text, JointListForOpera.ToArray())
-                                        {UseMode = 1}
+                                    { UseMode = 1 }
                                 };
                                 NewOpen.Show(Owner);
                                 ListForm.Add(NewOpen);
@@ -5864,7 +5855,7 @@ namespace PE多功能信息处理插件
                                     SetDate = new TheDataForBezier("Limit_Move_Y", Limit_MoveLow_FirstYNummer.Text,
                                             Limit_MoveLow_LastYNummer.Text, Limit_MoveHigh_FirstYNummer.Text,
                                             Limit_MoveHigh_LastYNummer.Text, JointListForOpera.ToArray())
-                                        {UseMode = 1}
+                                    { UseMode = 1 }
                                 };
                                 NewOpen.Show(Owner);
                                 ListForm.Add(NewOpen);
@@ -5910,7 +5901,7 @@ namespace PE多功能信息处理插件
                                     SetDate = new TheDataForBezier("Limit_Move_Z", Limit_MoveLow_FirstZNummer.Text,
                                             Limit_MoveLow_LastZNummer.Text, Limit_MoveHigh_FirstZNummer.Text,
                                             Limit_MoveHigh_LastZNummer.Text, JointListForOpera.ToArray())
-                                        {UseMode = 1}
+                                    { UseMode = 1 }
                                 };
                                 NewOpen.Show(Owner);
                                 ListForm.Add(NewOpen);
@@ -6269,15 +6260,15 @@ namespace PE多功能信息处理插件
                                         Limit_Angle_FuntionSelect_X.SelectedItem.ToString() == "=-A/X+B")
                                     {
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.X =
-                                            -(float) ((Temp[i] * Math.PI) / 180);
+                                            -(float)((Temp[i] * Math.PI) / 180);
                                     }
                                     else
                                     {
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.X =
-                                            (float) ((Temp[i] * Math.PI) / 180);
+                                            (float)((Temp[i] * Math.PI) / 180);
                                     }
                                     ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.X =
-                                        (float) ((Temp2[i] * Math.PI) / 180);
+                                        (float)((Temp2[i] * Math.PI) / 180);
                                 }
                                 ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
                                 ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
@@ -6322,15 +6313,15 @@ namespace PE多功能信息处理插件
                                         Limit_Angle_FuntionSelect_Y.SelectedItem.ToString() == "=-A/X+B")
                                     {
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Y =
-                                            -(float) ((Temp[i] * Math.PI) / 180);
+                                            -(float)((Temp[i] * Math.PI) / 180);
                                     }
                                     else
                                     {
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Y =
-                                            (float) ((Temp[i] * Math.PI) / 180);
+                                            (float)((Temp[i] * Math.PI) / 180);
                                     }
                                     ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.Y =
-                                        (float) ((Temp2[i] * Math.PI) / 180);
+                                        (float)((Temp2[i] * Math.PI) / 180);
                                 }
                                 ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
                                 ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
@@ -6375,15 +6366,15 @@ namespace PE多功能信息处理插件
                                         Limit_Angle_FuntionSelect_Z.SelectedItem.ToString() == "=-A/X+B")
                                     {
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Z =
-                                            -(float) ((Temp[i] * Math.PI) / 180);
+                                            -(float)((Temp[i] * Math.PI) / 180);
                                     }
                                     else
                                     {
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Z =
-                                            (float) ((Temp[i] * Math.PI) / 180);
+                                            (float)((Temp[i] * Math.PI) / 180);
                                     }
                                     ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.Z =
-                                        (float) ((Temp2[i] * Math.PI) / 180);
+                                        (float)((Temp2[i] * Math.PI) / 180);
                                 }
                                 ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
                                 ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
@@ -6457,7 +6448,7 @@ namespace PE多功能信息处理插件
                                                 Limit_AngleLow_FirstXNummer.Text, Limit_AngleLow_LastXNummer.Text,
                                                 Limit_AngleHigh_FirstXNummer.Text, Limit_AngleHigh_LastXNummer.Text,
                                                 JointListForOpera.ToArray())
-                                            {UseMode = 1}
+                                        { UseMode = 1 }
                                     };
                                     NewOpen.Show(Owner);
                                     ListForm.Add(NewOpen);
@@ -6485,15 +6476,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_X.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.X =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.X =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.X =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                     ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
                                     ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
@@ -6520,7 +6511,7 @@ namespace PE多功能信息处理插件
                                                 Limit_AngleLow_FirstYNummer.Text, Limit_AngleLow_LastYNummer.Text,
                                                 Limit_AngleHigh_FirstYNummer.Text, Limit_AngleHigh_LastYNummer.Text,
                                                 JointListForOpera.ToArray())
-                                            {UseMode = 1}
+                                        { UseMode = 1 }
                                     };
                                     NewOpen.Show(Owner);
                                     ListForm.Add(NewOpen);
@@ -6548,15 +6539,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_Y.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Y =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Y =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.Y =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                     ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
                                     ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
@@ -6583,7 +6574,7 @@ namespace PE多功能信息处理插件
                                                 Limit_AngleLow_FirstZNummer.Text, Limit_AngleLow_LastZNummer.Text,
                                                 Limit_AngleHigh_FirstZNummer.Text, Limit_AngleHigh_LastZNummer.Text,
                                                 JointListForOpera.ToArray())
-                                            {UseMode = 1}
+                                        { UseMode = 1 }
                                     };
                                     NewOpen.Show(Owner);
                                     ListForm.Add(NewOpen);
@@ -6611,15 +6602,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_Z.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Z =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointCount[i]].Limit_AngleLow.Z =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointCount[i]].Limit_AngleHigh.Z =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                     ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
                                     ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
@@ -6708,7 +6699,7 @@ namespace PE多功能信息处理插件
                                                 Limit_AngleLow_FirstXNummer.Text, Limit_AngleLow_LastXNummer.Text,
                                                 Limit_AngleHigh_FirstXNummer.Text, Limit_AngleHigh_LastXNummer.Text,
                                                 JointListForOpera.ToArray())
-                                            {ItemCount = new int[JointListForOpera.Count]}
+                                        { ItemCount = new int[JointListForOpera.Count] }
                                     };
                                     for (int x = 0; x < JointListForOpera.Count; x++)
                                     {
@@ -6744,15 +6735,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_X.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.X =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.X =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointTemp].Limit_AngleHigh.X =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                 }
                                 ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
@@ -6779,7 +6770,7 @@ namespace PE多功能信息处理插件
                                                 Limit_AngleLow_FirstYNummer.Text, Limit_AngleLow_LastYNummer.Text,
                                                 Limit_AngleHigh_FirstYNummer.Text, Limit_AngleHigh_LastYNummer.Text,
                                                 JointListForOpera.ToArray())
-                                            {ItemCount = new int[JointListForOpera.Count]}
+                                        { ItemCount = new int[JointListForOpera.Count] }
                                     };
                                     for (int x = 0; x < JointListForOpera.Count; x++)
                                     {
@@ -6815,15 +6806,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_Y.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.Y =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.Y =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointTemp].Limit_AngleHigh.Y =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                 }
                                 ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
@@ -6850,7 +6841,7 @@ namespace PE多功能信息处理插件
                                                 Limit_AngleLow_FirstZNummer.Text, Limit_AngleLow_LastZNummer.Text,
                                                 Limit_AngleHigh_FirstZNummer.Text, Limit_AngleHigh_LastZNummer.Text,
                                                 JointListForOpera.ToArray())
-                                            {ItemCount = new int[JointListForOpera.Count]}
+                                        { ItemCount = new int[JointListForOpera.Count] }
                                     };
                                     for (int x = 0; x < JointListForOpera.Count; x++)
                                     {
@@ -6886,15 +6877,15 @@ namespace PE多功能信息处理插件
                                             Limit_Angle_FuntionSelect_Z.SelectedItem.ToString() == "=-A/X+B")
                                         {
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.Z =
-                                                -(float) ((Temp[i] * Math.PI) / 180);
+                                                -(float)((Temp[i] * Math.PI) / 180);
                                         }
                                         else
                                         {
                                             ThePmxOfNow.Joint[JointTemp].Limit_AngleLow.Z =
-                                                (float) ((Temp[i] * Math.PI) / 180);
+                                                (float)((Temp[i] * Math.PI) / 180);
                                         }
                                         ThePmxOfNow.Joint[JointTemp].Limit_AngleHigh.Z =
-                                            (float) ((Temp2[i] * Math.PI) / 180);
+                                            (float)((Temp2[i] * Math.PI) / 180);
                                     }
                                 }
                                 ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
@@ -7493,7 +7484,7 @@ namespace PE多功能信息处理插件
             }
             else
             {
-                MetroTile temp2 = new MetroTile {Location = new Point(0, new Random().Next(0, 200))};
+                MetroTile temp2 = new MetroTile { Location = new Point(0, new Random().Next(0, 200)) };
                 MetroTabPage page1 = new MetroTabPage
                 {
                     Size = new Size(592, 592),
@@ -7515,7 +7506,7 @@ namespace PE多功能信息处理插件
                 startset = true;
                 Form PmxForm = ARGS.Host.Connector.Form as Form;
                 Form ViewForm = ARGS.Host.Connector.View.PmxView as Form;
-                TreeNode node00 = new TreeNode {Text = PmxForm.Text};
+                TreeNode node00 = new TreeNode { Text = PmxForm.Text };
 
                 /*List<object> tt = PmxForm.MainMenuStrip.Items.Cast<object>().ToList();
                 List<object> tt = new List<object>();
@@ -7525,37 +7516,37 @@ namespace PE多功能信息处理插件
                 }*/
                 foreach (ToolStripMenuItem temp1 in PmxForm.MainMenuStrip.Items)
                 {
-                    TreeNode node11 = new TreeNode {Text = temp1.Text};
+                    TreeNode node11 = new TreeNode { Text = temp1.Text };
 
                     foreach (var temp2 in temp1.DropDownItems)
                     {
                         TreeNode node22 = new TreeNode();
                         if (temp2.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
                         {
-                            node22.Text = ((ToolStripMenuItem) temp2).Text;
-                            foreach (var temp3 in ((ToolStripMenuItem) temp2).DropDownItems)
+                            node22.Text = ((ToolStripMenuItem)temp2).Text;
+                            foreach (var temp3 in ((ToolStripMenuItem)temp2).DropDownItems)
                             {
                                 TreeNode node33 = new TreeNode();
                                 if (temp3.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
                                 {
-                                    node33.Text = (((ToolStripMenuItem) temp3).Text);
-                                    foreach (var temp4 in ((ToolStripMenuItem) temp3).DropDownItems)
+                                    node33.Text = (((ToolStripMenuItem)temp3).Text);
+                                    foreach (var temp4 in ((ToolStripMenuItem)temp3).DropDownItems)
                                     {
                                         TreeNode node44 = new TreeNode();
                                         if (temp4.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
                                         {
                                             /*node44.Text = (((ToolStripMenuItem)temp4).Text);
                                              node33.Nodes.Add(node44);*/
-                                            ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem) temp4, node44.Text));
+                                            ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp4, node44.Text));
                                             node33.Nodes.Add(getmuch(temp4));
                                         }
                                     }
                                     node22.Nodes.Add(node33);
-                                    ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem) temp3, node33.Text));
+                                    ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp3, node33.Text));
                                 }
                             }
                             node11.Nodes.Add(node22);
-                            ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem) temp2, node22.Text));
+                            ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp2, node22.Text));
                         }
                     }
                     node00.Nodes.Add(node11);
@@ -7563,42 +7554,42 @@ namespace PE多功能信息处理插件
                 }
 
                 FormItemList.Nodes.Add(node00);
-                TreeNode node01 = new TreeNode {Text = ViewForm.Text};
+                TreeNode node01 = new TreeNode { Text = ViewForm.Text };
                 foreach (var temp1 in ViewForm.MainMenuStrip.Items)
                 {
                     if (temp1 is ToolStripMenuItem)
                     {
                         var T1 = temp1 as ToolStripMenuItem;
-                        TreeNode node11 = new TreeNode {Text = T1.Text};
+                        TreeNode node11 = new TreeNode { Text = T1.Text };
                         foreach (var temp2 in T1.DropDownItems)
                         {
                             TreeNode node22 = new TreeNode();
                             if (temp2.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
                             {
-                                node22.Text = ((ToolStripMenuItem) temp2).Text;
-                                foreach (var temp3 in ((ToolStripMenuItem) temp2).DropDownItems)
+                                node22.Text = ((ToolStripMenuItem)temp2).Text;
+                                foreach (var temp3 in ((ToolStripMenuItem)temp2).DropDownItems)
                                 {
                                     TreeNode node33 = new TreeNode();
                                     if (temp3.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
                                     {
-                                        node33.Text = (((ToolStripMenuItem) temp3).Text);
-                                        foreach (var temp4 in ((ToolStripMenuItem) temp3).DropDownItems)
+                                        node33.Text = (((ToolStripMenuItem)temp3).Text);
+                                        foreach (var temp4 in ((ToolStripMenuItem)temp3).DropDownItems)
                                         {
                                             TreeNode node44 = new TreeNode();
                                             if (temp4.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
                                             {
-                                                node44.Text = (((ToolStripMenuItem) temp4).Text);
+                                                node44.Text = (((ToolStripMenuItem)temp4).Text);
                                                 node33.Nodes.Add(node44);
-                                                ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem) temp4,
+                                                ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp4,
                                                     node44.Text));
                                             }
                                         }
                                         node22.Nodes.Add(node33);
-                                        ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem) temp3, node33.Text));
+                                        ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp3, node33.Text));
                                     }
                                 }
                                 node11.Nodes.Add(node22);
-                                ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem) temp2, node22.Text));
+                                ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp2, node22.Text));
                             }
                         }
                         node01.Nodes.Add(node11);
@@ -7647,19 +7638,19 @@ namespace PE多功能信息处理插件
             TreeNode node = new TreeNode();
             if (temp.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
             {
-                node.Text = (((ToolStripMenuItem) temp).Text);
-                foreach (var temp4 in ((ToolStripMenuItem) temp).DropDownItems)
+                node.Text = (((ToolStripMenuItem)temp).Text);
+                foreach (var temp4 in ((ToolStripMenuItem)temp).DropDownItems)
                 {
                     TreeNode node2 = new TreeNode();
                     if (temp4.GetType().ToString() == "System.Windows.Forms.ToolStripMenuItem")
                     {
-                        node2.Text = (((ToolStripMenuItem) temp4).Text);
+                        node2.Text = (((ToolStripMenuItem)temp4).Text);
                         node.Nodes.Add(node2);
-                        ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem) temp4, node2.Text));
+                        ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp4, node2.Text));
                         getmuch(temp4);
                     }
                 }
-                ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem) temp, node.Text));
+                ShortCutInfo.Add(new ToolItemInfo((ToolStripMenuItem)temp, node.Text));
                 return node;
             }
             return node;
@@ -7667,7 +7658,7 @@ namespace PE多功能信息处理插件
 
         public void AddTabList_Click(object sender, EventArgs e)
         {
-            ShortcutKeyTab.TabPages.Add(new MetroTabPage {Text = ChangeTabListName.Text});
+            ShortcutKeyTab.TabPages.Add(new MetroTabPage { Text = ChangeTabListName.Text });
         }
 
         public void ShortcutKeyTab_SelectedIndexChanged(object sender, EventArgs e)
@@ -8505,7 +8496,7 @@ namespace PE多功能信息处理插件
                 TempBody.Bone = TempBone;
                 TempBody.BoxSize =
                     new V3(
-                        (float) (Math.Sqrt((Math.Pow(TempBoneInfoList[0].NearVertex[0].X - temppoint.X, 2) +
+                        (float)(Math.Sqrt((Math.Pow(TempBoneInfoList[0].NearVertex[0].X - temppoint.X, 2) +
                                             Math.Pow(TempBoneInfoList[0].NearVertex[0].Y - temppoint.Y, 2) +
                                             Math.Pow(TempBoneInfoList[0].NearVertex[0].Z - temppoint.Z, 2)))), 0, 0);
                 TempBody.BoxKind = BodyBoxKind.Sphere;
@@ -8714,6 +8705,7 @@ namespace PE多功能信息处理插件
                 case "Z轴":
                     bonecount.Sort((x, y) => -ThePmxOfNow.Bone[x].Position.Z.CompareTo(ThePmxOfNow.Bone[y].Position.Z));
                     break;
+
                 case "-X轴":
                     bonecount.Sort((x, y) => -ThePmxOfNow.Bone[x].Position.X.CompareTo(ThePmxOfNow.Bone[y].Position.X));
                     break;
@@ -8832,13 +8824,13 @@ namespace PE多功能信息处理插件
                             switch ((obj2 as ToolStripItem).Name)
                             {
                                 case "MenuItem_UpdateSelect":
-                                    MenuItem_UpdateSelect = (ToolStripMenuItem) obj2;
+                                    MenuItem_UpdateSelect = (ToolStripMenuItem)obj2;
                                     break;
                             }
                         }
                         if (obj2.GetType().Name == "SingleBufferedPictureBox")
                         {
-                            SingleBufferedPictureBox = (PictureBox) obj2;
+                            SingleBufferedPictureBox = (PictureBox)obj2;
                         }
                     }
                 }
@@ -9048,7 +9040,7 @@ namespace PE多功能信息处理插件
             try
             {
                 IPXPmx ThePmxOfNow = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
-                WeightChangeList HisOpera = new WeightChangeList {Mode = "加算"};
+                WeightChangeList HisOpera = new WeightChangeList { Mode = "加算" };
                 if (Bone1_s.Checked && Bone1List.Text != "")
                 {
                     HisOpera.Bone1Index = int.Parse(Bone1List.Text.Split(':')[0]);
@@ -9442,7 +9434,7 @@ namespace PE多功能信息处理插件
             try
             {
                 IPXPmx ThePmxOfNow = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
-                WeightChangeList HisOpera = new WeightChangeList {Mode = "减算"};
+                WeightChangeList HisOpera = new WeightChangeList { Mode = "减算" };
                 if (Bone1_s.Checked && Bone1List.Text != "")
                 {
                     HisOpera.Bone1Index = int.Parse(Bone1List.Text.Split(':')[0]);
@@ -9673,7 +9665,7 @@ namespace PE多功能信息处理插件
                 IPXPmx ThePmxOfNow = GetPmx ?? ARGS.Host.Connector.Pmx.GetCurrentState();
                 if (HisOpera == null)
                 {
-                    HisOpera = new WeightChangeList {Mode = "应用"};
+                    HisOpera = new WeightChangeList { Mode = "应用" };
                     if (Bone1_s.Checked && Bone1List.Text != "")
                     {
                         HisOpera.Bone1Index = int.Parse(Bone1List.Text.Split(':')[0]);
@@ -10014,39 +10006,39 @@ namespace PE多功能信息处理插件
             switch (SelectTemp.Name)
             {
                 case "BDEF1Radio":
-                {
-                    if (Bone1List.Text != "" && SelectTemp.Checked)
                     {
-                        BoneSelect = Bone1List.Text;
+                        if (Bone1List.Text != "" && SelectTemp.Checked)
+                        {
+                            BoneSelect = Bone1List.Text;
+                        }
                     }
-                }
                     break;
 
                 case "BDEF2Radio":
-                {
-                    if (Bone2List.Text != "" && SelectTemp.Checked)
                     {
-                        BoneSelect = Bone1List.Text;
+                        if (Bone2List.Text != "" && SelectTemp.Checked)
+                        {
+                            BoneSelect = Bone1List.Text;
+                        }
                     }
-                }
                     break;
 
                 case "BDEF3Radio":
-                {
-                    if (Bone3List.Text != "" && SelectTemp.Checked)
                     {
-                        BoneSelect = Bone1List.Text;
+                        if (Bone3List.Text != "" && SelectTemp.Checked)
+                        {
+                            BoneSelect = Bone1List.Text;
+                        }
                     }
-                }
                     break;
 
                 case "BDEF4Radio":
-                {
-                    if (Bone4List.Text != "" && SelectTemp.Checked)
                     {
-                        BoneSelect = Bone1List.Text;
+                        if (Bone4List.Text != "" && SelectTemp.Checked)
+                        {
+                            BoneSelect = Bone1List.Text;
+                        }
                     }
-                }
                     break;
             }
             RadioAvoidSelect();
@@ -10390,47 +10382,47 @@ namespace PE多功能信息处理插件
                 switch (ControlMode)
                 {
                     case "加算":
-                    {
-                        MenuItem_UpdateSelect.PerformClick(); //T窗口选中顶点转移到主模型窗口
-                        var Verttexlist = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices(); //从主模型窗口获得选中顶点
-                        if (Verttexlist.Length != 0) //判断是否获取了顶点
                         {
-                            ThreadPool.QueueUserWorkItem(WeightAdd, Verttexlist);
+                            MenuItem_UpdateSelect.PerformClick(); //T窗口选中顶点转移到主模型窗口
+                            var Verttexlist = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices(); //从主模型窗口获得选中顶点
+                            if (Verttexlist.Length != 0) //判断是否获取了顶点
+                            {
+                                ThreadPool.QueueUserWorkItem(WeightAdd, Verttexlist);
+                            }
                         }
-                    }
                         break;
 
                     case "减算":
-                    {
-                        MenuItem_UpdateSelect.PerformClick(); //T窗口选中顶点转移到主模型窗口
-                        var Verttexlist = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices(); //从主模型窗口获得选中顶点
-                        if (Verttexlist.Length != 0) //判断是否获取了顶点
                         {
-                            ThreadPool.QueueUserWorkItem(WeightMinus, Verttexlist);
+                            MenuItem_UpdateSelect.PerformClick(); //T窗口选中顶点转移到主模型窗口
+                            var Verttexlist = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices(); //从主模型窗口获得选中顶点
+                            if (Verttexlist.Length != 0) //判断是否获取了顶点
+                            {
+                                ThreadPool.QueueUserWorkItem(WeightMinus, Verttexlist);
+                            }
                         }
-                    }
                         break;
 
                     case "应用":
-                    {
-                        MenuItem_UpdateSelect.PerformClick(); //T窗口选中顶点转移到主模型窗口
-                        var Verttexlist = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices(); //从主模型窗口获得选中顶点
-                        if (Verttexlist.Length != 0) //判断是否获取了顶点
                         {
-                            WeightApple(Verttexlist, null);
+                            MenuItem_UpdateSelect.PerformClick(); //T窗口选中顶点转移到主模型窗口
+                            var Verttexlist = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices(); //从主模型窗口获得选中顶点
+                            if (Verttexlist.Length != 0) //判断是否获取了顶点
+                            {
+                                WeightApple(Verttexlist, null);
+                            }
                         }
-                    }
                         break;
 
                     case "获取":
-                    {
-                        MenuItem_UpdateSelect.PerformClick(); //T窗口选中顶点转移到主模型窗口
-                        var Verttexlist = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices(); //从主模型窗口获得选中顶点
-                        if (Verttexlist.Length != 0) //判断是否获取了顶点
                         {
-                            ChangeVerForm(Verttexlist[0]);
+                            MenuItem_UpdateSelect.PerformClick(); //T窗口选中顶点转移到主模型窗口
+                            var Verttexlist = ARGS.Host.Connector.View.PmxView.GetSelectedVertexIndices(); //从主模型窗口获得选中顶点
+                            if (Verttexlist.Length != 0) //判断是否获取了顶点
+                            {
+                                ChangeVerForm(Verttexlist[0]);
+                            }
                         }
-                    }
                         break;
                 }
             }
@@ -10452,51 +10444,51 @@ namespace PE多功能信息处理插件
             switch (BoneConnectMode.SelectedIndex)
             {
                 case 0:
-                {
-                    BoneConnectLabel2.Enabled = false;
-                    SelectConnectObject.Enabled = false;
-                    StartOperaBone.Text = "生成水平\r\n刚体和J点";
-                    CheckBoneConnectFunc.Visible = true;
-                    CheckBoneConnectFunc.Checked = false;
-                    CheckBoneConnectFunc.Text = "骨骼是否封闭";
-                }
+                    {
+                        BoneConnectLabel2.Enabled = false;
+                        SelectConnectObject.Enabled = false;
+                        StartOperaBone.Text = "生成水平\r\n刚体和J点";
+                        CheckBoneConnectFunc.Visible = true;
+                        CheckBoneConnectFunc.Checked = false;
+                        CheckBoneConnectFunc.Text = "骨骼是否封闭";
+                    }
                     break;
 
                 case 1:
-                {
-                    BoneConnectLabel2.Enabled = true;
-                    BoneConnectLabel2.Text = "选择连接刚体:";
-                    SelectConnectObject.Enabled = true;
-                    StartOperaBone.Text = "生成垂直\r\n刚体和J点";
-                    CheckBoneConnectFunc.Visible = true;
-                    CheckBoneConnectFunc.Checked = false;
-                    CheckBoneConnectFunc.Text = "修正J点错误\r\n的刚体连接";
-                }
+                    {
+                        BoneConnectLabel2.Enabled = true;
+                        BoneConnectLabel2.Text = "选择连接刚体:";
+                        SelectConnectObject.Enabled = true;
+                        StartOperaBone.Text = "生成垂直\r\n刚体和J点";
+                        CheckBoneConnectFunc.Visible = true;
+                        CheckBoneConnectFunc.Checked = false;
+                        CheckBoneConnectFunc.Text = "修正J点错误\r\n的刚体连接";
+                    }
                     break;
 
                 case 2:
-                {
-                    BoneConnectLabel2.Enabled = true;
-                    SelectConnectObject.Enabled = true;
-                    CheckBoneConnectFunc.Visible = false;
-                    CheckBoneConnectFunc.Checked = false;
-                    BoneConnectLabel2.Text = "选择连接骨骼:";
-                    StartOperaBone.Text = "生成多对一\r\n刚体和J点";
-                }
+                    {
+                        BoneConnectLabel2.Enabled = true;
+                        SelectConnectObject.Enabled = true;
+                        CheckBoneConnectFunc.Visible = false;
+                        CheckBoneConnectFunc.Checked = false;
+                        BoneConnectLabel2.Text = "选择连接骨骼:";
+                        StartOperaBone.Text = "生成多对一\r\n刚体和J点";
+                    }
                     break;
 
                 case 3:
-                {
-                    ADDBONELIST.Visible = true;
-                    ClearBoneLIST.Visible = true;
-                    DeleteBoneListItem.Visible = true;
-                    BoneListConutLabel.Visible = true;
-                    BoneConnectLabel2.Enabled = false;
-                    SelectConnectObject.Enabled = false;
-                    CheckBoneConnectFunc.Visible = false;
-                    CheckBoneConnectFunc.Checked = false;
-                    StartOperaBone.Text = "生成多对多\r\n刚体和J点";
-                }
+                    {
+                        ADDBONELIST.Visible = true;
+                        ClearBoneLIST.Visible = true;
+                        DeleteBoneListItem.Visible = true;
+                        BoneListConutLabel.Visible = true;
+                        BoneConnectLabel2.Enabled = false;
+                        SelectConnectObject.Enabled = false;
+                        CheckBoneConnectFunc.Visible = false;
+                        CheckBoneConnectFunc.Checked = false;
+                        StartOperaBone.Text = "生成多对多\r\n刚体和J点";
+                    }
                     break;
             }
         }
@@ -10510,157 +10502,157 @@ namespace PE多功能信息处理插件
                 switch (BoneConnectMode.SelectedIndex)
                 {
                     case 0:
-                    {
-                        if (BoneCount.Count != 0)
                         {
-                            TheFunOfHorizontalConnect();
+                            if (BoneCount.Count != 0)
+                            {
+                                TheFunOfHorizontalConnect();
+                            }
+                            else
+                            {
+                                MetroMessageBox.Show(this, "请先选择骨骼后再继续", "", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                            }
                         }
-                        else
-                        {
-                            MetroMessageBox.Show(this, "请先选择骨骼后再继续", "", MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                        }
-                    }
                         break;
 
                     case 1:
-                    {
-                        if (BoneCount.Count != 0)
                         {
-                            if (SelectConnectObject.SelectedIndex == -1)
+                            if (BoneCount.Count != 0)
                             {
-                                MetroMessageBox.Show(this, "请选择第一排刚体的连接刚体后再继续", "", MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
+                                if (SelectConnectObject.SelectedIndex == -1)
+                                {
+                                    MetroMessageBox.Show(this, "请选择第一排刚体的连接刚体后再继续", "", MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                                }
+                                else
+                                {
+                                    TheFunOfVerticalConnect();
+                                }
                             }
                             else
                             {
-                                TheFunOfVerticalConnect();
+                                MetroMessageBox.Show(this, "请先选择骨骼后再继续", "", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
                             }
                         }
-                        else
-                        {
-                            MetroMessageBox.Show(this, "请先选择骨骼后再继续", "", MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                        }
-                    }
                         break;
 
                     case 2:
-                    {
-                        if (BoneCount.Count != 0)
                         {
-                            if (SelectConnectObject.SelectedIndex == -1)
+                            if (BoneCount.Count != 0)
                             {
-                                MetroMessageBox.Show(this, "请选择连接骨骼后再继续", "", MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
+                                if (SelectConnectObject.SelectedIndex == -1)
+                                {
+                                    MetroMessageBox.Show(this, "请选择连接骨骼后再继续", "", MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information);
+                                }
+                                else
+                                {
+                                    var TempBone = ThePmxOfNow.Bone[SelectConnectObject.SelectedIndex];
+                                    bool find = false;
+                                    foreach (var item in ThePmxOfNow.Body.Where(item => item.Bone == TempBone))
+                                    {
+                                        find = true;
+                                        TheFunOfMultiConnect(item);
+                                        break;
+                                    }
+                                    if (!find)
+                                    {
+                                        var TempBody1 = bdx.Body();
+                                        TempBody1.BoxKind = BodyBoxKind.Sphere;
+                                        TempBody1.Bone = TempBone;
+                                        TempBody1.Name = TempBone.Name;
+                                        TempBody1.Position = TempBone.Position;
+                                        TempBody1.Friction = 0.5f;
+                                        TempBody1.Mass = 1;
+                                        TempBody1.Group = Convert.ToInt16(BodySelectGroup.SelectedItem) - 1;
+                                        TempBody1.PassGroup[Convert.ToInt16(BodySelectGroup.SelectedItem) - 1] = true;
+                                        TempBody1.Mode = BodyMode.Dynamic;
+                                        TempBody1.Restitution = 0f;
+                                        TempBody1.PositionDamping = 0.5f;
+                                        TempBody1.RotationDamping = 0.5f;
+                                        TempBody1.BoxSize = new V3(0.5f, 0, 0);
+                                        ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
+                                        ARGS.Host.Connector.Form.UpdateList(UpdateObject.Body);
+                                        TheFunOfMultiConnect(TempBody1);
+                                    }
+                                }
                             }
                             else
                             {
-                                var TempBone = ThePmxOfNow.Bone[SelectConnectObject.SelectedIndex];
-                                bool find = false;
-                                foreach (var item in ThePmxOfNow.Body.Where(item => item.Bone == TempBone))
-                                {
-                                    find = true;
-                                    TheFunOfMultiConnect(item);
-                                    break;
-                                }
-                                if (!find)
-                                {
-                                    var TempBody1 = bdx.Body();
-                                    TempBody1.BoxKind = BodyBoxKind.Sphere;
-                                    TempBody1.Bone = TempBone;
-                                    TempBody1.Name = TempBone.Name;
-                                    TempBody1.Position = TempBone.Position;
-                                    TempBody1.Friction = 0.5f;
-                                    TempBody1.Mass = 1;
-                                    TempBody1.Group = Convert.ToInt16(BodySelectGroup.SelectedItem) - 1;
-                                    TempBody1.PassGroup[Convert.ToInt16(BodySelectGroup.SelectedItem) - 1] = true;
-                                    TempBody1.Mode = BodyMode.Dynamic;
-                                    TempBody1.Restitution = 0f;
-                                    TempBody1.PositionDamping = 0.5f;
-                                    TempBody1.RotationDamping = 0.5f;
-                                    TempBody1.BoxSize = new V3(0.5f, 0, 0);
-                                    ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
-                                    ARGS.Host.Connector.Form.UpdateList(UpdateObject.Body);
-                                    TheFunOfMultiConnect(TempBody1);
-                                }
+                                MetroMessageBox.Show(this, "请先选择骨骼后再继续", "", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
                             }
                         }
-                        else
-                        {
-                            MetroMessageBox.Show(this, "请先选择骨骼后再继续", "", MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                        }
-                    }
                         break;
 
                     case 3:
-                    {
-                        if (Bonelist.Count > 0)
                         {
-                            //首先分析列表的刚体是否存在，不存在就放弃
-                            //再次分析，列表骨骼对应是否重复，重复的就放弃
-                            //根据骨骼建立刚体顺序，
-                            //连接方式，列表1连接列表2，列表2连接列表3，如果列表有一列不存在了就停止
-                            //最近距离骨骼搜索功能 再说
-                            for (int i = 1; i < Bonelist.Count; i++)
+                            if (Bonelist.Count > 0)
                             {
-                                for (int j = 0;
-                                    j < (Bonelist[i].Length < Bonelist[i - 1].Length
-                                        ? Bonelist[i].Length
-                                        : Bonelist[i - 1].Length);
-                                    j++)
+                                //首先分析列表的刚体是否存在，不存在就放弃
+                                //再次分析，列表骨骼对应是否重复，重复的就放弃
+                                //根据骨骼建立刚体顺序，
+                                //连接方式，列表1连接列表2，列表2连接列表3，如果列表有一列不存在了就停止
+                                //最近距离骨骼搜索功能 再说
+                                for (int i = 1; i < Bonelist.Count; i++)
                                 {
-                                    //var y = Bonelist[i][j];
-                                    var Body2 = ThePmxOfNow.Body.Where(
-                                        x => x.Bone.Equals(ThePmxOfNow.Bone[Bonelist[i][j]]));
-                                    var Body1 = ThePmxOfNow.Body.Where(
-                                        x => x.Bone.Equals(ThePmxOfNow.Bone[Bonelist[i - 1][j]]));
-                                    if (!Body1.Any() || !Body2.Any())
+                                    for (int j = 0;
+                                        j < (Bonelist[i].Length < Bonelist[i - 1].Length
+                                            ? Bonelist[i].Length
+                                            : Bonelist[i - 1].Length);
+                                        j++)
                                     {
-                                        continue;
-                                    }
-                                    foreach (var item in Body1) //可能存在一根骨骼 多个刚体的存在，处理方式就是全部链接，链接方式，顺序交叉，估计用不到
-                                    {
-                                        foreach (var item2 in Body2)
+                                        //var y = Bonelist[i][j];
+                                        var Body2 = ThePmxOfNow.Body.Where(
+                                            x => x.Bone.Equals(ThePmxOfNow.Bone[Bonelist[i][j]]));
+                                        var Body1 = ThePmxOfNow.Body.Where(
+                                            x => x.Bone.Equals(ThePmxOfNow.Bone[Bonelist[i - 1][j]]));
+                                        if (!Body1.Any() || !Body2.Any())
                                         {
-                                            if (item.Bone == item2.Bone) //根据body骨骼是否相同，判断是否是同一类刚体，是就跳过
+                                            continue;
+                                        }
+                                        foreach (var item in Body1) //可能存在一根骨骼 多个刚体的存在，处理方式就是全部链接，链接方式，顺序交叉，估计用不到
+                                        {
+                                            foreach (var item2 in Body2)
                                             {
-                                                break;
-                                            }
-                                            if (ThePmxOfNow.Joint.Count(x => x.BodyA == item && x.BodyB == item2) ==
-                                                0 &&
-                                                ThePmxOfNow.Joint.Count(x => x.BodyA == item2 && x.BodyB == item) ==
-                                                0) //根据刚体判定是否已经存在刚体链接一样的J点
-                                            {
-                                                IPXJoint JointTemp = bdx.Joint();
-                                                JointTemp.Name = item2.Name;
-                                                JointTemp.Position.X = (item.Position.X + item2.Position.X) / 2;
-                                                JointTemp.Position.Y = (item.Position.Y + item2.Position.Y) / 2;
-                                                JointTemp.Position.Z = (item.Position.Z + item2.Position.Z) / 2;
-                                                JointTemp.BodyA = item;
-                                                JointTemp.BodyB = item2;
-                                                JointTemp.Kind = JointKind.Sp6DOF;
-                                                ThePmxOfNow.Joint.Add(JointTemp);
+                                                if (item.Bone == item2.Bone) //根据body骨骼是否相同，判断是否是同一类刚体，是就跳过
+                                                {
+                                                    break;
+                                                }
+                                                if (ThePmxOfNow.Joint.Count(x => x.BodyA == item && x.BodyB == item2) ==
+                                                    0 &&
+                                                    ThePmxOfNow.Joint.Count(x => x.BodyA == item2 && x.BodyB == item) ==
+                                                    0) //根据刚体判定是否已经存在刚体链接一样的J点
+                                                {
+                                                    IPXJoint JointTemp = bdx.Joint();
+                                                    JointTemp.Name = item2.Name;
+                                                    JointTemp.Position.X = (item.Position.X + item2.Position.X) / 2;
+                                                    JointTemp.Position.Y = (item.Position.Y + item2.Position.Y) / 2;
+                                                    JointTemp.Position.Z = (item.Position.Z + item2.Position.Z) / 2;
+                                                    JointTemp.BodyA = item;
+                                                    JointTemp.BodyB = item2;
+                                                    JointTemp.Kind = JointKind.Sp6DOF;
+                                                    ThePmxOfNow.Joint.Add(JointTemp);
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                BeginInvoke(new MethodInvoker(() =>
+                                {
+                                    ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
+                                    ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
+                                    ARGS.Host.Connector.View.PMDView.UpdateModel();
+                                    ARGS.Host.Connector.View.PMDView.UpdateView();
+                                }));
                             }
-                            BeginInvoke(new MethodInvoker(() =>
+                            else
                             {
-                                ARGS.Host.Connector.Pmx.Update(ThePmxOfNow);
-                                ARGS.Host.Connector.Form.UpdateList(UpdateObject.Joint);
-                                ARGS.Host.Connector.View.PMDView.UpdateModel();
-                                ARGS.Host.Connector.View.PMDView.UpdateView();
-                            }));
+                                MetroMessageBox.Show(this, "请添加2个以上的骨骼列表后再继续", "", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                            }
                         }
-                        else
-                        {
-                            MetroMessageBox.Show(this, "请添加2个以上的骨骼列表后再继续", "", MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                        }
-                    }
                         break;
                 }
             });
@@ -10720,7 +10712,7 @@ namespace PE多功能信息处理插件
                         TempBody2.RotationDamping = 0.5f;
                         TempBody2.BoxSize =
                             new V3(
-                                ((float) Math.Sqrt(Math.Pow(TempBone2.Position.X - TempBone1.Position.X, 2) +
+                                ((float)Math.Sqrt(Math.Pow(TempBone2.Position.X - TempBone1.Position.X, 2) +
                                                    Math.Pow(TempBone2.Position.Y - TempBone1.Position.Y, 2) +
                                                    Math.Pow(TempBone2.Position.Z - TempBone1.Position.Z, 2))) / 2, 0,
                                 0);
@@ -10855,7 +10847,7 @@ namespace PE多功能信息处理插件
                         TempBody1.RotationDamping = 0.5f;
                         TempBody1.BoxSize =
                             new V3(
-                                ((float) Math.Sqrt(Math.Pow(TempBone2.Position.X - TempBone1.Position.X, 2) +
+                                ((float)Math.Sqrt(Math.Pow(TempBone2.Position.X - TempBone1.Position.X, 2) +
                                                    Math.Pow(TempBone2.Position.Y - TempBone1.Position.Y, 2) +
                                                    Math.Pow(TempBone2.Position.Z - TempBone1.Position.Z, 2))) / 2, 0,
                                 0);
@@ -10878,7 +10870,7 @@ namespace PE多功能信息处理插件
                         TempBody2.RotationDamping = 0.5f;
                         TempBody2.BoxSize =
                             new V3(
-                                ((float) Math.Sqrt(Math.Pow(TempBone2.Position.X - TempBone1.Position.X, 2) +
+                                ((float)Math.Sqrt(Math.Pow(TempBone2.Position.X - TempBone1.Position.X, 2) +
                                                    Math.Pow(TempBone2.Position.Y - TempBone1.Position.Y, 2) +
                                                    Math.Pow(TempBone2.Position.Z - TempBone1.Position.Z, 2))) / 2, 0,
                                 0);
@@ -10986,7 +10978,7 @@ namespace PE多功能信息处理插件
                     }
                     BodyTemp.BoxSize =
                         new V3(
-                            ((float) Math.Sqrt(Math.Pow(tempbody.Position.X - _Bone.Position.X, 2) +
+                            ((float)Math.Sqrt(Math.Pow(tempbody.Position.X - _Bone.Position.X, 2) +
                                                Math.Pow(tempbody.Position.Y - _Bone.Position.Y, 2) +
                                                Math.Pow(tempbody.Position.Z - _Bone.Position.Z, 2))) -
                             (Math.Max(tempbody.BoxSize.X, tempbody.BoxSize.Y)), 0, 0);
@@ -11056,7 +11048,7 @@ namespace PE多功能信息处理插件
                     BodyTemp.RotationDamping = 0.5f;
                     BodyTemp.BoxSize =
                         new V3(
-                            ((float) Math.Sqrt(Math.Pow(PreBody.Position.X - _Bone.Position.X, 2) +
+                            ((float)Math.Sqrt(Math.Pow(PreBody.Position.X - _Bone.Position.X, 2) +
                                                Math.Pow(PreBody.Position.Y - _Bone.Position.Y, 2) +
                                                Math.Pow(PreBody.Position.Z - _Bone.Position.Z, 2))) / 2, 0, 0);
                     body.Add(BodyTemp);
@@ -11177,17 +11169,17 @@ namespace PE多功能信息处理插件
             switch (BoneConnectMode.SelectedIndex)
             {
                 case 1:
-                {
-                    add.AddRange(ThePmxOfNow.Body.Select(temp => temp.Name));
-                    SelectConnectObject.DataSource = add;
-                }
+                    {
+                        add.AddRange(ThePmxOfNow.Body.Select(temp => temp.Name));
+                        SelectConnectObject.DataSource = add;
+                    }
                     break;
 
                 case 2:
-                {
-                    add.AddRange(ThePmxOfNow.Bone.Select(temp => temp.Name));
-                    SelectConnectObject.DataSource = add;
-                }
+                    {
+                        add.AddRange(ThePmxOfNow.Bone.Select(temp => temp.Name));
+                        SelectConnectObject.DataSource = add;
+                    }
                     break;
             }
         }
@@ -11349,7 +11341,7 @@ namespace PE多功能信息处理插件
 
                         BoneCount.ForEach(Index =>
                         {
-                            var tempbone = (IPXBone) temppmx.Bone[Index].Clone();
+                            var tempbone = (IPXBone)temppmx.Bone[Index].Clone();
                             tempbone.Position.X = -tempbone.Position.X;
                             TempBone.Add(tempbone);
                         });
@@ -11458,7 +11450,7 @@ namespace PE多功能信息处理插件
                                              select T).FirstOrDefault();
                                 if (_Body != null)
                                 {
-                                    var CreateBody = (IPXBody) _Body.Clone();
+                                    var CreateBody = (IPXBody)_Body.Clone();
                                     CreateBody.Name = item.Value.Name;
                                     CreateBody.Bone = item.Value;
                                     CreateBody.Position.X = -CreateBody.Position.X;
@@ -11492,7 +11484,7 @@ namespace PE多功能信息处理插件
                                     {
                                         _joint.ToList().ForEach(T =>
                                         {
-                                            var CreateJoint = (IPXJoint) T.Clone();
+                                            var CreateJoint = (IPXJoint)T.Clone();
                                             CreateJoint.Name = item.Value.Name;
                                             CreateJoint.Position.X = -CreateJoint.Position.X;
                                             CreateJoint.Rotation.Y = -CreateJoint.Rotation.Y;
@@ -11505,7 +11497,7 @@ namespace PE多功能信息处理插件
                                     {
                                         joint2.ToList().ForEach(T =>
                                         {
-                                            var CreateJoint = (IPXJoint) T.Clone();
+                                            var CreateJoint = (IPXJoint)T.Clone();
                                             CreateJoint.Name = item.Value.Name;
                                             CreateJoint.Position.X = -CreateJoint.Position.X;
                                             CreateJoint.Rotation.Y = -CreateJoint.Rotation.Y;
@@ -11647,7 +11639,6 @@ namespace PE多功能信息处理插件
                         var MirrorBody2 = new Dictionary<IPXBody, IPXBody>();
                         if (MirrorBodyCheck.Checked)
                         {
-
                             foreach (var Temp in TempBone)
                             {
                                 int Body1 = -1;
@@ -11663,7 +11654,6 @@ namespace PE多功能信息处理插件
                                         Body2 = i;
                                     }
                                 }
-
 
                                 /* var Body1 = temppmx.Body.FirstOrDefault(x => x.Bone == temppmx.Bone[Temp.Key]);
                                  var Body2 = temppmx.Body.FirstOrDefault(x => x.Bone == temppmx.Bone[Temp.Value]);*/
@@ -11716,7 +11706,6 @@ namespace PE多功能信息处理插件
                             {
                                 if (MirrorPosionPlusPara.Checked)
                                 {
-
                                     temppmx.Joint[pxJoint.Mirror].Position.X = -temppmx.Joint[pxJoint.Ori].Position.X;
                                     temppmx.Joint[pxJoint.Mirror].Rotation = -temppmx.Joint[pxJoint.Ori].Rotation;
                                 }
@@ -11751,7 +11740,6 @@ namespace PE多功能信息处理插件
                         btnGetObject.PerformClick();*/
                         if (SDEF.Count != 0) SetSDEF(SDEF.ToArray());
                     }));
-
                 }).Start();
             }
             else
@@ -11858,48 +11846,48 @@ namespace PE多功能信息处理插件
             switch (VertexTab.SelectedTab.Text)
             {
                 case "T窗口权重调整":
-                {
-                    DataTable table = VertexList.DataSource as DataTable;
-                    if (table != null)
                     {
-                        table.Rows.Clear();
-                        table.Columns.Clear();
-                        table.Columns.Add("操作");
-                        table.Columns.Add("骨骼和权重");
-                        table.Rows.Add();
-                        table.Rows.Clear();
+                        DataTable table = VertexList.DataSource as DataTable;
+                        if (table != null)
+                        {
+                            table.Rows.Clear();
+                            table.Columns.Clear();
+                            table.Columns.Add("操作");
+                            table.Columns.Add("骨骼和权重");
+                            table.Rows.Add();
+                            table.Rows.Clear();
+                        }
                     }
-                }
                     break;
 
                 case "表情操作":
-                {
-                    DataTable table = VertexList.DataSource as DataTable;
-                    if (table != null)
                     {
-                        table.Rows.Clear();
-                        table.Columns.Clear();
-                        table.Columns.Add("ID");
-                        table.Columns.Add("表情名");
-                        table.Rows.Add();
-                        table.Rows.Clear();
+                        DataTable table = VertexList.DataSource as DataTable;
+                        if (table != null)
+                        {
+                            table.Rows.Clear();
+                            table.Columns.Clear();
+                            table.Columns.Add("ID");
+                            table.Columns.Add("表情名");
+                            table.Rows.Add();
+                            table.Rows.Clear();
+                        }
                     }
-                }
                     break;
 
                 case "材质操作":
-                {
-                    DataTable table = VertexList.DataSource as DataTable;
-                    if (table != null)
                     {
-                        table.Rows.Clear();
-                        table.Columns.Clear();
-                        table.Columns.Add("ID");
-                        table.Columns.Add("材质");
-                        table.Rows.Add();
-                        table.Rows.Clear();
+                        DataTable table = VertexList.DataSource as DataTable;
+                        if (table != null)
+                        {
+                            table.Rows.Clear();
+                            table.Columns.Clear();
+                            table.Columns.Add("ID");
+                            table.Columns.Add("材质");
+                            table.Rows.Add();
+                            table.Rows.Clear();
+                        }
                     }
-                }
                     break;
             }
         }
@@ -11926,8 +11914,8 @@ namespace PE多功能信息处理插件
                         var _Vertex = new List<MorphOpera.Morph.Vertex>();
                         foreach (var pxMorphOffset in item.Offsets)
                         {
-                            var item2 = (IPXVertexMorphOffset) pxMorphOffset;
-                            var TempVertex = new MorphOpera.Morph.Vertex {index = GetPmx.Vertex.IndexOf(item2.Vertex)};
+                            var item2 = (IPXVertexMorphOffset)pxMorphOffset;
+                            var TempVertex = new MorphOpera.Morph.Vertex { index = GetPmx.Vertex.IndexOf(item2.Vertex) };
                             if (Verindex.FindIndex(b => b.index == TempVertex.index) == -1)
                             {
                                 var temp = new MorphOpera.Index
@@ -12019,7 +12007,7 @@ namespace PE多功能信息处理插件
                     IFormatter formatter = new BinaryFormatter();
                     formatter.Binder = new UBinder();
                     Stream stream = new FileStream(open.FileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    MorphOpera Data = (MorphOpera) formatter.Deserialize(stream);
+                    MorphOpera Data = (MorphOpera)formatter.Deserialize(stream);
                     stream.Close();
                     if (Data.MorphList.Length != 0)
                     {
@@ -12057,7 +12045,6 @@ namespace PE多功能信息处理插件
 
         private void MorphImportSelect_Click(object sender, EventArgs e)
         {
-
             if (MorphBacData.Count != 0)
             {
                 GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
@@ -12276,28 +12263,28 @@ namespace PE多功能信息处理插件
                             switch (index_size)
                             {
                                 case 1:
-                                {
-                                    uint num = bin.ReadByte();
-                                    if (num == 255u)
                                     {
-                                        num = 4294967295u;
+                                        uint num = bin.ReadByte();
+                                        if (num == 255u)
+                                        {
+                                            num = 4294967295u;
+                                        }
+                                        return num;
                                     }
-                                    return num;
-                                }
                                 case 2:
-                                {
-                                    uint num = bin.ReadUInt16();
-                                    if (num == 65535u)
                                     {
-                                        num = 4294967295u;
+                                        uint num = bin.ReadUInt16();
+                                        if (num == 65535u)
+                                        {
+                                            num = 4294967295u;
+                                        }
+                                        return num;
                                     }
-                                    return num;
-                                }
                                 case 4:
-                                {
-                                    var num = bin.ReadUInt32();
-                                    return num;
-                                }
+                                    {
+                                        var num = bin.ReadUInt32();
+                                        return num;
+                                    }
                             }
                             return 4294967295u;
                         };
@@ -12312,7 +12299,6 @@ namespace PE多功能信息处理插件
                             return temp;
                         };
                         {
-
                             var vertex = reader.ReadUInt32();
                             for (var i = 0; i < vertex; i++)
                             {
@@ -12320,7 +12306,6 @@ namespace PE多功能信息处理插件
                                 for (int j = 0; j < 3; j++)
                                 {
                                     Tempposion[j] = reader.ReadSingle();
-
                                 }
                                 Ret.TryAdd(i, new V3(Tempposion[0], Tempposion[1], Tempposion[2]));
                                 for (var j = 0; j < 5 + additionalUV * 4; j++)
@@ -12331,57 +12316,57 @@ namespace PE多功能信息处理插件
                                 switch (reader.ReadByte())
                                 {
                                     case 0:
-                                    {
-                                        CastIntRead(reader, boneIndexSize);
-                                    }
+                                        {
+                                            CastIntRead(reader, boneIndexSize);
+                                        }
                                         break;
 
                                     case 1:
-                                    {
-                                        CastIntRead(reader, boneIndexSize);
-                                        CastIntRead(reader, boneIndexSize);
-                                        reader.ReadSingle();
-                                    }
+                                        {
+                                            CastIntRead(reader, boneIndexSize);
+                                            CastIntRead(reader, boneIndexSize);
+                                            reader.ReadSingle();
+                                        }
                                         break;
 
                                     case 2:
-                                    {
-                                        CastIntRead(reader, boneIndexSize);
-                                        CastIntRead(reader, boneIndexSize);
-                                        CastIntRead(reader, boneIndexSize);
-                                        CastIntRead(reader, boneIndexSize);
-                                        reader.ReadSingle();
-                                        reader.ReadSingle();
-                                        reader.ReadSingle();
-                                        reader.ReadSingle();
-                                    }
+                                        {
+                                            CastIntRead(reader, boneIndexSize);
+                                            CastIntRead(reader, boneIndexSize);
+                                            CastIntRead(reader, boneIndexSize);
+                                            CastIntRead(reader, boneIndexSize);
+                                            reader.ReadSingle();
+                                            reader.ReadSingle();
+                                            reader.ReadSingle();
+                                            reader.ReadSingle();
+                                        }
                                         break;
 
                                     case 3:
-                                    {
-                                        CastIntRead(reader, boneIndexSize);
-                                        CastIntRead(reader, boneIndexSize);
-                                        reader.ReadSingle();
-                                        ReadSinglesToVector3(reader);
-                                        ReadSinglesToVector3(reader);
-                                        ReadSinglesToVector3(reader);
-                                    }
+                                        {
+                                            CastIntRead(reader, boneIndexSize);
+                                            CastIntRead(reader, boneIndexSize);
+                                            reader.ReadSingle();
+                                            ReadSinglesToVector3(reader);
+                                            ReadSinglesToVector3(reader);
+                                            ReadSinglesToVector3(reader);
+                                        }
                                         break;
 
                                     case 4:
-                                    {
-                                        CastIntRead(reader, boneIndexSize);
-                                        CastIntRead(reader, boneIndexSize);
-                                        CastIntRead(reader, boneIndexSize);
-                                        CastIntRead(reader, boneIndexSize);
-                                        reader.ReadSingle();
-                                        reader.ReadSingle();
-                                        reader.ReadSingle();
-                                        reader.ReadSingle();
-                                        ReadSinglesToVector3(reader);
-                                        ReadSinglesToVector3(reader);
-                                        ReadSinglesToVector3(reader);
-                                    }
+                                        {
+                                            CastIntRead(reader, boneIndexSize);
+                                            CastIntRead(reader, boneIndexSize);
+                                            CastIntRead(reader, boneIndexSize);
+                                            CastIntRead(reader, boneIndexSize);
+                                            reader.ReadSingle();
+                                            reader.ReadSingle();
+                                            reader.ReadSingle();
+                                            reader.ReadSingle();
+                                            ReadSinglesToVector3(reader);
+                                            ReadSinglesToVector3(reader);
+                                            ReadSinglesToVector3(reader);
+                                        }
                                         break;
                                 }
                                 reader.ReadSingle();
@@ -12608,7 +12593,7 @@ namespace PE多功能信息处理插件
 
         public float Dot(V3 left, V3 right)
         {
-            return (float) (left.Y * (double) right.Y + left.X * (double) right.X + left.Z * (double) right.Z);
+            return (float)(left.Y * (double)right.Y + left.X * (double)right.X + left.Z * (double)right.Z);
         }
 
         public void SetSDEF(int[] ix)
@@ -12750,7 +12735,6 @@ namespace PE多功能信息处理插件
 
         internal void PEObjectSelectShow2UI()
         {
-
             Task.Factory.StartNew(() =>
             {
                 IPXPmx ThePmxOfNow = ARGS.Host.Connector.Pmx.GetCurrentState();
@@ -12830,8 +12814,6 @@ namespace PE多功能信息处理插件
                                         @"\d", "")
                                     : BoneList.Rows[0].Cells[1].Value.ToString();
                         }
-
-
                     }
                     else
                     {
@@ -12841,7 +12823,6 @@ namespace PE多功能信息处理插件
                     BoneSelectCheck = false;
                 }
             }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
-
         }
 
         #endregion
@@ -12890,7 +12871,7 @@ namespace PE多功能信息处理插件
                  return GetThe_crossover_point +
                         Vector3.Normalize(
                             SelectVertex.Position.ToVector3() - GetThe_crossover_point) * VerDis;*/
-              return Vector3.SmoothStep(GetThe_crossover_point, SelectVertex.Position.ToVector3(), 0.2f);
+                return Vector3.SmoothStep(GetThe_crossover_point, SelectVertex.Position.ToVector3(), 0.2f);
             }
 
             Parallel.ForEach(SelectVertexIndex, VerIndex =>
@@ -12921,8 +12902,9 @@ namespace PE多功能信息处理插件
                 //对于获得了1个交点的，那么就进入顶点偏移环节，对于超过1个交点，计算距离最近的交点，对于没有获得交点，那么就使用模式2
                 if (GetThe_crossover_point.Count == 1)
                 {
-                    SelectVertex.Position= VerOffset(GetThe_crossover_point[0], SelectVertex);
-                }else if (GetThe_crossover_point.Count == 0)
+                    SelectVertex.Position = VerOffset(GetThe_crossover_point[0], SelectVertex);
+                }
+                else if (GetThe_crossover_point.Count == 0)
                 {
                     //以距离选中顶点最近的三个顶点为基准，建立面，并与选中顶点进行计算
                     IPXPmxBuilder bdx = ARGS.Host.Builder.Pmx;
@@ -12948,6 +12930,7 @@ namespace PE多功能信息处理插件
             ARGS.Host.Connector.View.PmxView.UpdateModel();
             ThFunOfSaveToPmx(pmx, "Vertex");
         }
+
         private void GetEdge_Click(object sender, EventArgs e)
         {
             var SelectVertexIndex = ARGS.Host.Connector.View.PMDView.GetSelectedVertexIndices();
@@ -12978,13 +12961,12 @@ namespace PE多功能信息处理插件
                     if (!VerToFaceMat.ContainsKey(FacesTemp.Vertex1))
                     {
                         VerToFaceMat.Add(FacesTemp.Vertex1,
-                            new List<IPXVertex>() {FacesTemp.Vertex2, FacesTemp.Vertex3});
-                  
+                            new List<IPXVertex>() { FacesTemp.Vertex2, FacesTemp.Vertex3 });
                     }
                     else
                     {
-                        if(!VerToFaceMat[FacesTemp.Vertex1].Contains(FacesTemp.Vertex2))
-                        VerToFaceMat[FacesTemp.Vertex1].Add(FacesTemp.Vertex2);
+                        if (!VerToFaceMat[FacesTemp.Vertex1].Contains(FacesTemp.Vertex2))
+                            VerToFaceMat[FacesTemp.Vertex1].Add(FacesTemp.Vertex2);
                         if (!VerToFaceMat[FacesTemp.Vertex1].Contains(FacesTemp.Vertex3))
                             VerToFaceMat[FacesTemp.Vertex1].Add(FacesTemp.Vertex3);
                     }
@@ -12992,7 +12974,6 @@ namespace PE多功能信息处理插件
                     {
                         VerToFaceMat.Add(FacesTemp.Vertex2,
                             new List<IPXVertex>() { FacesTemp.Vertex1, FacesTemp.Vertex3 });
-                     
                     }
                     else
                     {
@@ -13000,13 +12981,11 @@ namespace PE多功能信息处理插件
                             VerToFaceMat[FacesTemp.Vertex2].Add(FacesTemp.Vertex1);
                         if (!VerToFaceMat[FacesTemp.Vertex2].Contains(FacesTemp.Vertex3))
                             VerToFaceMat[FacesTemp.Vertex2].Add(FacesTemp.Vertex3);
-                       
                     }
                     if (!VerToFaceMat.ContainsKey(FacesTemp.Vertex3))
                     {
                         VerToFaceMat.Add(FacesTemp.Vertex3,
                             new List<IPXVertex>() { FacesTemp.Vertex1, FacesTemp.Vertex2 });
-
                     }
                     else
                     {
@@ -13021,13 +13000,13 @@ namespace PE多功能信息处理插件
             //假设a=(x1,y1,z1),b=(x2,y2,z2) a*b=x1x2+y1y2+z1z2 |a|=√(x1^2+y1^2+z1^2).|b|=√(x2^2+y2^2+z2^2) cosθ=a*b/(|a|*|b|) 角θ=arccosθ
             foreach (var Vertex in VerToFaceMat[SelectVertex])
             {
-
             }
         }
+
         #endregion
     }
 
-    class PXC_Opera : PXCPluginClass
+    internal class PXC_Opera : PXCPluginClass
     {
         private IPXCPluginRunArgs PXCArgs;
         private IPXViewControl ViewControl;
@@ -13035,22 +13014,21 @@ namespace PE多功能信息处理插件
         private IPXViewEventListener ViewEventCreate;
 
         public PXC_Opera(IPXCPluginRunArgs iPXCPluginRunArgs)
-        { 
+        {
             base.Run(iPXCPluginRunArgs);
             PXCArgs = iPXCPluginRunArgs;
             ViewControl = PXCBridge.ViewCtrl(PXCArgs.Connector); //注册视图
             EventControl = PXCBridge.CreateEventConnector(PXCArgs.Connector); // 订阅事件
             ViewEventCreate = EventControl.CreateViewEventListener();
-           /* ViewEventCreate.ObjectSelected += (o, s) =>
-            {
-                newopen.BoneSelectCheck = s.Bone;
-            };
-            ViewEventCreate.MouseUp += delegate
-            {
-                if(newopen.BoneSelectCheck)
-                newopen.PEObjectSelectShow2UI();
-            };*/
-
+            /* ViewEventCreate.ObjectSelected += (o, s) =>
+             {
+                 newopen.BoneSelectCheck = s.Bone;
+             };
+             ViewEventCreate.MouseUp += delegate
+             {
+                 if(newopen.BoneSelectCheck)
+                 newopen.PEObjectSelectShow2UI();
+             };*/
         }
     }
 }
