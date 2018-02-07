@@ -23,16 +23,16 @@ using static PE多功能信息处理插件.Class2;
 
 namespace PE多功能信息处理插件
 {
-    public class Program :IPEPlugin, IPEPluginOption, IPEImportPlugin, IPEExportPlugin
+    public class Program : IPEPlugin, IPEPluginOption, IPEImportPlugin, IPEExportPlugin
     {
         public static IPERunArgs ARGS;
 
-        public new string Description => "";
-        public new string Name => "";
+        public string Description => "";
+        public string Name => "";
 
         public IPEPluginOption Option => this;
 
-        public new string Version => "0";
+        public string Version => "0";
 
         public string Ext => ".pmx";
 
@@ -66,7 +66,7 @@ namespace PE多功能信息处理插件
                         if (SaveFileList.Count > 50)
                         {
                             SaveFileList.Sort((F, f) => F.CreationTime.CompareTo(f.CreationTime));
-                            for (int i = 0; i < SaveFileList.Count-40; i++)
+                            for (int i = 0; i < SaveFileList.Count - 40; i++)
                             {
                                 SaveFileList[i].Delete();
                             }
@@ -118,6 +118,7 @@ namespace PE多功能信息处理插件
             ARGS = args;
             Formtemp = args.Host.Connector.Form as Form;
             ViewForm = args.Host.Connector.View.PmxView as Form;
+
             #region 读取配置
 
             try
@@ -423,7 +424,7 @@ namespace PE多功能信息处理插件
                 {
                     var Font = new System.Drawing.Font("微软雅黑", 7.5f);
                     {
-                        CustomBoneSearch = new TextBox {Name = "BoneSearch"};
+                        CustomBoneSearch = new TextBox { Name = "BoneSearch" };
                         CustomBoneSearch.KeyPress += ControlSearch;
                         CustomBoneSearch.GotFocus += PageGotFoucus;
                         CustomBoneSearch.LostFocus += PageLostFoucus;
@@ -437,7 +438,7 @@ namespace PE多功能信息处理插件
                         CustomBoneSearch.BringToFront();
                     }
                     {
-                        CustomBodySearch = new TextBox {Name = "BodySearch"};
+                        CustomBodySearch = new TextBox { Name = "BodySearch" };
                         CustomBodySearch.KeyPress += ControlSearch;
                         CustomBodySearch.GotFocus += PageGotFoucus;
                         CustomBodySearch.LostFocus += PageLostFoucus;
@@ -451,7 +452,7 @@ namespace PE多功能信息处理插件
                         CustomBodySearch.BringToFront();
                     }
                     {
-                        CustomJointSearch = new TextBox {Name = "JointSearch"};
+                        CustomJointSearch = new TextBox { Name = "JointSearch" };
                         CustomJointSearch.KeyPress += ControlSearch;
                         CustomJointSearch.GotFocus += PageGotFoucus;
                         CustomJointSearch.LostFocus += PageLostFoucus;
@@ -603,7 +604,7 @@ namespace PE多功能信息处理插件
                 #region UV复制模块
 
                 {
-                    var Add = new ToolStripMenuItem {Text = "合并选中材质的UV到"};
+                    var Add = new ToolStripMenuItem { Text = "合并选中材质的UV到" };
                     EventHandler ToolClick = (o, s) =>
                     {
                         var Material = args.Host.Connector.Form.GetSelectedMaterialIndices();
@@ -617,71 +618,71 @@ namespace PE多功能信息处理插件
                                 switch (o.ToString())
                                 {
                                     case "UV1":
-                                    {
-                                        for (int i = 0; i < Face1.Count; i++)
                                         {
-                                            model.Material[Material[0]].Faces[i].Vertex1.UVA1 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
-                                            model.Material[Material[0]].Faces[i].Vertex2.UVA1 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
-                                            model.Material[Material[0]].Faces[i].Vertex3.UVA1 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                            for (int i = 0; i < Face1.Count; i++)
+                                            {
+                                                model.Material[Material[0]].Faces[i].Vertex1.UVA1 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                                model.Material[Material[0]].Faces[i].Vertex2.UVA1 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                                model.Material[Material[0]].Faces[i].Vertex3.UVA1 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                            }
                                         }
-                                    }
                                         break;
 
                                     case "UV2":
-                                    {
-                                        for (int i = 0; i < Face1.Count; i++)
                                         {
-                                            model.Material[Material[0]].Faces[i].Vertex1.UVA2 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
-                                            model.Material[Material[0]].Faces[i].Vertex2.UVA2 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
-                                            model.Material[Material[0]].Faces[i].Vertex3.UVA2 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                            for (int i = 0; i < Face1.Count; i++)
+                                            {
+                                                model.Material[Material[0]].Faces[i].Vertex1.UVA2 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                                model.Material[Material[0]].Faces[i].Vertex2.UVA2 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                                model.Material[Material[0]].Faces[i].Vertex3.UVA2 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                            }
                                         }
-                                    }
                                         break;
 
                                     case "UV3":
-                                    {
-                                        for (int i = 0; i < Face1.Count; i++)
                                         {
-                                            model.Material[Material[0]].Faces[i].Vertex1.UVA3 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
-                                            model.Material[Material[0]].Faces[i].Vertex2.UVA3 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
-                                            model.Material[Material[0]].Faces[i].Vertex3.UVA3 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                            for (int i = 0; i < Face1.Count; i++)
+                                            {
+                                                model.Material[Material[0]].Faces[i].Vertex1.UVA3 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                                model.Material[Material[0]].Faces[i].Vertex2.UVA3 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                                model.Material[Material[0]].Faces[i].Vertex3.UVA3 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                            }
                                         }
-                                    }
                                         break;
 
                                     case "UV4":
-                                    {
-                                        for (int i = 0; i < Face1.Count; i++)
                                         {
-                                            model.Material[Material[0]].Faces[i].Vertex1.UVA4 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
-                                            model.Material[Material[0]].Faces[i].Vertex2.UVA4 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
-                                            model.Material[Material[0]].Faces[i].Vertex3.UVA4 =
-                                                new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
-                                                    model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                            for (int i = 0; i < Face1.Count; i++)
+                                            {
+                                                model.Material[Material[0]].Faces[i].Vertex1.UVA4 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex1.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex1.UV.V, 0, 0);
+                                                model.Material[Material[0]].Faces[i].Vertex2.UVA4 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex2.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex2.UV.V, 0, 0);
+                                                model.Material[Material[0]].Faces[i].Vertex3.UVA4 =
+                                                    new PEPlugin.SDX.V4(model.Material[Material[1]].Faces[i].Vertex3.UV.U,
+                                                        model.Material[Material[1]].Faces[i].Vertex3.UV.V, 0, 0);
+                                            }
                                         }
-                                    }
                                         break;
                                 }
                                 Formtemp.BeginInvoke(new Action(() =>
@@ -730,7 +731,7 @@ namespace PE多功能信息处理插件
                 #region 骨骼名称置换
 
                 {
-                    var Add = new ToolStripMenuItem {Text = "改变日英名称"};
+                    var Add = new ToolStripMenuItem { Text = "改变日英名称" };
                     Func<Dictionary<string, string>> GetDic = delegate
                     {
                         var Dic = new Dictionary<string, string>();
@@ -769,7 +770,6 @@ namespace PE多功能信息处理插件
                         var TempDic = GetDic();
                         switch (o.ToString())
                         {
-
                             case "改变日语名":
 
                                 foreach (var VARIABLE in BoneCount)
@@ -780,6 +780,7 @@ namespace PE多功能信息处理插件
                                     }
                                 }
                                 break;
+
                             case "改变英语名":
                                 var DicEn = new Dictionary<string, string>();
                                 foreach (var VARIABLE in TempDic.Where(VARIABLE => !DicEn.ContainsKey(VARIABLE.Value)))
@@ -792,12 +793,14 @@ namespace PE多功能信息处理插件
                                     BoneList.Bone[VARIABLE].NameE = DicEn[BoneList.Bone[VARIABLE].Name];
                                 }
                                 break;
+
                             case "复制日语名给英语名":
                                 foreach (var Tbone in BoneCount)
                                 {
                                     BoneList.Bone[Tbone].NameE = BoneList.Bone[Tbone].Name;
                                 }
                                 break;
+
                             case "保存到词典":
                                 using (var FileDic =
                                     new StreamWriter(
@@ -849,7 +852,8 @@ namespace PE多功能信息处理插件
                     }));
                 }
 
-                #endregion
+                #endregion 骨骼名称置换
+
                 new Thread(() =>
                 {
                     #region 快捷键
@@ -998,10 +1002,10 @@ namespace PE多功能信息处理插件
                             };
                             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                             Application.EnableVisualStyles();*/
-                           /* myForm f = new myForm(args);
-                            f.Show(); */
-                         newopen = new Metroform();
-                         // new  MeasureClass()
+                            /* myForm f = new myForm(args);
+                             f.Show(); */
+                            newopen = new Metroform();
+                            // new  MeasureClass()
                             newopen.Show();
                         }
                         else
@@ -1021,7 +1025,7 @@ namespace PE多功能信息处理插件
 
                     try
                     {
-                        if (bootstate.AutoOpen == 1 && bootstate.OldOpen != "")
+                        if (bootstate.AutoOpen == 1 && bootstate.OldOpen != "" && File.Exists(bootstate.OldOpen))
                         {
                             Formtemp.BeginInvoke(new Action(() =>
                             {
