@@ -1023,7 +1023,11 @@ namespace PE多功能信息处理插件
                     {
                         if (bootstate.AutoOpen == 1 && bootstate.OldOpen != "")
                         {
-                            Formtemp.BeginInvoke(new Action(() => ARGS.Host.Connector.Form.OpenPMXFile(bootstate.OldOpen)));
+                            Formtemp.BeginInvoke(new Action(() =>
+                            {
+                                if (File.Exists(bootstate.OldOpen))
+                                    ARGS.Host.Connector.Form.OpenPMXFile(bootstate.OldOpen);
+                            }));
                         }
                     }
                     catch (Exception)

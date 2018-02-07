@@ -349,7 +349,6 @@ namespace PE多功能信息处理插件
 
             Task.Factory.StartNew(() =>
             {
-                return;
                 List<int> Hisbody = new List<int>();
                 List<int> Jointbody = new List<int>();
                 List<int> Materialbody = new List<int>();
