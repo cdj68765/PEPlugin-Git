@@ -1,0 +1,280 @@
+                            MorphOpera.Index Last = null;
+                            foreach (var temp in OriTemp)
+                            {
+                                var VertexIndex = new List<int>();
+                                for (int CT = 0; CT < GetPmx.Vertex.Count; CT++)
+                                {
+                                    var Digits = 5;
+                                    if (Math.Round(GetPmx.Vertex[CT].Position.X, Digits) == Math.Round(temp.x, Digits) &&
+                                        Math.Round(GetPmx.Vertex[CT].Position.Y, Digits) == Math.Round(temp.y, Digits) &&
+                                        Math.Round(GetPmx.Vertex[CT].Position.Z, Digits) == Math.Round(temp.z, Digits))
+                                    {
+                                        VertexIndex.Add(CT);
+                                    }
+                                }
+                                if (VertexIndex.Count != 0)
+                                {
+                                    if (VertexIndex.Count == 1)
+                                    {
+                                        temp.toindex = VertexIndex[0];
+                                    }
+
+                                    else
+                                    {
+                                        foreach (var VARIABLE in VertexIndex)
+                                        {
+                                            if (OriTemp.FindIndex(x => x.toindex == VARIABLE) == -1)
+                                            {
+                                                temp.toindex = VARIABLE;
+                                            }
+                                        }
+                                        /* temp.VertexIndex = new List<int>(VertexIndex);
+                                         if (!MorphPositionWithUV.Checked)
+                                         {
+                                             foreach (var VerIndexTemp in VertexIndex)
+                                             {
+                                                 if (GetPmx.Vertex[VerIndexTemp].UV.X == temp.UVX &&
+                                                     GetPmx.Vertex[VerIndexTemp].UV.Y == temp.UVY)
+                                                 {
+                                                     temp.toindex = VerIndexTemp;
+                                                 }
+
+                                             }
+                                         }
+                                         else if (MorphPositionWithNormal.Checked)
+                                         {
+                                             foreach (var VerIndexTemp in VertexIndex)
+                                             {
+                                                 if (GetPmx.Vertex[VerIndexTemp].Normal.X == temp.NormalX &&
+                                                     GetPmx.Vertex[VerIndexTemp].Normal.Y == temp.NormalY &&
+                                                     GetPmx.Vertex[VerIndexTemp].Normal.Z == temp.NormalZ)
+                                                 {
+                                                     temp.toindex = VerIndexTemp;
+                                                 }
+
+                                             }
+                                         }*/
+
+                                    }
+                                }
+                                else
+                                {
+                                    if (MorpfSearchClose.Checked)
+                                    {
+                                        temp.toindex = (from item in GetPmx.Vertex
+                                                        orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
+                                                                           Math.Pow(item.Position.Y - temp.y, 2) +
+                                                                           Math.Pow(item.Position.Z - temp.z,
+                                                                               2))) ascending
+                                                        select new
+                                                        {
+                                                            VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                                        }).FirstOrDefault().VertexIndex;
+                                    }
+                                    else
+                                    {
+                                        temp.toindex = -1;
+                                    }
+                                }
+
+                                /* if (MorphPositionWithUV.Checked)
+                                 {
+                                     var Get = (from item in GetPmx.Vertex
+                                                where item.Position.X == temp.x
+                                                where item.Position.Y == temp.y
+                                                where item.Position.Z == temp.z
+                                                where item.UV.X == temp.UVX
+                                                where item.UV.Y == temp.UVY
+                                                select new
+                                                {
+                                                    VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                                });
+                                     // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                     if (Get == null)
+                                     {
+                                         if (MorpfSearchClose.Checked)
+                                         {
+                                             temp.toindex = (from item in GetPmx.Vertex
+                                                             orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
+                                                                                Math.Pow(item.Position.Y - temp.y, 2) +
+                                                                                Math.Pow(item.Position.Z - temp.z,
+                                                                                    2))) ascending
+                                                             select new
+                                                             {
+                                                                 VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                                             }).FirstOrDefault().VertexIndex;
+                                         }
+                                         else
+                                         {
+                                             temp.toindex = -1;
+                                         }
+                                     }
+                                     else
+                                     {
+                                         if (Get.Count() == 1)
+                                         {
+                                             temp.toindex = Get.FirstOrDefault().VertexIndex;
+                                         }
+                                         else if (Get.Count()> 1)
+                                         {
+                                             var iobje = Get.ToList();
+                                             var lastindex = 1000000000;
+                                             if (Last == null)
+                                             {
+                                                 var inde_x = OriTemp.IndexOf(temp);
+                                                 if (inde_x != 0)
+                                                 {
+                                                     Last = OriTemp[inde_x - 1];
+                                                 }
+                                             }
+                                             foreach (var item in Get.Where(
+                                                 item => item.VertexIndex > Last.toindex &&
+                                                         item.VertexIndex < lastindex))
+                                             {
+                                                 temp.toindex = item.VertexIndex;
+                                                 lastindex = item.VertexIndex;
+                                             }
+                                         }
+                                     }
+                                 }
+                                 else
+                                 {
+                                     var Get = from item in GetPmx.Vertex
+                                               where item.Position.X == temp.x
+                                               where item.Position.Y == temp.y
+                                               where item.Position.Z == temp.z
+                                               where item.Normal.X == temp.NormalX
+                                               where item.Normal.Y == temp.NormalY
+                                               where item.Normal.Z == temp.NormalZ
+                                               select new
+                                               {
+                                                   VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                               };
+                                     if (Get == null)
+                                     {
+                                         if (MorpfSearchClose.Checked)
+                                         {
+                                             temp.toindex = (from item in GetPmx.Vertex
+                                                             orderby Math.Sqrt((Math.Pow(item.Position.X - temp.x, 2) +
+                                                                                Math.Pow(item.Position.Y - temp.y, 2) +
+                                                                                Math.Pow(item.Position.Z - temp.z,
+                                                                                    2))) ascending
+                                                             select new
+                                                             {
+                                                                 VertexIndex = GetPmx.Vertex.IndexOf(item),
+                                                             }).FirstOrDefault().VertexIndex;
+                                         }
+                                         else
+                                         {
+                                             temp.toindex = -1;
+                                         }
+                                     }
+                                     else
+                                     {
+                                         if (Get.Count() != 1)
+                                         {
+                                             int lastindex = 1000000000;
+                                             if (Last == null)
+                                             {
+                                                 var inde_x = OriTemp.IndexOf(temp);
+                                                 if (inde_x != 0)
+                                                 {
+                                                     Last = OriTemp[inde_x - 1];
+                                                 }
+                                             }
+                                             foreach (var item in Get.Where(
+                                                 item => item.VertexIndex > Last.toindex &&
+                                                         item.VertexIndex < lastindex))
+                                             {
+                                                 temp.toindex = item.VertexIndex;
+                                                 lastindex = item.VertexIndex;
+                                             }
+                                         }
+                                         else
+                                         {
+                                             temp.toindex = Get.FirstOrDefault().VertexIndex;
+                                         }
+                                     }
+                                 }
+                                 Last = temp;*/
+                                Interlocked.Increment(ref i);
+                            }
+
+                            foreach (var temp in OriTemp.Where(temp => temp.VertexIndex?.Count > 1))
+                            {
+                                foreach (var temp2 in temp.Face) //遍历之前的FACE
+                                {
+                                    var Item1 = OriTemp.Find(x => x.index == temp2.Item1);
+                                    var Item2 = OriTemp.Find(x => x.index == temp2.Item2);
+                                    if (Item1.toindex != -1)
+                                    {
+                                        if (MorphOpera.FaceDic.ContainsKey(Item1.toindex))
+                                        {
+                                            foreach (var temp3 in MorphOpera.FaceDic[Item1.toindex])
+                                            {
+                                                foreach (var temp4 in temp.VertexIndex)
+                                                {
+                                                    if (temp3.Item1 == temp4)
+                                                    {
+                                                        if (OriTemp.FindIndex(x => x.toindex == temp4) == -1)
+                                                        {
+                                                            temp.toindex = temp4;
+                                                            goto End;
+                                                        }
+                                                    }
+                                                    else if (temp3.Item2 == temp4)
+                                                    {
+                                                        if (OriTemp.FindIndex(x => x.toindex == temp4) == -1)
+                                                        {
+                                                            temp.toindex = temp4;
+                                                            goto End;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                    else if (Item2.toindex != -1)
+                                    {
+                                        if (MorphOpera.FaceDic.ContainsKey(Item2.toindex))
+                                        {
+                                            foreach (var temp3 in MorphOpera.FaceDic[Item2.toindex])
+                                            {
+                                                foreach (var temp4 in temp.VertexIndex)
+                                                {
+                                                    if (temp3.Item1 == temp4)
+                                                    {
+                                                        if (OriTemp.FindIndex(x => x.toindex == temp4) == -1)
+                                                        {
+                                                            temp.toindex = temp4;
+                                                            goto End;
+                                                        }
+                                                    }
+                                                    else if (temp3.Item2 == temp4)
+                                                    {
+                                                        if (OriTemp.FindIndex(x => x.toindex == temp4) == -1)
+                                                        {
+                                                            temp.toindex = temp4;
+                                                            goto End;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                End:
+                                ;
+                            }
+                            foreach (var temp in OriTemp.Where(temp => temp.VertexIndex?.Count > 1&& temp.toindex==-1))
+                            {
+                                foreach (var VARIABLE in temp.VertexIndex)
+                                {
+                                    if (OriTemp.FindIndex(x => x.toindex == VARIABLE) == -1)
+                                    {
+                                        temp.toindex = VARIABLE;
+                                    }
+                                }
+                            
+                            }

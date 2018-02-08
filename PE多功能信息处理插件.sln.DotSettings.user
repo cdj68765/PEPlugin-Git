@@ -1,0 +1,12 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=2FD8FE11_002D52F8_002D41D3_002D80A5_002D39F2E22641B2_002Ff_003AClass1_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
+  &lt;Assembly Path="C:\Users\cdj68\Source\Repos\PEPlugin-Git\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\cdj68\Source\Repos\PEPlugin-Git\packages\SharpNav.1.0.0-alpha2\lib\net40\SharpNav.dll" /&gt;&#xD;
+&lt;/AssemblyExplorer&gt;</s:String>
+	
+	
+	
+	
+	
+	</wpf:ResourceDictionary>

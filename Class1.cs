@@ -1,5 +1,4 @@
-﻿using MetroFramework;
-using Microsoft.CSharp;
+﻿using Microsoft.CSharp;
 using PEPlugin;
 using PEPlugin.Pmd;
 using PEPlugin.Pmx;
@@ -83,7 +82,6 @@ namespace PE多功能信息处理插件
                 bootstate.OldOpen = ARGS.Host.Connector.Pmx.CurrentPath;
                 bootstate.FormTop = Formtemp.TopMost ? 1 : 0;
                 ThreadPool.QueueUserWorkItem(Save);
-                newopen.Close();
             }
             catch (Exception)
             {
@@ -588,11 +586,6 @@ namespace PE多功能信息处理插件
                                     DateTime.Now.ToLocalTime().ToString()));
                                 bootstate.HisOpen = new OpenHis[HisOpen.Count];
                                 HisOpen.CopyTo(bootstate.HisOpen);
-                                if (newopen != null)
-                                {
-                                    newopen.OriFileVertexList =
-                                        new System.Collections.Concurrent.ConcurrentDictionary<int, PEPlugin.SDX.V3>();
-                                }
                                 ThreadPool.QueueUserWorkItem(Save);
                             }
                         });
@@ -692,18 +685,18 @@ namespace PE多功能信息处理插件
                                     ARGS.Host.Connector.View.PmxView.UpdateModel();
                                     ARGS.Host.Connector.View.PmxView.UpdateView();
                                 }));
-                                MetroMessageBox.Show(Formtemp, "复制完成", "", MessageBoxButtons.OK,
+                                MessageBox.Show(Formtemp, "复制完成", "", MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
                             }
                             else
                             {
-                                MetroMessageBox.Show(Formtemp, "选中的两个面并不相同", "", MessageBoxButtons.OK,
+                                MessageBox.Show(Formtemp, "选中的两个面并不相同", "", MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
                             }
                         }
                         else
                         {
-                            MetroMessageBox.Show(Formtemp, "请选择2个材质", "", MessageBoxButtons.OK,
+                            MessageBox.Show(Formtemp, "请选择2个材质", "", MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
                         }
                     };
@@ -990,29 +983,8 @@ namespace PE多功能信息处理插件
 
                     Toolshow.Click += delegate
                     {
-                        if (newopen == null)
-                        {
-                            /*Application.ThreadException += delegate
-                             {
-                                 Console.WriteLine();
-                             };
-                            AppDomain.CurrentDomain.UnhandledException += delegate
-                            {
-                                Console.WriteLine();
-                            };
-                            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-                            Application.EnableVisualStyles();*/
-                            /* myForm f = new myForm(args);
-                             f.Show(); */
-                            newopen = new Metroform();
-                            // new  MeasureClass()
-                            newopen.Show();
-                        }
-                        else
-                        {
-                            newopen.WindowState = FormWindowState.Normal;
-                            newopen.BringToFront();
-                        }
+                        var Form = new Window1();
+                        Form.Show();
                     };
                     Toolshow.Name = "多功能插件";
                     Toolshow.Text = "显示多功能插件";
@@ -1134,7 +1106,7 @@ namespace PE多功能信息处理插件
                                     if (!Coderes.Errors.HasErrors)
                                     {
                                         List<object> ImpotrPara = new List<object>();
-                                        var open = new Form2();
+                                       /* var open = new Form2();
                                         open.ShowDialog();
                                         ImpotrPara.Add(filestream);
                                         ImpotrPara.Add(open.Password);
@@ -1150,8 +1122,8 @@ namespace PE多功能信息处理插件
                                         }
                                         catch (Exception)
                                         {
-                                            MetroMessageBox.Show((args.Host.Connector.Form as Form), "密码错误，无法加载", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        }
+                                            MessageBox.Show((args.Host.Connector.Form as Form), "密码错误，无法加载", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }*/
                                     }
                                 }
                             }
@@ -1182,12 +1154,12 @@ namespace PE多功能信息处理插件
                         CompressionMode.Decompress))
                 {
                     decompressionStream.CopyTo(decompressedFileStream);
-                    var open = new Form2();
+                  /*  var open = new Form2();
                     open.ShowDialog();
                     if (open.Password == "")
                     {
                         return;
-                    }
+                    }*/
                     var savefile = new FileStream(path, FileMode.OpenOrCreate);
                     MemoryStream savestream = new MemoryStream();
                     pmx.ToStream(savestream);
@@ -1199,7 +1171,7 @@ namespace PE多功能信息处理插件
                                Encoding.UTF8.GetString(decompressedFileStream.ToArray()));
                     if (!Coderes.Errors.HasErrors)
                     {
-                        List<object> ImpotrPara = new List<object> { savestream, open.Password };
+                      /*  List<object> ImpotrPara = new List<object> { savestream, open.Password };
                         open.Close();
                         open.Dispose();
                         MemoryStream savedata = (MemoryStream)
@@ -1209,7 +1181,7 @@ namespace PE多功能信息处理插件
                                 .Invoke(Coderes.CompiledAssembly.CreateInstance("PmxRead.Program"), new object[] { ImpotrPara });
                         savefile.Write(savedata.ToArray(), 0, (int)savedata.Length);
                         savefile.Close();
-                        savefile.Dispose();
+                        savefile.Dispose();*/
                     }
                 }
             }

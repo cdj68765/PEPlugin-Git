@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PE多功能信息处理插件</RootNamespace>
     <AssemblyName>PE多功能信息处理插件</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -27,6 +28,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,24 +42,24 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MetroFramework">
-      <HintPath>.\MetroFramework.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>True</Private>
+    <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MetroFramework.Design">
-      <HintPath>.\MetroFramework.Design.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.3.1.953, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MaterialDesignThemes.2.3.1.953\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PEPlugin">
       <HintPath>.\PEPlugin.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="SlimDX">
       <HintPath>..\..\..\..\..\PmxEditor_0252\Lib\SlimDX\x64\SlimDX.dll</HintPath>
     </Reference>
@@ -99,33 +105,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
-    </Compile>
     <Compile Include="HighPoly.cs" />
-    <Compile Include="JointBezierModeSetAll.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="JointBezierModeSetAll.Designer.cs">
-      <DependentUpon>JointBezierModeSetAll.cs</DependentUpon>
-    </Compile>
-    <Compile Include="JointBezierMode.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="JointBezierMode.Designer.cs">
-      <DependentUpon>JointBezierMode.cs</DependentUpon>
-    </Compile>
     <Compile Include="Class1.cs" />
     <Compile Include="Class2.cs" />
-    <Compile Include="BodyBezierMode.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BodyBezierMode.Designer.cs">
-      <DependentUpon>BodyBezierMode.cs</DependentUpon>
-    </Compile>
     <Compile Include="MathHelper.cs" />
     <Compile Include="PluginApp.cs" />
     <Compile Include="Resource1.Designer.cs">
@@ -134,39 +116,19 @@
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Resources\program" />
-    <Compile Include="CheckUpdate.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CheckUpdate.Designer.cs">
-      <DependentUpon>CheckUpdate.cs</DependentUpon>
-    </Compile>
     <Compile Include="TranslateMod.cs" />
-    <Compile Include="UpdateCheck.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UpdateCheck.Designer.cs">
-      <DependentUpon>UpdateCheck.cs</DependentUpon>
+    <Compile Include="Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
     <Compile Include="zh_CN.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>zh_CN.resx</DependentUpon>
     </Compile>
-    <Compile Include="TaskWindowControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TaskWindowControl.Designer.cs">
-      <DependentUpon>TaskWindowControl.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -180,21 +142,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Form2.resx">
-      <DependentUpon>Form2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="JointBezierModeSetAll.resx">
-      <DependentUpon>JointBezierModeSetAll.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="JointBezierMode.resx">
-      <DependentUpon>JointBezierMode.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="BodyBezierMode.resx">
-      <DependentUpon>BodyBezierMode.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -204,18 +151,9 @@
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="CheckUpdate.resx">
-      <DependentUpon>CheckUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UpdateCheck.resx">
-      <DependentUpon>UpdateCheck.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="zh_CN.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>zh_CN.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TaskWindowControl.resx">
-      <DependentUpon>TaskWindowControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\DataSources\Metroform.ObjectInfo.datasource" />
     <None Include="Properties\DataSources\Program.SelectFun.datasource" />
@@ -225,9 +163,15 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0254\_plugin\"</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetPath)" "C:\PmxEditor_0254c\_plugin\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,5 +1,4 @@
-﻿using MetroFramework.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -12,8 +11,6 @@ namespace PE多功能信息处理插件
 {
     public class Class2
     {
-        public static List<MetroForm> ListForm = new List<MetroForm>();
-        public static Metroform newopen;
         public static Dictionary<string, BezierPoint> HisForm = new Dictionary<string, BezierPoint>();
         public static ResourceManager Language;
         public static Button btnGetObject = null;
