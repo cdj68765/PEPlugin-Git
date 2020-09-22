@@ -64,7 +64,7 @@ namespace PE多功能信息处理插件
                 | ControlStyles.SupportsTransparentBackColor, true);
             Style = metroStyleManager.Style = (MetroColorStyle) bootstate.StyleState;
             Meminfo.Click += delegate { GC.Collect(); };
-            //CheckForIllegalCrossThreadCalls = false;
+            CheckForIllegalCrossThreadCalls = false;
             Task.Factory.StartNew(() =>
             {
                 while (Run)
@@ -164,7 +164,7 @@ namespace PE多功能信息处理插件
                 }
                 HisOpenList.DataSource = table;
             }
-
+           
             #endregion
 
             #region 自动打开模型和窗口前置初始化
@@ -306,7 +306,7 @@ namespace PE多功能信息处理插件
             }
 
             #endregion
-
+          
             GetPmx = ARGS.Host.Connector.Pmx.GetCurrentState();
             FormClosed += delegate
             {
@@ -346,7 +346,6 @@ namespace PE多功能信息处理插件
                 }
 
             };
-
             Task.Factory.StartNew(() =>
             {
                 List<int> Hisbody = new List<int>();
@@ -410,16 +409,18 @@ namespace PE多功能信息处理插件
                                     List<int> selectbone =
                                         new List<int>(ARGS.Host.Connector.View.PMDView.GetSelectedBoneIndices()
                                             .Distinct());
-                                    if (BoneSelectCheck && !LockSelect.Checked)
+                                    if (!BoneCount.SequenceEqual(selectbone) && !LockSelect.Checked)
                                     {
-                                        IPXPmx ThePmxOfNow = GetPmx;
+                                       
+                                        IPXPmx ThePmxOfNow = ARGS.Host.Connector.Pmx.GetCurrentState();
 
-                                        ClearList("bone");
                                         if (selectbone.Count != 0)
                                         {
-                                            BoneCount.Clear();
+
+                                               ClearList("bone");
+                                                BoneCount.Clear();
                                             BoneCount.AddRange(selectbone);
-                                            BeginInvoke(new MethodInvoker(() =>
+                                        //    BeginInvoke(new MethodInvoker(() =>
                                             {
                                                 var table = BoneList.DataSource as DataTable;
                                                 foreach (int temp in selectbone)
@@ -436,10 +437,10 @@ namespace PE多功能信息处理插件
                                                         if (MirrorBoneName == ThePmxOfNow.Bone[temp].Name)
                                                         {
                                                             var TempBone = (from item in ThePmxOfNow.Bone
-                                                                            orderby Getdistance(
-                                                                                ThePmxOfNow.Bone[temp].Position,
-                                                                                item.Position) ascending
-                                                                            select item).FirstOrDefault();
+                                                                orderby Getdistance(
+                                                                    ThePmxOfNow.Bone[temp].Position,
+                                                                    item.Position) ascending
+                                                                select item).FirstOrDefault();
                                                             if (TempBone != ThePmxOfNow.Bone[temp])
                                                             {
                                                                 table.Rows.Add(temp + ":" + ThePmxOfNow.Bone[temp].Name,
@@ -463,10 +464,10 @@ namespace PE多功能信息处理插件
                                                             else
                                                             {
                                                                 var TempBone = (from item in ThePmxOfNow.Bone
-                                                                                orderby Getdistance(
-                                                                                    ThePmxOfNow.Bone[temp].Position,
-                                                                                    item.Position) ascending
-                                                                                select item).FirstOrDefault();
+                                                                    orderby Getdistance(
+                                                                        ThePmxOfNow.Bone[temp].Position,
+                                                                        item.Position) ascending
+                                                                    select item).FirstOrDefault();
                                                                 if (TempBone != ThePmxOfNow.Bone[temp])
                                                                 {
                                                                     table.Rows.Add(
@@ -478,6 +479,7 @@ namespace PE多功能信息处理插件
                                                         }
                                                     }
                                                 }
+
                                                 if (table.Rows.Count != 0)
                                                 {
                                                     InputBoneName.Text =
@@ -486,13 +488,14 @@ namespace PE多功能信息处理插件
                                                                 @"\d", "")
                                                             : BoneList.Rows[0].Cells[1].Value.ToString();
                                                 }
-                                            }));
+                                            }
+                                            //  ));
                                         }
                                         else
                                         {
                                             InputBoneName.Text = "";
                                         }
-                                        BoneSelectCheck = false;
+                                     //   BoneSelectCheck = false;
                                     }
 
                                 }
@@ -1158,14 +1161,15 @@ namespace PE多功能信息处理插件
                     case "bone":
                     {
                         var table = BoneList.DataSource as DataTable;
+
                         if (MirrorMode.Checked)
                         {
                             table.Rows.Clear();
                             table.Columns.Clear();
                             table.Columns.Add("骨骼顺序");
                             table.Columns.Add("骨骼名称");
-                            table.Rows.Add();
-                            table.Rows.Clear();
+                         /*   table.Rows.Add();
+                            table.Rows.Clear();*/
                         }
                         else
                         {
