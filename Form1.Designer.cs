@@ -64,9 +64,9 @@ namespace PE多功能信息处理插件
             this.metroLabel31 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel30 = new MetroFramework.Controls.MetroLabel();
             this.metroPanel1 = new MetroFramework.Controls.MetroPanel();
+            this.BDEF1Radio_2 = new MetroFramework.Controls.MetroRadioButton();
             this.BDEF3Radio_2 = new MetroFramework.Controls.MetroRadioButton();
             this.BDEF4Radio_2 = new MetroFramework.Controls.MetroRadioButton();
-            this.BDEF1Radio_2 = new MetroFramework.Controls.MetroRadioButton();
             this.BDEF2Radio_2 = new MetroFramework.Controls.MetroRadioButton();
             this.VertexCount = new MetroFramework.Controls.MetroTextBox();
             this.metroLabel29 = new MetroFramework.Controls.MetroLabel();
@@ -108,6 +108,7 @@ namespace PE多功能信息处理插件
             this.MaterialNameCheck = new MetroFramework.Controls.MetroCheckBox();
             this.InputMaterialName = new MetroFramework.Controls.MetroTextBox();
             this.顶点操作 = new MetroFramework.Controls.MetroTabPage();
+            this.GetEdge = new MetroFramework.Controls.MetroButton();
             this.metroTrackBar1 = new MetroFramework.Controls.MetroTrackBar();
             this.CrossRate = new MetroFramework.Controls.MetroTextBox();
             this.TheNumNeedSelect = new MetroFramework.Controls.MetroTextBox();
@@ -115,6 +116,8 @@ namespace PE多功能信息处理插件
             this.Bone = new MetroFramework.Controls.MetroTabPage();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.骨骼基础设置 = new MetroFramework.Controls.MetroTabPage();
+            this.ChangeVectorPasteModeText = new MetroFramework.Controls.MetroLabel();
+            this.ChangeVectorPasteMode = new MetroFramework.Controls.MetroTile();
             this.MirrorBoneCheck = new MetroFramework.Controls.MetroCheckBox();
             this.FinBoneCombo = new MetroFramework.Controls.MetroComboBox();
             this.OriBoneCombox = new MetroFramework.Controls.MetroComboBox();
@@ -353,7 +356,6 @@ namespace PE多功能信息处理插件
             this.Meminfo = new MetroFramework.Controls.MetroLabel();
             this.CheckSyncSelect = new MetroFramework.Controls.MetroCheckBox();
             this.LockSelect = new MetroFramework.Controls.MetroCheckBox();
-            this.GetEdge = new MetroFramework.Controls.MetroButton();
             this.ALLTAB.SuspendLayout();
             this.Vertex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.VertexList)).BeginInit();
@@ -393,7 +395,7 @@ namespace PE多功能信息处理插件
             this.ALLTAB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ALLTAB.Location = new System.Drawing.Point(20, 60);
             this.ALLTAB.Name = "ALLTAB";
-            this.ALLTAB.SelectedIndex = 0;
+            this.ALLTAB.SelectedIndex = 1;
             this.ALLTAB.Size = new System.Drawing.Size(600, 340);
             this.ALLTAB.TabIndex = 0;
             this.ALLTAB.UseSelectable = true;
@@ -414,6 +416,7 @@ namespace PE多功能信息处理插件
             this.Vertex.VerticalScrollbarBarColor = true;
             this.Vertex.VerticalScrollbarHighlightOnWheel = false;
             this.Vertex.VerticalScrollbarSize = 10;
+            this.Vertex.Visible = false;
             // 
             // VertexList
             // 
@@ -479,7 +482,7 @@ namespace PE多功能信息处理插件
             this.VertexTab.Controls.Add(this.顶点操作);
             this.VertexTab.Location = new System.Drawing.Point(190, 3);
             this.VertexTab.Name = "VertexTab";
-            this.VertexTab.SelectedIndex = 3;
+            this.VertexTab.SelectedIndex = 0;
             this.VertexTab.Size = new System.Drawing.Size(406, 299);
             this.VertexTab.TabIndex = 103;
             this.VertexTab.UseSelectable = true;
@@ -537,6 +540,7 @@ namespace PE多功能信息处理插件
             this.T窗口权重调整.VerticalScrollbarBarColor = true;
             this.T窗口权重调整.VerticalScrollbarHighlightOnWheel = false;
             this.T窗口权重调整.VerticalScrollbarSize = 10;
+            this.T窗口权重调整.Visible = false;
             // 
             // metroLabel36
             // 
@@ -738,9 +742,9 @@ namespace PE多功能信息处理插件
             // metroPanel1
             // 
             this.metroPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.metroPanel1.Controls.Add(this.BDEF1Radio_2);
             this.metroPanel1.Controls.Add(this.BDEF3Radio_2);
             this.metroPanel1.Controls.Add(this.BDEF4Radio_2);
-            this.metroPanel1.Controls.Add(this.BDEF1Radio_2);
             this.metroPanel1.Controls.Add(this.BDEF2Radio_2);
             this.metroPanel1.HorizontalScrollbarBarColor = true;
             this.metroPanel1.HorizontalScrollbarHighlightOnWheel = false;
@@ -753,6 +757,17 @@ namespace PE多功能信息处理插件
             this.metroPanel1.VerticalScrollbarBarColor = true;
             this.metroPanel1.VerticalScrollbarHighlightOnWheel = false;
             this.metroPanel1.VerticalScrollbarSize = 10;
+            // 
+            // BDEF1Radio_2
+            // 
+            this.BDEF1Radio_2.AutoSize = true;
+            this.BDEF1Radio_2.Location = new System.Drawing.Point(7, 7);
+            this.BDEF1Radio_2.Name = "BDEF1Radio_2";
+            this.BDEF1Radio_2.Size = new System.Drawing.Size(26, 15);
+            this.BDEF1Radio_2.TabIndex = 36;
+            this.BDEF1Radio_2.Text = " ";
+            this.BDEF1Radio_2.UseSelectable = true;
+            this.BDEF1Radio_2.Visible = false;
             // 
             // BDEF3Radio_2
             // 
@@ -775,17 +790,6 @@ namespace PE多功能信息处理插件
             this.BDEF4Radio_2.Text = " ";
             this.BDEF4Radio_2.UseSelectable = true;
             this.BDEF4Radio_2.Visible = false;
-            // 
-            // BDEF1Radio_2
-            // 
-            this.BDEF1Radio_2.AutoSize = true;
-            this.BDEF1Radio_2.Location = new System.Drawing.Point(7, 7);
-            this.BDEF1Radio_2.Name = "BDEF1Radio_2";
-            this.BDEF1Radio_2.Size = new System.Drawing.Size(26, 15);
-            this.BDEF1Radio_2.TabIndex = 36;
-            this.BDEF1Radio_2.Text = " ";
-            this.BDEF1Radio_2.UseSelectable = true;
-            this.BDEF1Radio_2.Visible = false;
             // 
             // BDEF2Radio_2
             // 
@@ -1266,6 +1270,7 @@ namespace PE多功能信息处理插件
             this.表情操作.VerticalScrollbarBarColor = true;
             this.表情操作.VerticalScrollbarHighlightOnWheel = false;
             this.表情操作.VerticalScrollbarSize = 10;
+            this.表情操作.Visible = false;
             // 
             // MorphBackCountLabel
             // 
@@ -1370,6 +1375,7 @@ namespace PE多功能信息处理插件
             this.材质操作.VerticalScrollbarBarColor = true;
             this.材质操作.VerticalScrollbarHighlightOnWheel = false;
             this.材质操作.VerticalScrollbarSize = 10;
+            this.材质操作.Visible = false;
             // 
             // ChangeMaterialName
             // 
@@ -1462,6 +1468,18 @@ namespace PE多功能信息处理插件
             this.顶点操作.VerticalScrollbarBarColor = true;
             this.顶点操作.VerticalScrollbarHighlightOnWheel = false;
             this.顶点操作.VerticalScrollbarSize = 10;
+            this.顶点操作.Visible = false;
+            // 
+            // GetEdge
+            // 
+            this.GetEdge.Location = new System.Drawing.Point(3, 51);
+            this.GetEdge.Name = "GetEdge";
+            this.GetEdge.Size = new System.Drawing.Size(75, 23);
+            this.GetEdge.TabIndex = 17;
+            this.GetEdge.Text = "Start";
+            this.GetEdge.UseSelectable = true;
+            this.GetEdge.UseStyleColors = true;
+            this.GetEdge.Click += new System.EventHandler(this.GetEdge_Click);
             // 
             // metroTrackBar1
             // 
@@ -1583,6 +1601,8 @@ namespace PE多功能信息处理插件
             // 
             // 骨骼基础设置
             // 
+            this.骨骼基础设置.Controls.Add(this.ChangeVectorPasteModeText);
+            this.骨骼基础设置.Controls.Add(this.ChangeVectorPasteMode);
             this.骨骼基础设置.Controls.Add(this.MirrorBoneCheck);
             this.骨骼基础设置.Controls.Add(this.FinBoneCombo);
             this.骨骼基础设置.Controls.Add(this.OriBoneCombox);
@@ -1631,6 +1651,30 @@ namespace PE多功能信息处理插件
             this.骨骼基础设置.VerticalScrollbarBarColor = true;
             this.骨骼基础设置.VerticalScrollbarHighlightOnWheel = false;
             this.骨骼基础设置.VerticalScrollbarSize = 10;
+            // 
+            // ChangeVectorPasteModeText
+            // 
+            this.ChangeVectorPasteModeText.AutoSize = true;
+            this.ChangeVectorPasteModeText.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.ChangeVectorPasteModeText.Location = new System.Drawing.Point(126, 457);
+            this.ChangeVectorPasteModeText.Name = "ChangeVectorPasteModeText";
+            this.ChangeVectorPasteModeText.Size = new System.Drawing.Size(120, 50);
+            this.ChangeVectorPasteModeText.TabIndex = 139;
+            this.ChangeVectorPasteModeText.Text = "当前模式:\r\n绝对坐标模式";
+            this.ChangeVectorPasteModeText.UseStyleColors = true;
+            // 
+            // ChangeVectorPasteMode
+            // 
+            this.ChangeVectorPasteMode.ActiveControl = null;
+            this.ChangeVectorPasteMode.Location = new System.Drawing.Point(0, 457);
+            this.ChangeVectorPasteMode.Name = "ChangeVectorPasteMode";
+            this.ChangeVectorPasteMode.Size = new System.Drawing.Size(120, 60);
+            this.ChangeVectorPasteMode.TabIndex = 138;
+            this.ChangeVectorPasteMode.Text = "更改矢量粘贴\r\n模式";
+            this.ChangeVectorPasteMode.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.ChangeVectorPasteMode.UseSelectable = true;
+            this.ChangeVectorPasteMode.UseStyleColors = true;
+            this.ChangeVectorPasteMode.Click += new System.EventHandler(this.ChangeVectorPasteMode_Click);
             // 
             // MirrorBoneCheck
             // 
@@ -2209,6 +2253,7 @@ namespace PE多功能信息处理插件
             this.刚体自动连接.VerticalScrollbarBarColor = true;
             this.刚体自动连接.VerticalScrollbarHighlightOnWheel = false;
             this.刚体自动连接.VerticalScrollbarSize = 10;
+            this.刚体自动连接.Visible = false;
             // 
             // BoneListConutLabel
             // 
@@ -2655,6 +2700,7 @@ namespace PE多功能信息处理插件
             this.Body.VerticalScrollbarBarColor = false;
             this.Body.VerticalScrollbarHighlightOnWheel = false;
             this.Body.VerticalScrollbarSize = 10;
+            this.Body.Visible = false;
             // 
             // BodyCountText
             // 
@@ -3742,7 +3788,7 @@ namespace PE多功能信息处理插件
             this.BodyList.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.BodyList.RowTemplate.Height = 23;
             this.BodyList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.BodyList.Size = new System.Drawing.Size(230, 300);
+            this.BodyList.Size = new System.Drawing.Size(230, 75);
             this.BodyList.TabIndex = 2;
             this.BodyList.UseStyleColors = true;
             // 
@@ -3789,6 +3835,7 @@ namespace PE多功能信息处理插件
             this.joint.VerticalScrollbarBarColor = true;
             this.joint.VerticalScrollbarHighlightOnWheel = false;
             this.joint.VerticalScrollbarSize = 10;
+            this.joint.Visible = false;
             // 
             // JointList
             // 
@@ -3840,7 +3887,7 @@ namespace PE多功能信息处理插件
             this.JointList.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.JointList.RowTemplate.Height = 23;
             this.JointList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.JointList.Size = new System.Drawing.Size(230, 300);
+            this.JointList.Size = new System.Drawing.Size(230, 75);
             this.JointList.TabIndex = 4;
             // 
             // JointControl2
@@ -3907,6 +3954,7 @@ namespace PE多功能信息处理插件
             this.基础设置.VerticalScrollbarBarColor = true;
             this.基础设置.VerticalScrollbarHighlightOnWheel = false;
             this.基础设置.VerticalScrollbarSize = 10;
+            this.基础设置.Visible = false;
             // 
             // JointCountText
             // 
@@ -4735,6 +4783,7 @@ namespace PE多功能信息处理插件
             this.移动旋转限制.VerticalScrollbarBarColor = true;
             this.移动旋转限制.VerticalScrollbarHighlightOnWheel = false;
             this.移动旋转限制.VerticalScrollbarSize = 10;
+            this.移动旋转限制.Visible = false;
             // 
             // ClearJointHis
             // 
@@ -5858,6 +5907,7 @@ namespace PE多功能信息处理插件
             this.快捷方式.VerticalScrollbarBarColor = true;
             this.快捷方式.VerticalScrollbarHighlightOnWheel = false;
             this.快捷方式.VerticalScrollbarSize = 10;
+            this.快捷方式.Visible = false;
             // 
             // ShowShortcutKey
             // 
@@ -6065,7 +6115,7 @@ namespace PE多功能信息处理插件
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FormItemList.Location = new System.Drawing.Point(308, 126);
             this.FormItemList.Name = "FormItemList";
-            this.FormItemList.Size = new System.Drawing.Size(277, 169);
+            this.FormItemList.Size = new System.Drawing.Size(277, 170);
             this.FormItemList.TabIndex = 4;
             this.FormItemList.Visible = false;
             this.FormItemList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.FormItemList_AfterSelect);
@@ -6113,7 +6163,7 @@ namespace PE多功能信息处理插件
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ShortcutKeyTab.Location = new System.Drawing.Point(1, 1);
             this.ShortcutKeyTab.Name = "ShortcutKeyTab";
-            this.ShortcutKeyTab.Size = new System.Drawing.Size(595, 301);
+            this.ShortcutKeyTab.Size = new System.Drawing.Size(595, 76);
             this.ShortcutKeyTab.TabIndex = 3;
             this.ShortcutKeyTab.UseSelectable = true;
             this.ShortcutKeyTab.SelectedIndexChanged += new System.EventHandler(this.ShortcutKeyTab_SelectedIndexChanged);
@@ -6138,12 +6188,13 @@ namespace PE多功能信息处理插件
             this.历史打开.VerticalScrollbarBarColor = true;
             this.历史打开.VerticalScrollbarHighlightOnWheel = false;
             this.历史打开.VerticalScrollbarSize = 10;
+            this.历史打开.Visible = false;
             // 
             // AutoOpenModel
             // 
             this.AutoOpenModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.AutoOpenModel.AutoSize = true;
-            this.AutoOpenModel.Location = new System.Drawing.Point(484, 271);
+            this.AutoOpenModel.Location = new System.Drawing.Point(484, 46);
             this.AutoOpenModel.Name = "AutoOpenModel";
             this.AutoOpenModel.Size = new System.Drawing.Size(80, 16);
             this.AutoOpenModel.TabIndex = 7;
@@ -6156,7 +6207,7 @@ namespace PE多功能信息处理插件
             // 
             this.metroLabel17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.metroLabel17.AutoSize = true;
-            this.metroLabel17.Location = new System.Drawing.Point(400, 249);
+            this.metroLabel17.Location = new System.Drawing.Point(400, 24);
             this.metroLabel17.Name = "metroLabel17";
             this.metroLabel17.Size = new System.Drawing.Size(121, 38);
             this.metroLabel17.TabIndex = 8;
@@ -6167,7 +6218,7 @@ namespace PE多功能信息处理插件
             // 
             this.ClearHisList.ActiveControl = null;
             this.ClearHisList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ClearHisList.Location = new System.Drawing.Point(216, 249);
+            this.ClearHisList.Location = new System.Drawing.Point(216, 24);
             this.ClearHisList.Name = "ClearHisList";
             this.ClearHisList.Size = new System.Drawing.Size(75, 46);
             this.ClearHisList.TabIndex = 6;
@@ -6228,7 +6279,7 @@ namespace PE多功能信息处理插件
             this.HisOpenList.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.HisOpenList.RowTemplate.Height = 23;
             this.HisOpenList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.HisOpenList.Size = new System.Drawing.Size(586, 240);
+            this.HisOpenList.Size = new System.Drawing.Size(586, 15);
             this.HisOpenList.TabIndex = 2;
             this.HisOpenList.UseStyleColors = true;
             this.HisOpenList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.HisOpenList_MouseDoubleClick);
@@ -6237,7 +6288,7 @@ namespace PE多功能信息处理插件
             // 
             this.DelModelHis.ActiveControl = null;
             this.DelModelHis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DelModelHis.Location = new System.Drawing.Point(317, 249);
+            this.DelModelHis.Location = new System.Drawing.Point(317, 24);
             this.DelModelHis.Name = "DelModelHis";
             this.DelModelHis.Size = new System.Drawing.Size(75, 46);
             this.DelModelHis.TabIndex = 5;
@@ -6250,7 +6301,7 @@ namespace PE多功能信息处理插件
             // 
             this.LoadModel.ActiveControl = null;
             this.LoadModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.LoadModel.Location = new System.Drawing.Point(-6, 249);
+            this.LoadModel.Location = new System.Drawing.Point(-6, 24);
             this.LoadModel.Name = "LoadModel";
             this.LoadModel.Size = new System.Drawing.Size(75, 46);
             this.LoadModel.TabIndex = 3;
@@ -6263,7 +6314,7 @@ namespace PE多功能信息处理插件
             // 
             this.OpenDirectory.ActiveControl = null;
             this.OpenDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.OpenDirectory.Location = new System.Drawing.Point(95, 249);
+            this.OpenDirectory.Location = new System.Drawing.Point(95, 24);
             this.OpenDirectory.Name = "OpenDirectory";
             this.OpenDirectory.Size = new System.Drawing.Size(95, 46);
             this.OpenDirectory.TabIndex = 4;
@@ -6411,17 +6462,6 @@ namespace PE多功能信息处理插件
             this.LockSelect.Text = "是否锁定选择";
             this.LockSelect.UseSelectable = true;
             this.LockSelect.UseStyleColors = true;
-            // 
-            // GetEdge
-            // 
-            this.GetEdge.Location = new System.Drawing.Point(3, 51);
-            this.GetEdge.Name = "GetEdge";
-            this.GetEdge.Size = new System.Drawing.Size(75, 23);
-            this.GetEdge.TabIndex = 17;
-            this.GetEdge.Text = "Start";
-            this.GetEdge.UseSelectable = true;
-            this.GetEdge.UseStyleColors = true;
-            this.GetEdge.Click += new System.EventHandler(this.GetEdge_Click);
             // 
             // Metroform
             // 
@@ -6803,5 +6843,7 @@ namespace PE多功能信息处理插件
         public MetroFramework.Controls.MetroTextBox CrossRate;
         private MetroFramework.Controls.MetroTrackBar metroTrackBar1;
         private MetroFramework.Controls.MetroButton GetEdge;
+        private MetroFramework.Controls.MetroLabel ChangeVectorPasteModeText;
+        private MetroFramework.Controls.MetroTile ChangeVectorPasteMode;
     }
 }

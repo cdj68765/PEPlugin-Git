@@ -11,6 +11,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -79,11 +81,14 @@ namespace PE多功能信息处理插件
                                    @"\Backup\" + new FileInfo(pmx.FilePath).Name);
                     }
                 }
-
-                bootstate.OldOpen = ARGS.Host.Connector.Pmx.CurrentPath;
-                bootstate.FormTop = Formtemp.TopMost ? 1 : 0;
+                if (bootstate != null)
+                {
+                    bootstate.OldOpen = ARGS.Host.Connector.Pmx.CurrentPath;
+                    bootstate.FormTop = Formtemp.TopMost ? 1 : 0;
+                }
                 ThreadPool.QueueUserWorkItem(Save);
-                newopen.Close();
+                if (newopen != null)
+                    newopen.Close();
             }
             catch (Exception)
             {
@@ -118,6 +123,23 @@ namespace PE多功能信息处理插件
             ARGS = args;
             Formtemp = args.Host.Connector.Form as Form;
             ViewForm = args.Host.Connector.View.PmxView as Form;
+            var type = ViewForm.GetType();
+            /*  foreach (var item in type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance))
+              {
+                  if (item.Name == "MenuItem_Weight_SDEF_Click")
+                  {
+                      RuntimeHelpers.PrepareMethod(item.MethodHandle);
+                      var ilcodes = item.GetMethodBody().GetILAsByteArray();
+                      foreach (var item2 in ilcodes)
+                      {
+                          if (item2 == OpCodes.Ldstr.Value)
+                          {
+                              Console.WriteLine();
+                          }
+                      }
+                      InjectionHelper.UpdateILCodes(item, ilcodes);
+                  }
+              }*/
 
             #region 读取配置
 
@@ -1005,7 +1027,7 @@ namespace PE多功能信息处理插件
                             /* myForm f = new myForm(args);
                              f.Show(); */
                             newopen = new Metroform();
-                            // new  MeasureClass()
+                            // new MeasureClass()
                             newopen.Show();
                         }
                         else
